@@ -1,0 +1,20 @@
+<project name="gsPlatformFramework" default="dist" basedir=".">
+    <property name="dist.name" value="framework.zip"/>
+
+    <target name="dist">
+        <zip destfile="./${dist.name}" update="true">
+            <fileset dir="." includes="*.js"/>
+            <fileset dir="." includes="*.html"/>
+            <fileset dir="." includes="*.json"/>
+            <fileset dir="common"/>
+            <fileset dir="lib"/>
+            <fileset dir="scripts"/>
+            <fileset dir="styles"/>
+            <fileset dir="views"/>
+        </zip>
+    </target>
+
+    <target name="dev" depends="dist">
+
+    </target>
+</project>

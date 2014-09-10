@@ -1,0 +1,159 @@
+.widget-icon {
+    color:  #37BC9B;
+}
+
+.widget-icon i[button] {
+    cursor: pointer;
+}
+
+.scrollBox {
+    overflow: auto;
+}
+
+/*custom form in view mode */
+.custom-form ,.custom-form-edit  {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.custom-form header , .custom-form-edit header {
+    margin: 0px;
+    padding: 6px 14px 4px;;
+}
+.custom-form section , .custom-form-edit section{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.custom-form fieldset{
+    padding: 10px 14px 5px;
+}
+
+.custom-form-edit fieldset{
+    padding: 10px 14px 5px;
+    background: #fff
+}
+
+.custom-form .lastRow , .custom-form-edit .lastRow{
+    margin-bottom: 0px;
+}
+
+
+.custom-form .custom-label {
+    float: left;
+    width: 25%;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #808080;
+    margin-top: 5px;
+    padding-left: 5%;
+}
+
+.custom-form-edit .custom-label {
+    float: left;
+    width: 25%;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #232323;
+    margin-top: 5px;
+    padding-left: 5%;
+}
+
+.custom-form .custom-control-1 , .custom-form-edit .custom-control-1  {
+    word-wrap: break-word;
+    padding: 0 30px 0 0;
+    margin-left: 30%;
+}
+
+.custom-form .custom-control-2 , .custom-form-edit .custom-control-2  {
+    word-wrap: break-word;
+    margin: 0  1% ;
+}
+
+.custom-form .custom-control-1 input[type='text']{
+    color:#808080;
+    font-size: 15px;
+    padding: 1px 6px;
+    cursor: default !important;
+}
+
+.custom-form-edit .custom-control-1 input[type='text']{
+    color:#232323;
+    font-size: 15px;
+    padding: 1px 6px;
+
+}
+
+.custom-form .custom-control-1 textarea {
+    color:#808080;
+    font-size: 15px;
+    height: 130px;
+    resize: none;
+    padding: 1px 6px;
+    cursor: default !important;
+}
+
+
+.custom-form-edit .custom-control-1 textarea {
+    color:#232323;
+    font-size: 15px;
+    height: 165px;
+    resize: none;
+    padding: 1px 6px;
+}
+
+.custom-form .custom-control-2 textarea {
+    color:#808080;
+    font-size: 15px;
+    height: 530px;
+    resize: none;
+    padding: 1px 3px;
+    cursor: default !important;
+}
+
+.custom-form-edit .custom-control-2 textarea {
+    color:#232323;
+    font-size: 15px;
+    height: 530px;
+    resize: none;
+    padding: 1px 3px;
+}
+
+.custom-form .custom-control-1 textarea[readonly] , .custom-form .custom-control-1 input[readonly] ,.custom-form .custom-control-2 textarea[readonly] , .custom-form .custom-control-2 input[readonly] {
+    background: rgba(255,255,255,.9);
+}
+
+.custom-form-edit .custom-control-1 input[type='text']:focus{
+    border-color: #66afed;
+}
+
+.custom-form-edit .custom-control-1 textarea:focus {
+    border-color: #66afed;
+}
+
+.custom-panel {
+    position: relative;
+}
+
+.panel-footer {
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.ngGridDiv {
+    border: 1px solid rgb(212,212,212);
+}
+
+.ngGridDiv .ngRow.odd {
+    background-color: #eee;
+}
+
+.ngGridDiv .ngRow.selected {
+    background-color: #c9dde1;
+}

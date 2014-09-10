@@ -1,0 +1,354 @@
+<div class="container-fluid" >
+<!-- BEGIN FORM WIZARD -->
+
+<!--  <h4 class="small-title">EXAMPLE WIZARD</h4>-->
+<div class="panel with-nav-tabs panel-success" >
+<div class="panel-heading">
+    <ul class="nav nav-tabs " ng-init="selectedTab='settingTab'">
+        <li ng-class="{active: 'settingTab'==selectedTab}"  ><a href="javascript:void(0)" ng-click="selectedTab='settingTab'"><i
+                class="fa fa-th-list"></i> Setting</a></li>
+        <li ng-class="{active: 'configureTab'==selectedTab}" ><a  href="javascript:void(0)" ng-click="selectedTab='configureTab'"><i
+                class="fa fa-gear"></i> Configure</a></li>
+        <li ng-class="{active: 'historyTab'==selectedTab}" ><a href="javascript:void(0)" ng-click="selectedTab='historyTab'"><i
+                class="fa fa-history"></i> History </a></li>
+        <li ng-class="{active: 'reportTab'==selectedTab}" ><a href="javascript:void(0)" ng-click="selectedTab='reportTab'"><i
+                class="fa fa-flag"></i> Console </a></li>
+    </ul>
+</div>
+
+<div  class="collapse in">
+    <div class="tab-content">
+        <div role="tab-pane" class="tab-pane custom-panel" ng-class="{true:'active',false:'fade'}[selectedTab=='settingTab']">
+            <div class="panel-body no-padding">
+              <!--   <pre>validator = {{copyJob.Setting | json}}</pre>
+                <pre>validator = {{job.Setting | json}}</pre>-->
+                <form  name ="basicSettingForm" ng-submit="saveBasic()" class="smart-form " ng-class="{true:'custom-form-edit',false:'custom-form'}[basicEdit]" novalidate="novalidate" >
+                    <header>
+                        Basic Settings
+                        <span class="widget-icon" ng-hide="basicEdit" ng-click="basicEdit=!basicEdit">
+                            <i button class="fa fa-edit" title="edit"></i></span>
+                        <span class="widget-icon" ng-show="basicEdit" ng-click="saveBasic(basicSettingForm.$valid)">
+                            <i button class="fa fa-save" title="save"></i></span>
+                    </header>
+
+                    <fieldset >
+                        <div class="row">
+                            <section>
+                                <div class="custom-label " title="Job Name">Job Name:</div>
+                                <div class="custom-control-1" >
+                                    <input ng-model="copyJob.JobName"  required
+                                           name="jobName" class="form-control no-border " ng-class={'uneditable':basicEdit}
+                                           type="text" spellcheck="false" readonly>
+                                </div>
+                            </section>
+                            <section>
+                                <div class="custom-label " title="Job Name">SRC Name:</div>
+                                <div class="custom-control-1" >
+                                    <input ng-model="copyJob.Setting.JobName" required
+                                           class="form-control no-border " ng-class={'uneditable':basicEdit} name="jobName"
+                                           type="text" spellcheck="false" readonly>
+                                </div>
+                            </section>
+                            <section>
+                                <div class="custom-label" title="Timing Setting:">Timing Setting:</div>
+                                <div class="custom-control-1" ng-controller="checkTimingCtrl">
+                                    <input ng-model="copyJob.Setting.BuildPeriody" ng-model-options="{updateOn:'default blur',debounce:{default:1000,blur:0}}" class="form-control"
+                                            required check-timing
+                                            class="form-control" ng-class={'no-border':!basicEdit} name="timing"  type="text"
+                                           spellcheck="false" ng-readonly="!basicEdit">
+                                    <div  ng-messages="basicSettingForm.$dirty&&basicSettingForm.timing.$error">
+                                        <em  ng-message="required">
+                                            The Timing is required.
+                                        </em>
+                                        <em ng-message="checkTiming">
+                                            {{message}}
+                                        </em>
+                                    </div>
+
+                                </div>
+                            </section>
+                        </div>
+                    </fieldset>
+                </form>
+                <form  name="scmSettingForm" ng-submit="saveSCM()" class="smart-form " ng-class="{true:'custom-form-edit',false:'custom-form'}[scmEdit]" novalidate="novalidate" >
+                    <header>
+                        SCM Settings
+                        <span class="widget-icon " ng-hide="scmEdit" ng-click="scmEdit=!scmEdit"><i button class="fa fa-edit" title="edit"></i></span>
+                        <span class="widget-icon " ng-show="scmEdit" ng-click="saveSCM(scmSettingForm.$valid)"><i button class="fa fa-save" title="save"></i></span>
+                    </header>
+
+                    <fieldset >
+                        <div class="row">
+                            <div class="scmSettingScrollBox" style="height:{{scmSettingHeight}};" ng-if="job.Setting.ScmSetting.$type == git">
+                                <section>
+                                    <div class="custom-label" title="Repository Url:">Repository URL:</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.RepositoryUrl"
+                                                required
+                                                class="form-control" ng-class={'no-border':!scmEdit}
+                                               name="gitRepositoryUrl"  type="url" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.gitRepositoryUrl.$error">
+                                            <em  ng-message="required">
+                                                The Repository URL is required.
+                                            </em>
+                                            <em  ng-message="url">
+                                                The Repository URL is invalid.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="Name:">Name:</div>
+                                    <div class="custom-control-1" >
+                                        <input  ng-model="copyJob.Setting.ScmSetting.Name"
+                                                required
+                                                class="form-control" ng-class={'no-border':!scmEdit}  name="gitName"
+                                               type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.gitName.$error">
+                                            <em  ng-message="required">
+                                                The Repository Name is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="Branch Specifier:">Branch Specifier:</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.BranchSpecifier"
+                                                required
+                                                class="form-control" ng-class={'no-border':!scmEdit} name="gitBranch"
+                                               type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.gitBranch.$error">
+                                            <em  ng-message="required">
+                                                The Branch Specifier is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="scmSettingScrollBox" style="height:{{scmSettingHeight}};" ng-if="job.Setting.ScmSetting.$type == svn">
+                                <section>
+                                    <div class="custom-label" title="Repository Url:">Repository URL:</div>
+                                    <div class="custom-control-1" >
+                                        <input  ng-model="copyJob.Setting.ScmSetting.RepositoryUrl"
+                                                required
+                                                class="form-control"  ng-class={'no-border':!scmEdit}
+                                               name="svnRepositoryUrl"  type="url" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.svnRepositoryUrl.$error">
+                                            <em  ng-message="required">
+                                                The Repository URL is required.
+                                            </em>
+                                            <em  ng-message="url">
+                                                The Repository URL is invalid.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="Local Module Directory:">Local Module Directory:</div>
+                                    <div class="custom-control-1" >
+                                        <input ng-model="copyJob.Setting.ScmSetting.LocalModulDir"
+                                               required
+                                                class="form-control" ng-class={'no-border':!scmEdit}
+                                               name="svnLocalModuleDir"  type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.svnLocalModuleDir.$error">
+                                            <em  ng-message="required">
+                                                The Local Module Directory is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="scmSettingScrollBox" style="height:{{scmSettingHeight}};" ng-if="job.Setting.ScmSetting.$type == perforce">
+                                <section>
+                                    <div class="custom-label" title="P4 Username:">P4 Username:</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.UserName"
+                                                required
+                                                class="form-control" ng-class={'no-border':!scmEdit} name="p4Username"
+                                                type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.p4Username.$error">
+                                            <em  ng-message="required">
+                                                The P4 Username is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="P4 Password:">P4 Password:</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.Password" required
+                                                class="form-control" ng-class={'no-border':!scmEdit} title="encrypted"
+                                                name="p4Password"  type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.p4Password.$error">
+                                            <em  ng-message="required">
+                                                The P4 Password is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="P4 Port(Server):">P4 Port(Server):</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.SCMPort" required
+                                                class="form-control" ng-class={'no-border':!scmEdit} name="p4Port"
+                                                type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.p4Port.$error">
+                                            <em  ng-message="required">
+                                                The P4 Port(Server) is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="P4 Workspace Name:">P4 Workspace Name:</div>
+                                    <div class="custom-control-1">
+                                        <input  ng-model="copyJob.Setting.ScmSetting.Workspace" required
+                                                class="form-control" ng-class={'no-border':!scmEdit} name="p4WorkspaceName"
+                                                type="text" spellcheck="false" ng-readonly="!scmEdit">
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.p4WorkspaceName.$error">
+                                            <em  ng-message="required">
+                                                The P4 Workspace Name is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="custom-label" title="P4 Workspace Viewmap:">P4 Workspace Viewmap:</div>
+                                    <div class="custom-control-1">
+                                        <textarea  ng-model ="copyJob.Setting.ScmSetting.ViewMap" required
+                                                   class="form-control"ng-class={'no-border':!scmEdit}  name="p4Viewmap"
+                                                   spellcheck="false" ng-readonly="!scmEdit"></textarea>
+                                        <div  ng-messages="scmSettingForm.$dirty && scmSettingForm.p4Viewmap.$error">
+                                            <em  ng-message="required">
+                                                The P4 Workspace Viewmap is required.
+                                            </em>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <div role="tab-pane" class="tab-pane custom-panel" ng-class="{true:'active',false:'fade'}[selectedTab=='configureTab']">
+            <div class="panel-body no-padding">
+                <form name="configForm" ng-submit="saveConfig()" class="smart-form" ng-class="{true:'custom-form-edit',false:'custom-form'}[configEdit]" novalidate="novalidate">
+                    <header>
+                        Content
+                        <span class="widget-icon" ng-hide="configEdit" ng-click="configEdit=!configEdit">
+                            <i button class="fa fa-edit" title="edit"></i></span>
+                        <span class="widget-icon" ng-show="configEdit" ng-click="saveConfig(configForm.$valid)">
+                            <i button class="fa fa-save" title="save"></i></span>
+                        <span class="widget-icon">
+                            <file-read></file-read>
+                        </span>
+                    </header>
+
+                    <fieldset>
+                        <div class="row">
+                            <section>
+                                <div class="custom-control-2">
+                                    <textarea for='config' ng-show="configEdit"
+                                              ng-model="copyJob.Configuration.Configuration"
+                                              class="form-control"  spellcheck="false">
+                                    </textarea>
+                                    <textarea for='config' ng-hide="configEdit"
+                                            class="form-control no-border"  spellcheck="false"
+                                            readonly>{{copyJob.Configuration.Configuration?copyJob.Configuration.Configuration:'No available data'}}
+                                    </textarea>
+                                </div>
+
+                            </section>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <div role="tab-pane" class="tab-pane custom-panel" ng-class="{true:'active',false:'fade'}[selectedTab=='historyTab']" ng-init="showSpeciBuild=false">
+            <div ng-hide="showSpeciBuild" class="panel-body no-padding" ng-if="job.Builds" style="height: 100%">
+                <div historygrid ng-grid="jobHistoryGridOptions" style="height: calc(100% - 10px); width: 100%"></div>
+                <!--div class="dataTables_wrapper form-inline" role="grid" style="height: 580px; width: 100%;overflow: auto">
+                        <table ng-table="historyTableParams" template-no-match="modules/job/views/partials/filterNoMatch.html" class="table dataTable table-striped  table-hover table-bordered table-noborder">
+                            <tr  ng-repeat="build in $data" ng-class="{'even':$even,'odd':$odd}">
+                                <td data-title="'Display Name'">
+                                    <a href="javascript:void(0)" ng-click="showBuild(build);" >{{build.FullDisplayName.replace(job.JobName,'Build')}}</a>
+                                </td>
+                                <td data-title="'Build Time'"> {{build.Id.split('_')[0].concat(" ").concat(build.Id.split('_')[1].split('-').join(":"))}}</td>
+                                <td data-title="'Duration'">{{build.Duration+"s"}}</td>
+                                <td data-title="'Result'">{{build.Result}}</td>
+                            </tr>
+                        </table>
+                 </div-->
+            </div>
+            <div ng-show="showSpeciBuild" style="height: 100%">
+                <form ng-show="showSpeciBuild" class="smart-form custom-form" novalidate="novalidate" style="height: calc(100% - 55px)">
+                    <header>
+                        <span > {{job.JobName+'#'+selectedBuild.Number}}</span>
+                        <span class="widget-icon"  >
+                            <a href="{{selectedBuildUrl}}" title="download"><i button class="fa fa-download"></i></a> </span>
+                    </header>
+                    <fieldset>
+                        <div class="row">
+                            <section class="">
+                                <div>
+                                    <textarea for='history' class="form-control no-border"
+                                              spellcheck="false" readonly>{{selectedBuildReport}}</textarea>
+                                </div>
+                            </section>
+                        </div>
+                    </fieldset>
+                </form>
+                <!-- /.panel-body -->
+                <div ng-show="showSpeciBuild" class="panel-footer">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a class="btn btn-warning " title="Prev Build" ng-class="{active:hasNoPrev()}"  ng-click="prevBuild()"><i class="fa fa-chevron-left"></i> </a>
+                            <a class="btn btn-warning " title="Next Build" ng-class="{active:hasNoNext()}" ng-click="nextBuild()" ><i class="fa fa-chevron-right"></i>
+                            </a>
+                        </div>
+                        <!-- /.col-sm-6 -->
+                        <div class="col-sm-6 text-right">
+                            <a class="btn btn-warning" ng-click="showSpeciBuild=false"><i class="fa fa-mail-reply"></i> Return</a>
+                        </div>
+                        <!-- /.col-sm-6 -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+            <!--/.panel-footer-->
+        </div>
+        <div role="tab-pane" class="tab-pane  custom-panel" ng-class="{true:'active',false:'fade'}[selectedTab=='reportTab']">
+            <div class="panel-body  no-padding" ng-if="job.Report">
+                <form id="project-report-form--" class="smart-form custom-form" novalidate="novalidate">
+                    <header>
+                        <span>Last Build</span>
+                        <span class="widget-icon" > <a href="{{lastBuildUrl}}" download="report.txt" title="download"><i
+                                class="fa fa-download"></i></a> </span>
+                    </header>
+
+                    <fieldset>
+                        <div class="row">
+                            <section>
+                                <div>
+                                    <textarea style="height: {{reportTextHeight}};" data-build='lastBuild' class="form-control no-border" spellcheck="false"
+                                              readonly>{{job.Report.Report?job.Report.Report:'No available data'}}</textarea>
+                                </div>
+                            </section>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+<!-- /.tab-content -->
+</div>
+<!-- /.collapse in -->
+</div>
+<!-- /.panel .panel-success -->
+<!-- END FORM WIZARD -->
+</div><!-- /.container-fluid -->

@@ -1,0 +1,14 @@
+<div class="action ngCellText jobTableActionCell" ng-class="col.colIndex()" data-toggle="buttons">
+    <label title="Start Job" class="btn btn-default btn-xs action" ng-class="{active:row.entity.Result=='Running'}" ng-click="$event.stopPropagation();">
+        <input type="radio" name="style-a1" id="style-a1" ng-click="row.entity.Result!='Running'?jobStart([row.entity]):$event.stopPropagation();">
+        <i class="fa fa-play action"></i>
+    </label>
+    <label title="Stop Job" class="btn btn-default btn-xs action " ng-class="{active:row.entity.Result!='Running'}" ng-click="$event.stopPropagation();">
+        <input type="radio" name="style-a2" id="style-a2" ng-click="row.entity.Result=='Running'?jobStop([row.entity]):$event.stopPropagation();">
+        <i class="fa fa-stop action"></i>
+    </label>
+    <label title="Delete Job" class="btn btn-default btn-xs action " ng-click="$event.stopPropagation();">
+        <input type="radio" name="style-a2" id="style-a3" ng-click="jobDelete([row.entity]);">
+        <i class="fa fa-trash-o action"></i>
+    </label>
+</div>
