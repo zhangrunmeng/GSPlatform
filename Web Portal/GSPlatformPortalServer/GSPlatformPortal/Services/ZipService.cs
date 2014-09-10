@@ -8,7 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Web;
 
-namespace FileUploadTest.Services
+namespace GSPlatformPortal.Services
 {
     public class ZipService
     {

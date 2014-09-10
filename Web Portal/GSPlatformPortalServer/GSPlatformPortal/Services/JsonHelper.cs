@@ -8,7 +8,7 @@ using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FileUploadTest.Services
+namespace GSPlatformPortal.Services
 {
     public class JSONHelper
     {

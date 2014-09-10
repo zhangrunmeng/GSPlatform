@@ -1,13 +1,31 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title></title>
-</head>
-<body ng-app="fileUploader">
-    <div ng-controller="fileUploaderCtrl">
-        <file-uploader></file-uploader>
-    </div>
-    <script src="scripts/angular.js"></script>
-    <script src="scripts/fileUploader.js"></script>
-</body>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="scripts/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="scripts/lib/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="scripts/lib/angular-grid/ng-grid.css" />
+    </head>
+    <body ng-app="webPortalAdmin">
+        <div class="panel-body">
+            <div class="row h1">
+                <div class="col-md-6 col-md-offset-3">GSPlatform Web Portal Admin</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div ng-controller="moduleManageCtrl">
+                        <div ng-grid="moduleGridOptions" style="height: 600px"></div>
+                        <div ng-controller="fileUploaderCtrl">
+                            <file-uploader></file-uploader>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="scripts/lib/jquery/dist/jquery.js"></script>
+        <script src="scripts/lib/angular/angular.js"></script>
+        <script src="scripts/lib/angular-grid/ng-grid-2.0.13.debug.js"></script>
+        <script src="scripts/app.js"></script>
+    </body>
 </html>

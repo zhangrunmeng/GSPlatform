@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 
-namespace FileUploadTest.Services
+namespace GSPlatformPortal.Services
 {
     public class IOHelper
     {

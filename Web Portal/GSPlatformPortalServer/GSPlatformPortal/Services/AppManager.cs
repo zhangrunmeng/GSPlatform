@@ -1,4 +1,4 @@
-﻿using FileUploadTest.Models;
+﻿using GSPlatformPortal.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace FileUploadTest.Services
+namespace GSPlatformPortal.Services
 {
     public class AppManager
     {

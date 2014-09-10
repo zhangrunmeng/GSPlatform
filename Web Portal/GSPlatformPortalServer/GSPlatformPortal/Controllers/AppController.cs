@@ -1,5 +1,5 @@
-﻿using FileUploadTest.Models;
-using FileUploadTest.Services;
+﻿using GSPlatformPortal.Models;
+using GSPlatformPortal.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
-namespace FileUploadTest.Controllers
+namespace GSPlatformPortal.Controllers
 {
     [RoutePrefix("api/app")]
     public class AppController : ApiController

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace FileUploadTest
+namespace GSPlatformPortal
 {
     public static class WebApiConfig
     {
