@@ -58,7 +58,14 @@ require([
     $.ajax("/api/app/", {
         dataType : "json"
     }).done(function( data ) {
-        window.$installedModules = data || [];
+        if(!data) return;
+        for(var i=0; i < data.length; i++){
+            if(data[i].id == "framework"){
+                data.splice(i, 1);
+                break;
+            }
+        }
+        window.$installedModules = data;
         var requireModuleList = [];
         angular.forEach($installedModules, function(module){
             requireModuleList.push('modules/' + module.id + "/app");

@@ -12,7 +12,23 @@ namespace GSPlatformPortal.Services
 {
     public class JSONHelper
     {
-        public static JObject getJSONFromFile(String jsonFile)
+        public static T getJSONFromFile<T>(string jsonFile)
+        {
+            if (!File.Exists(jsonFile))
+                return default(T);
+            StreamReader objReader = new StreamReader(jsonFile);
+            StringBuilder sb = new StringBuilder();
+            string sLine;
+            while ((sLine = objReader.ReadLine()) != null)
+            {
+                sb.Append(sLine);
+                sb.AppendLine();
+            }
+            objReader.Close();
+            return (T)JsonConvert.DeserializeObject<T>(sb.ToString());
+        }
+
+        public static Object getJSONFromFile(string jsonFile, Type type)
         {
             if (!File.Exists(jsonFile))
                 return null;
@@ -25,7 +41,7 @@ namespace GSPlatformPortal.Services
                 sb.AppendLine();
             }
             objReader.Close();
-            return (JObject)JsonConvert.DeserializeObject(sb.ToString());
+            return JsonConvert.DeserializeObject(sb.ToString(), type);
         }
 
         public static string getSimpleValue(JObject jobj, string key)

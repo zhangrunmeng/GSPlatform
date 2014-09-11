@@ -13,7 +13,7 @@ define(['angular'], function(
     ){
         var moduleDependencyList = [];
         angular.forEach($installedModules, function(module){
-            moduleDependencyList.push(module.moduleName);
+            moduleDependencyList.push(module.module);
         });
 
         return angular.module('gsPlatformClient', ['ngRoute'].concat(moduleDependencyList))

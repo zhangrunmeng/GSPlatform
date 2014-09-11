@@ -34,6 +34,53 @@ namespace GSPlatformPortal.Controllers
         }
 
         [Route("")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> getModuleInfo()
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            string root = AppManager.INSTALLED_MODULE_FOLDER;
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
+            var provider = new MultipartFormDataStreamProvider(root);
+
+            try
+            {
+                StringBuilder sb = new StringBuilder(); // Holds the response body
+
+                // Read the form data and return an async task.
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the form data.
+                foreach (var key in provider.FormData.AllKeys)
+                {
+                    foreach (var val in provider.FormData.GetValues(key))
+                    {
+                        sb.Append(string.Format("{0}: {1}\n", key, val));
+                    }
+                }
+
+                // This illustrates how to get the file names for uploaded files.
+                Module module = null;
+                foreach (var file in provider.FileData)
+                {
+                    FileInfo fileInfo = new FileInfo(file.LocalFileName);
+                    module = AppManager.getModuleInfo(file.LocalFileName);
+                }
+                return Request.CreateResponse<Module>(module);
+            }
+            catch (System.Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
+        [Route("")]
         [HttpGet]
         public IEnumerable<Module> listModules()
         {
@@ -41,9 +88,27 @@ namespace GSPlatformPortal.Controllers
             return modules;
         }
 
+        [Route("install/{fileDir}")]
+        [HttpGet]
+        public HttpResponseMessage installApp(string fileDir)
+        {
+            try
+            {
+                AppManager.installModule(null, fileDir);
+                return new HttpResponseMessage
+                {
+                    Content = new StringContent("Success!")
+                };
+            }
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+            }
+        }
+
         [HttpPost]
         [Route("install")]
-        public async Task<HttpResponseMessage> installApp([FromUri]string localFile = null)
+        public async Task<HttpResponseMessage> installAppWithFile([FromUri]string localFile = null)
         {
             if (localFile != null)
             {
@@ -55,7 +120,7 @@ namespace GSPlatformPortal.Controllers
                         Content = new StringContent("Success!")
                     };
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
                 }
@@ -68,6 +133,10 @@ namespace GSPlatformPortal.Controllers
                 }
 
                 string root = AppManager.INSTALLED_MODULE_FOLDER;
+                if (!Directory.Exists(root))
+                {
+                    Directory.CreateDirectory(root);
+                }
                 var provider = new MultipartFormDataStreamProvider(root);
 
                 try
