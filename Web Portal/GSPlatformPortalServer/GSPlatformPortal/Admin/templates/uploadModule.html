@@ -3,7 +3,7 @@
     <h4 class="modal-title" >{{title}}</h4>
 </div>
 <div class="modal-body no-padding">
-    <form role="form" name="moduleInfoForm" class="form-horizontal">
+    <form role="form" name="moduleInfoForm" class="form-horizontal" ng-model="module" module-form-checker>
         <fieldset>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Upload File</label>
@@ -18,13 +18,13 @@
                 <label class="col-sm-3 control-label">Module Id</label>
                 <div class="col-sm-8">
                     <input class="form-control"
-                           name="moduleId" type="text" readonly ng-model="module.id"  module-id-check spellcheck="false"/>
-                    <div ng-messages="moduleInfoForm.moduleId.$error">
+                           name="moduleId" type="text" readonly value="{{module.id}}" spellcheck="false"/>
+                    <div ng-messages="moduleInfoForm.$error">
                         <em ng-message="uniqueModuleId">
                             The module already exists.
                         </em>
-                        <em ng-message="sameModuleId">
-                            The module id must keep same.
+                        <em ng-message="sameModuleId" class="alert-danger">
+                            The uploaded module id '{{upgradeModuleId}}' is different with current one.
                         </em>
                     </div>
                 </div>

@@ -5,24 +5,28 @@
         <link rel="stylesheet" href="scripts/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="scripts/lib/font-awesome/css/font-awesome.css" />
         <link rel="stylesheet" href="scripts/lib/angular-grid/ng-grid.css" />
-        <link rel="stylesheet" href="styles/admin.css" />
+        <link rel="stylesheet" href="styles/admin.css"/>
+        <link rel="stylesheet" href="styles/components.css"/>
     </head>
-    <body ng-app="webPortalAdmin">
-        <div class="panel-body" ng-controller="moduleManageCtrl">
-            <div class="row h1">
-                <div class="col-md-6 col-md-offset-3">GSPlatform Web Portal Admin</div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <div class="pull-right">
-                        <button class="btn btn-primary btn-lg" ng-click="installModule()">
-                            Install New Module
-                        </button>
-                    </div>
+    <body ng-app="webPortalAdmin" class="bg-body gs-default">
+        <div class="container-fluid" style="height: 100%" ng-controller="moduleManageCtrl">
+            <div class="row bg-primary">
+                <div class="col-md-6 col-lg-6">
+                    <h1><i class="fa fa-gears cell-right"></i>GS Platform Web Portal Admin</h1>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
+            <div class="row row-top">
+                <div class="col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+
+                        <div class="pull-right">
+                            <button class="btn btn-success" ng-click="installModule()">
+                                Install New Module
+                            </button>
+                        </div>
+                </div>
+            </div>
+            <div class="row row-top">
+                <div class="col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
                     <div>
                         <div ng-grid="moduleGridOptions" style="height: 600px"></div>
                     </div>

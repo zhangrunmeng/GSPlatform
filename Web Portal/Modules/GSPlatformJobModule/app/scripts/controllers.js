@@ -53,9 +53,9 @@ define(['angular'], function(angular){
                     {field:'selected', displayName: '', width: "30px", cellTemplate: "<div class='ngCellText' style='padding-top: 10px'><input type='checkbox' ng-checked='!!row.getProperty(col.field)' ng-click='selectRow(row, $event)'></div>"},
                     {field:'JobName', displayName:'Product Name', width: "55%"},
                     {field:'Status.Status', displayName:'Last Build', width: "20%", cellTemplate: "<div ng-class='{failedJobStatus: row.getProperty(col.field) == \"Failed\"}'><div class='ngCellText'>{{row.getProperty(col.field)}}</div></div>"},
-                    {field:'Result', displayName:'Status', width: "*", cellTemplate: "<div ng-class='{failedJobStatus: row.getProperty(col.field) == \"Failed\"}'><div class='ngCellText'>{{row.getProperty(col.field)}}</div></div>"}
-                    //{field:'', displayName: 'Action', cellTemplate: 'modules/job/views/templates/jobTableActionCell.html', width: "*", sortable: false}
+                    {field:'Result', displayName:'Status', width: "10%", cellTemplate: "<div ng-class='{failedJobStatus: row.getProperty(col.field) == \"Failed\"}'><div class='ngCellText'>{{row.getProperty(col.field)}}</div></div>"}
                 ],
+                headerRowHeight: 50,
                 enableColumnReordering : true,
                 enablePaging: true,
                 showFooter: false,

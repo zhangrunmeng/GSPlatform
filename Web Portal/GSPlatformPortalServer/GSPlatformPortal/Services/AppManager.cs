@@ -94,5 +94,37 @@ namespace GSPlatformPortal.Services
             return modules;
         }
 
+        public static void uninstallModule(string id)
+        {
+            if (id.Equals("framework"))
+            {
+                string[] files = Directory.GetFiles(APP_HOME);
+                foreach (string f in files)
+                {
+                    File.Delete(f);
+                }
+                string[] dirs = Directory.GetDirectories(APP_HOME);
+                foreach (string d in dirs)
+                {
+                    if (!Path.GetFileName(d).Equals("modules"))
+                    {
+                        Directory.Delete(d, true);
+                    }
+                }
+            }
+            else
+            {
+                string[] moduledirs = Directory.GetDirectories(MODULE_HOME);
+                foreach (string m in moduledirs)
+                {
+                    if (Path.GetFileName(m).Equals(id))
+                    {
+                        Directory.Delete(m, true);
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 }

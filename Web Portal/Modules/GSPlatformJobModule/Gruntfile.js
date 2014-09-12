@@ -454,4 +454,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dev', ['compress', 'install']);
 
+  grunt.registerTask('zip', ['compress']);
+
 };

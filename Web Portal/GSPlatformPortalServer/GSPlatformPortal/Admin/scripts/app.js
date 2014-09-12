@@ -38,7 +38,19 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
         };
 
         $scope.uninstallModule = function(module){
-
+            $http({
+                method: "DELETE",
+                url: "/api/app/" + module.id
+            }).success(function(data){
+                if(data != undefined && data.toLowerCase() == "success"){
+                    for(var i=0; i < $scope.installedModules.length; i++){
+                        if($scope.installedModules[i].id == module.id){
+                            $scope.installedModules.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            });
         };
 
         var popupModal = function(template, module){
@@ -48,6 +60,9 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
                 resolve: {
                     module : function(){
                         return module;
+                    },
+                    modules : function(){
+                        return $scope.installedModules;
                     }
                 }
             });
@@ -62,7 +77,7 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
         });
 
     })
-    .directive('moduleIdCheck', function(){
+    .directive('moduleFormChecker', function(){
         return {
             require:'ngModel',
             restrict: 'A',
@@ -96,7 +111,7 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
         }
     });
 
-    var ModalInstanceCtrl = function ($scope, $modalInstance, $http, module) {
+    var ModalInstanceCtrl = function ($scope, $modalInstance, $http, module, modules) {
 
         var me = this;
 
@@ -109,9 +124,14 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
 
         $scope.module = module || {};
         $scope.submit = function (isValid) {
-            $scope.submitted = true;
-            installModule();
-            $modalInstance.dismiss('cancel');
+            if(isValid && !me._getInfoLock){
+                installModule(function(){
+                    if(!me._isUpgrade && modules){
+                        modules.push($scope.module);
+                    }
+                    $modalInstance.dismiss('cancel');
+                });
+            }
         };
 
         $scope.cancel = function () {
@@ -130,9 +150,12 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
         });
 
         var getModuleInfo = function(localfile){
+            me._getInfoLock = true;
             postFile(localfile, '', function(data){
+                me._getInfoLock = false;
                 if(me._isUpgrade){
                     if(data.id != $scope.module.id){
+                        $scope.upgradeModuleId = data.id;
                         $scope.$broadcast('error', 'sameModuleId', false);
                         return;
                     } else {
@@ -144,12 +167,15 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
             });
         };
 
-        var installModule = function () {
+        var installModule = function (callback) {
             $http({
                 method: 'GET',
                 url: '/api/app/install/' + $scope.module.file
             }).success(function (data) {
                 console.log(data);
+                if(callback){
+                    callback();
+                }
             });
         };
 

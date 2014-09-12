@@ -183,8 +183,16 @@ namespace GSPlatformPortal.Controllers
         }
 
         // DELETE api/<controller>/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(string id)
         {
+            if (id != null)
+            {
+                AppManager.uninstallModule(id);
+            }
+            return new HttpResponseMessage()
+            {
+                Content = new StringContent("Success")
+            };
         }
     }
 }

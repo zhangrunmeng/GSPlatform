@@ -1,0 +1,21 @@
+/* ngGrid */
+.gs-default .ngTopPanel {
+    background: #8CC152;
+    color: white;
+}
+
+.gs-default .ngRow.selected {
+    background-color: lightsteelblue !important;
+}
+
+.gs-default .ngRow.odd {
+    background-color: #efefef;
+}
+
+.gs-default .ngRow.even {
+    background-color: #fefefe;
+}
+
+.gs-default .ngGridDiv {
+    border: 1px solid rgb(212,212,212);
+}
