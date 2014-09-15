@@ -14,7 +14,11 @@ define(['angular',
                 if(module.controller){
                     moduleInfo.controller = module.controller;
                 }
-                $routeProvider.when("/" + module.id, moduleInfo);
+                $routeProvider.when("/" + module.id +"/", moduleInfo);
+            });
+            $routeProvider.when("/", {
+                templateUrl : "views/main.html",
+                controller  : "appContainerCtrl"
             });
             $routeProvider.otherwise({redirectTo: '/'});
         }]);

@@ -11,6 +11,8 @@ namespace GSPlatformPortal.Models
         public string version { set; get; }
         public string name { set; get; }
         public string module { set; get; }
+        public string nav { set; get; }
+        public string desc { set; get; }
         public string file { set; get; }
     }
 }

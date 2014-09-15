@@ -187,7 +187,14 @@ namespace GSPlatformPortal.Controllers
         {
             if (id != null)
             {
-                AppManager.uninstallModule(id);
+                try
+                {
+                    AppManager.uninstallModule(id);
+                }
+                catch (System.Exception e)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
+                }
             }
             return new HttpResponseMessage()
             {

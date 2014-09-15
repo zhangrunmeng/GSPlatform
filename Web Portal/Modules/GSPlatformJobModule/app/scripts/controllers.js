@@ -5,7 +5,7 @@ define(['angular'], function(angular){
 
     angular.module("job.controllers", ['job.services'])
         .controller('JobCreateCtrl', function($rootScope, $scope ,$element, $modal, Restangular, $injector){
-            require([$scope.$modulePath + 'scripts/controllers/jobCreate'], function(jobCreate){
+            require([$scope.getModulePath() + 'scripts/controllers/jobCreate'], function(jobCreate){
                 $injector.invoke(jobCreate, this, {
                     '$scope': $scope,
                     '$element': $element,
@@ -15,7 +15,7 @@ define(['angular'], function(angular){
             });
         })
         .controller('JobDetailCtrl', function($scope, $element, Restangular, Utility, $injector){
-            require([$scope.$modulePath + 'scripts/controllers/jobDetail'], function(jobDetail){
+            require([$scope.getModulePath() + 'scripts/controllers/jobDetail'], function(jobDetail){
                 $scope.jobHistoryBuilds = [];
                 $scope.totalBuilds = $scope.jobHistoryBuilds.length;
                 $scope.jobHistoryGridOptions = {
@@ -23,7 +23,7 @@ define(['angular'], function(angular){
                     columnDefs: [{field:'name', displayName:'Display Name', cellTemplate: 'modules/job/views/templates/jobHistoryNameCell.html', width: "30%"},
                         {field:'time', displayName:'Build Time', width: "30%"},
                         {field:'duration', displayName:'Duration', width: "20%"},
-                        {field:'result', displayName: 'Result', width: "*"}],
+                        {field:'result', displayName: 'Result'}],
                     enableColumnReordering : true,
                     enablePaging: false,
                     multiSelect : true
@@ -55,7 +55,6 @@ define(['angular'], function(angular){
                     {field:'Status.Status', displayName:'Last Build', width: "20%", cellTemplate: "<div ng-class='{failedJobStatus: row.getProperty(col.field) == \"Failed\"}'><div class='ngCellText'>{{row.getProperty(col.field)}}</div></div>"},
                     {field:'Result', displayName:'Status', width: "10%", cellTemplate: "<div ng-class='{failedJobStatus: row.getProperty(col.field) == \"Failed\"}'><div class='ngCellText'>{{row.getProperty(col.field)}}</div></div>"}
                 ],
-                headerRowHeight: 50,
                 enableColumnReordering : true,
                 enablePaging: true,
                 showFooter: false,
@@ -66,7 +65,7 @@ define(['angular'], function(angular){
                 multiSelect : false
             };
 
-            require([$scope.$modulePath + 'scripts/controllers/main'], function(mainCtrl){
+            require([$scope.getModulePath() + 'scripts/controllers/main'], function(mainCtrl){
                 $injector.invoke(mainCtrl, this, {
                     '$scope': $scope,
                     '$element': $element,

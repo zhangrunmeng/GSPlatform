@@ -12,7 +12,7 @@ define(['angular',
        './scripts/directives',
        './scripts/filters',
        './lib/signalr/jquery.signalR-2.0.2',
-        'css!./styles/app'
+       'css!./styles/theme/default/app'
     ], function(angular){
         return angular
             .module('jobManagement', [

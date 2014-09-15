@@ -3,7 +3,17 @@
  */
 'use strict';
 
-require.config({
+
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
+
+var inDevelopment = getQueryString("debug") == "true";
+
+var requireConfig = {
     paths: {
         angular: 'lib/angular/angular',
         angularRoute: 'lib/angular-route/angular-route',
@@ -44,7 +54,13 @@ require.config({
     priority: [
         "angular"
     ]
-});
+};
+
+if(inDevelopment){
+    requireConfig.urlArgs = "_rv=" + new Date().getTime();
+}
+
+require.config(requireConfig);
 
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
@@ -52,7 +68,8 @@ window.name = "NG_DEFER_BOOTSTRAP!";
 require([
     'jquery',
     'angular',
-    'angularRoute'
+    'angularRoute',
+    'text'
 ], function($, angular, angularRoute) {
 
     $.ajax("/api/app/", {
@@ -73,7 +90,7 @@ require([
         require([
             'app',
             'routes'
-        ].concat(requireModuleList), function(app){
+        ].concat(requireModuleList), function(uiBootstrap, app){
             var $html = angular.element(document.getElementsByTagName('html')[0]);
 
             angular.element().ready(function() {
