@@ -9,7 +9,8 @@
  * Main module of the application.
  */
 define(['angular',
-    'css!styles/theme/default/gf'
+//    'css!styles/theme/default/gf'
+    'less!styles/theme/default/default'
     ], function(
         angular
     ){

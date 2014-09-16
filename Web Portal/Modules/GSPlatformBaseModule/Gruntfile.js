@@ -15,16 +15,20 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-compress');
 
   var fs = require('fs');
   var request = require('request');
 
-  var pkg = grunt.file.readJSON('package.json');
-
   // Configurable paths for the application
+  var bowerConf = require('./bower.json');
+
   var appConfig = {
-    app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    app  : bowerConf.appPath || 'app',
+    dist : 'dist',
+    url  : bowerConf.server,
+    name : bowerConf.name
   };
 
 
@@ -34,7 +38,6 @@ module.exports = function (grunt) {
     // Project settings
     yeoman: appConfig,
 
-	pkg : pkg,
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
@@ -375,15 +378,48 @@ module.exports = function (grunt) {
 	compress: {
 		main: {
 			options: {
-				archive: '<%= pkg.name %>.zip'
+				archive: '<%= yeoman.name %>.zip'
 			},
 			files: [
 				{expand: true, cwd: '<%= yeoman.app %>/', src: ['*/**','*.json', '*.js', '*.html']}
 			]
 		}
-	}
+	},
+
+    less: {
+      development: {
+          options: {
+              paths : ['<%= yeoman.app %>/styles/theme'],
+              sourceMap: true,
+              sourceMapBasepath : "<%= yeoman.app %>/styles/theme/default",
+              sourceMapFilename : "<%= yeoman.app %>/styles/theme/default/default.css.map"
+          },
+          files: [{
+              expand: true,
+              cwd: "<%= yeoman.app %>/styles/theme",
+              src: ["**/*.less"],
+              dest: "<%= yeoman.app %>/styles/theme",
+              ext: ".css"
+          }]
+      },
+      production: {
+          options: {
+              paths: ["<%= yeoman.app %>/styles/theme/default"],
+              cleancss: true
+          },
+          files: {
+              "path/to/result.css": "path/to/source.less"
+          }
+      }
+    }
   });
 
+
+  grunt.registerTask('default', [
+    'newer:jshint',
+    'test',
+    'build'
+  ]);
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
@@ -398,11 +434,6 @@ module.exports = function (grunt) {
       'connect:livereload',
       'watch'
     ]);
-  });
-
-  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve:' + target]);
   });
 
   grunt.registerTask('test', [
@@ -430,22 +461,16 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
-  grunt.registerTask('default', [
-    'newer:jshint',
-    'test',
-    'build'
-  ]);
-  
-  grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.registerTask('zip', ['compress']);
 
   grunt.registerTask('install', 'install dev module', function(){
-		var str = fs.realpathSync('./' + pkg.name + '.zip');
+		var str = fs.realpathSync('./' + appConfig.name + '.zip');
         console.log(str);
         var done = this.async();
 		request.post({
-                url: "http://" + pkg.url + "/api/app/install/",
+                url: "http://" + appConfig.url + "/api/app/install/",
                 qs: {localFile: str}
-            }, function(err, response, body) {
+            }, function(err, response) {
                 if(!err && response != undefined && response.statusCode == 200) {
                     console.log("Success to install module");
                 } else {
@@ -461,5 +486,6 @@ module.exports = function (grunt) {
   
   grunt.registerTask('dev', ['compress', 'install']);
 
-  grunt.registerTask('zip', ['compress']);
+  grunt.registerTask('dist', ['less:development']);
+
 };

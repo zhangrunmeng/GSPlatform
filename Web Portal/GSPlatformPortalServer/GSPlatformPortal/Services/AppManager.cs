@@ -29,7 +29,8 @@ namespace GSPlatformPortal.Services
             string dir = INSTALLED_MODULE_FOLDER + DateTime.Now.ToFileTime().ToString();
             ZipService.Decompress(zipFile, dir);
             Module module = JSONHelper.getJSONFromFile<Module>(Path.Combine(dir, CONFIG_FILE));
-            module.file = Path.GetFileName(dir);
+            if(module != null)
+                module.file = Path.GetFileName(dir);
             return module;
         }
 

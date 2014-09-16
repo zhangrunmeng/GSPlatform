@@ -153,17 +153,25 @@ angular.module("webPortalAdmin", ['ngGrid', 'ui.bootstrap', 'ngMessages'])
             me._getInfoLock = true;
             postFile(localfile, '', function(data){
                 me._getInfoLock = false;
-                if(me._isUpgrade){
-                    if(data.id != $scope.module.id){
-                        $scope.upgradeModuleId = data.id;
-                        $scope.$broadcast('error', 'sameModuleId', false);
-                        return;
-                    } else {
-                        $scope.$broadcast('error', 'sameModuleId', true);
+                if(data && typeof data == "object"){
+                    delete $scope.getModuleErrorInfo;
+                    $scope.$broadcast('error', 'getModuleInfoError', true);
+                    if(me._isUpgrade){
+                        if(data.id != $scope.module.id){
+                            $scope.upgradeModuleId = data.id;
+                            $scope.$broadcast('error', 'sameModuleId', false);
+                            return;
+                        } else {
+                            delete  $scope.upgradeModuleId;
+                            $scope.$broadcast('error', 'sameModuleId', true);
+                        }
                     }
+                    angular.copy(data, $scope.module);
+                    $scope.module.fileName = localfile.name;
+                } else if(typeof data == "string"){
+                    $scope.getModuleErrorInfo = data;
+                    $scope.$broadcast('error', 'getModuleInfoError', false);
                 }
-                angular.copy(data, $scope.module);
-                $scope.module.fileName = localfile.name;
             });
         };
 

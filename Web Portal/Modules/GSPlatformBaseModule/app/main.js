@@ -29,9 +29,11 @@ var requireConfig = {
         ngTableX: 'lib/ng-table-x/ng-table-x',
         pace: 'lib/pace/pace',
         restAngular : "lib/restangular/dist/restangular",
+        requireLess : "lib/require-less/less",
         signalR: 'lib/signalr/jquery.signalR-2.0.2',
         uiBootstrap: 'lib/angular-bootstrap/ui-bootstrap-tpls',
-        text: 'lib/requirejs-text/text'
+        text: 'lib/requirejs-text/text',
+        less: 'lib/less/dist/less-1.7.5.min'
     },
     shim: {
         'angular' : {'exports' : 'angular'},
@@ -48,7 +50,8 @@ var requireConfig = {
     },
     map: {
         '*': {
-            'css': 'lib/require-css/css' // or whatever the path to require-css is
+            'css': 'lib/require-css/css', // or whatever the path to require-css is
+            'less': 'lib/require-less/less'
         }
     },
     priority: [
@@ -62,6 +65,16 @@ if(inDevelopment){
 
 require.config(requireConfig);
 
+var less = {
+    env: "development",
+    async: false,
+    fileAsync: false,
+    poll: 1000,
+    functions: {},
+    dumpLineNumbers: "comments",
+    relativeUrls: true,
+};
+
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
 
@@ -69,7 +82,8 @@ require([
     'jquery',
     'angular',
     'angularRoute',
-    'text'
+    'text',
+    'less'
 ], function($, angular, angularRoute) {
 
     $.ajax("/api/app/", {

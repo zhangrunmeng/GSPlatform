@@ -10,6 +10,11 @@
                 <div class="col-sm-7">
                     <input class="form-control"
                            name="moduleFile" type="text" readonly value="{{module.fileName}}" spellcheck="false"/>
+                    <div ng-messages="moduleInfoForm.$error">
+                        <em ng-message="getModuleInfoError">
+                            {{getModuleErrorInfo}}
+                        </em>
+                    </div>
                 </div>
                 <div class="col-sm-1"><file-uploader class="pull-right"></file-uploader></div>
                 <div class="col-sm-1"></div>

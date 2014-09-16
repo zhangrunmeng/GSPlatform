@@ -72,7 +72,17 @@ namespace GSPlatformPortal.Controllers
                     FileInfo fileInfo = new FileInfo(file.LocalFileName);
                     module = AppManager.getModuleInfo(file.LocalFileName);
                 }
-                return Request.CreateResponse<Module>(module);
+                if (module != null)
+                {
+                    return Request.CreateResponse<Module>(module);
+                }
+                else
+                {
+                    return new HttpResponseMessage()
+                    {
+                        Content = new StringContent("Fail to get module info, check the zip file format please.")
+                    };
+                }
             }
             catch (System.Exception e)
             {
