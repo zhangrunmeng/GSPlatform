@@ -389,22 +389,22 @@ module.exports = function (grunt) {
     less: {
       development: {
           options: {
-              paths : ['<%= yeoman.app %>/styles/theme'],
-              sourceMap: true,
-              sourceMapBasepath : "<%= yeoman.app %>/styles/theme/default",
-              sourceMapFilename : "<%= yeoman.app %>/styles/theme/default/default.css.map"
+              paths : ['<%= yeoman.app %>/styles/themes'],
+              sourceMap: false,
+              sourceMapBasepath : "<%= yeoman.app %>/styles/themes/default",
+              sourceMapFilename : "<%= yeoman.app %>/styles/themes/default/default.css.map"
           },
           files: [{
               expand: true,
-              cwd: "<%= yeoman.app %>/styles/theme",
+              cwd: "<%= yeoman.app %>/styles/themes",
               src: ["**/*.less"],
-              dest: "<%= yeoman.app %>/styles/theme",
+              dest: "<%= yeoman.app %>/styles/themes/css/",
               ext: ".css"
           }]
       },
       production: {
           options: {
-              paths: ["<%= yeoman.app %>/styles/theme/default"],
+              paths: ["<%= yeoman.app %>/styles/themes"],
               cleancss: true
           },
           files: {
@@ -461,6 +461,9 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
+
+  grunt.registerTask('css', ['less:development']);
+
   grunt.registerTask('zip', ['compress']);
 
   grunt.registerTask('install', 'install dev module', function(){
@@ -481,11 +484,9 @@ module.exports = function (grunt) {
                 done();
 		    }
         );
-	}
+	 }
   );
   
-  grunt.registerTask('dev', ['compress', 'install']);
-
-  grunt.registerTask('dist', ['less:development']);
+  grunt.registerTask('dev', ['less:development', 'compress', 'install']);
 
 };

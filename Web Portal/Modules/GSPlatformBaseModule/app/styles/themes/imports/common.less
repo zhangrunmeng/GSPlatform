@@ -1,0 +1,254 @@
+/*
+ * styles defined and shared by all themes, like layouts, margins, paddings etc.
+ */
+@import "library";
+  /*
+   * Layouts
+   */
+  .square {
+    height: auto;
+    width: 100%;
+  }
+
+  .the-box {
+    padding: 15px;
+    border: @common-border;
+    position: relative;
+  }
+
+  .scrollBox {
+    overflow: auto;
+  }
+
+  .panel-footer {
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .custom-form, .custom-form-edit{
+    padding-left: 0px;
+    padding-right: 0px;
+
+    header {
+      margin: 0px;
+      padding: 6px 14px 4px;
+    }
+
+    section {
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .custom-control-1 {
+      word-wrap: break-word;
+      padding: 0 30px 0 0;
+      margin-left: 30%;
+
+      textarea[readonly] {
+        background: rgba(255,255,255,.9);
+      }
+
+      input[readonly] {
+        background: rgba(255,255,255,.9);
+      }
+    }
+
+    .custom-control-2  {
+      word-wrap: break-word;
+      margin: 0  1% ;
+
+      textarea[readonly]{
+
+      }
+
+      input[readonly] {
+
+      }
+    }
+
+    .lastRow {
+      margin-bottom: 0px;
+    }
+  }
+
+  .custom-form {
+    fieldset{
+      padding: 10px 14px 5px;
+    }
+
+    .custom-label {
+      float: left;
+      width: 25%;
+      text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #808080;
+      margin-top: 5px;
+      padding-left: 5%;
+    }
+
+    .custom-control-1 {
+      input[type='text']{
+        color:#808080;
+        font-size: 15px;
+        padding: 1px 6px;
+        cursor: default !important;
+      }
+
+      textarea {
+        color:#808080;
+        font-size: 15px;
+        height: 130px;
+        resize: none;
+        padding: 1px 6px;
+        cursor: default !important;
+      }
+    }
+
+    .custom-control-2 {
+      textarea {
+        color: #808080;
+        font-size: 15px;
+        height: 530px;
+        resize: none;
+        padding: 1px 3px;
+        cursor: default !important;
+      }
+    }
+  }
+
+  .custom-form-edit {
+    fieldset {
+      padding: 10px 14px 5px;
+      background: #fff
+    }
+
+    .custom-label {
+      float: left;
+      width: 25%;
+      text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #232323;
+      margin-top: 5px;
+      padding-left: 5%;
+    }
+
+    .custom-control-1 {
+      input[type='text']{
+        color:#232323;
+        font-size: 15px;
+        padding: 1px 6px;
+
+        &:focus{
+          border-color: #66afed;
+        }
+      }
+
+      textarea {
+        color:#232323;
+        font-size: 15px;
+        height: 165px;
+        resize: none;
+        padding: 1px 6px;
+
+        &:focus {
+          border-color: #66afed;
+        }
+      }
+    }
+
+    .custom-control-2 {
+      textarea {
+        color: #232323;
+        font-size: 15px;
+        height: 530px;
+        resize: none;
+        padding: 1px 3px;
+      }
+    }
+  }
+  .custom-panel {
+    position: relative;
+  }
+
+  /*
+   * Margins
+   */
+  .no-margin {
+    margin: 0px !important;
+  }
+  .margin-top-5 {
+    margin-top: 5px !important;
+  }
+  .margin-top-10 {
+    margin-top: 10px !important;
+  }
+  .margin-bottom-5 {
+    margin-bottom: 5px !important;
+  }
+  .margin-bottom-10 {
+    margin-bottom: 10px !important;
+  }
+  .margin-right-5 {
+    margin-right: 5px !important;
+  }
+  //enrich row margin for bootstrap .container .container-fluid
+  .container, .container-fluid{
+    .row-top {
+      margin-top: 15px;
+    }
+
+    .row-top-lg {
+      margin-top: 30px;
+    }
+
+    .row-top-sm {
+      margin-top: 10px;
+    }
+
+    .row-top-xs {
+      margin-top: 5px;
+    }
+  }
+
+  /*
+   * No border
+   */
+  .no-border, .well[class*=" bg-"].no-border {
+    border-width: 0px !important;
+  }
+
+  .no-border-transparent {
+    border-color: transparent !important;
+  }
+
+  .no-border-radius {
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+  }
+
+  .no-bottom-border {
+    border-bottom: none !important;
+  }
+
+  /* common use*/
+  .widget-icon {
+    color:  #37BC9B;
+  }
+
+  .widget-icon i[button] {
+    cursor: pointer;
+  }
+
+  .fileInput {
+    opacity: 0;
+    /* position: relative; */
+    margin-top: -20px;
+    width: 20px;
+  }

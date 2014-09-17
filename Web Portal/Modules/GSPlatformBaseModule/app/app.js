@@ -9,8 +9,12 @@
  * Main module of the application.
  */
 define(['angular',
-//    'css!styles/theme/default/gf'
-    'less!styles/theme/default/default'
+    'css!styles/themes/css/' + $theme + '/app',
+    'css!styles/themes/css/' + $theme + '/custom2',
+    'css!styles/themes/css/' + $theme + '/common',
+    //temporary support current feature, move to base in progress
+    'css!styles/themes/' + $theme + '/custom'
+//    'less!styles/theme/default/default'
     ], function(
         angular
     ){
@@ -21,6 +25,9 @@ define(['angular',
 
         return angular.module('gsPlatformClient', ['ngRoute'].concat(moduleDependencyList))
             .controller("gsPlatformController", function($rootScope, $scope, $location, $element, $window){
+                //Set global theme
+                $scope.$theme = "default";
+
                 var rendererNavMenu = function(){
                     var options = {
                         accordion: false,

@@ -1,0 +1,33 @@
+/*
+ * styles override and specified by different theme, like color, background, borders etc.
+ */
+@import "../imports/library";
+
+.app.default {
+  @import "../imports/custom";
+
+  //Customize ngGrid styles
+  div[ng-grid] {
+    &.ngGridDiv {
+      border: @common-border;
+    }
+
+    .ngTopPanel {
+      background: #8CC152;
+      color: white;
+    }
+
+    .ngRow.selected {
+      background-color: lightsteelblue !important;
+    }
+
+    .ngRow.odd {
+      background-color: #efefef;
+    }
+
+    .ngRow.even {
+      background-color: #fefefe;
+    }
+  }
+}
+

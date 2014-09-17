@@ -3,15 +3,12 @@
  */
 'use strict';
 
-
 function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]);
     return null;
 }
-
-var inDevelopment = getQueryString("debug") == "true";
 
 var requireConfig = {
     paths: {
@@ -59,6 +56,9 @@ var requireConfig = {
     ]
 };
 
+
+var inDevelopment = getQueryString("debug") == "true";
+
 if(inDevelopment){
     requireConfig.urlArgs = "_rv=" + new Date().getTime();
 }
@@ -77,6 +77,7 @@ var less = {
 
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
+window.$theme = "default";
 
 require([
     'jquery',
@@ -110,6 +111,6 @@ require([
             angular.element().ready(function() {
                 angular.resumeBootstrap([app['name']]);
             });
-        })
+        });
     });
 });
