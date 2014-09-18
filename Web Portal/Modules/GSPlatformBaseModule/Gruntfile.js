@@ -411,6 +411,22 @@ module.exports = function (grunt) {
               "path/to/result.css": "path/to/source.less"
           }
       }
+    },
+
+    compass: {                  // Task
+      dist: {                   // Target
+          options: {              // Target options
+              sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
+              cssDir: "<%= yeoman.app %>/styles/themes/default/css",
+              environment: 'production'
+          }
+      },
+      dev: {                    // Another target
+          options: {
+              sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
+              cssDir: "<%= yeoman.app %>/styles/themes/default/css"
+          }
+      }
     }
   });
 
@@ -462,8 +478,9 @@ module.exports = function (grunt) {
   ]);
 
 
-  grunt.registerTask('css', ['less:development']);
+  grunt.registerTask('css-compass', ['compass:dev']);
 
+  grunt.registerTask('css', ['less:development']);
   grunt.registerTask('zip', ['compress']);
 
   grunt.registerTask('install', 'install dev module', function(){

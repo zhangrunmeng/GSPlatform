@@ -42,7 +42,7 @@ define(['angular',
                             function(navTemplate){
                                 //add a mark [+] to a multilevel menu
                                 $element.find("aside[id='left-panel'] nav ul").html("<li>"
-                                    + "<a href='#/' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent' style='margin-left: -5px'>Home</span></a>"
+                                    + "<a href='#/' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
                                     + "</li>" + navTemplate);
                                 $element.find("li").each(function () {
                                     if ($(this).find("ul").size() != 0) {
