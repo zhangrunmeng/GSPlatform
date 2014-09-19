@@ -1,4 +1,4 @@
-<div class="container-fluid" app-container applist="installedModules">
+<div class="container-fluid">
     <div class="row bg-success">
         <div class="col-md-12">
             <h1>
@@ -7,18 +7,20 @@
             </h1>
         </div>
     </div>
-    <div class='row' ng-repeat='row in rows'>
-       <div class='col-xs-12 col-sm-6 col-md-4 col-lg-3' ng-repeat='cell in row.cells'>
-           <div class="app-item">
-               <a ng-href="{{'#/' + cell.id + '/'}}">
-                   <div>
-                       <i class="fa fa-lg fa-tasks"></i>
-                       <label class="pull-right">{{cell.name}}</label>
-                   </div>
-                   <version class="pull-right">{{'version:' + cell.version}}</version>
-                   <desc>{{cell.desc}}</desc>
-               </a>
-           </div>
-       </div>
+    <div app-container appList="installedModules">
+        <div class='row' ng-repeat='row in rows'>
+            <div class='col-xs-12 col-sm-6 col-md-4 col-lg-3' ng-repeat='cell in row.cells'>
+                <div class="app-item">
+                    <a ui-sref="{{cell.id}}">
+                        <div>
+                            <i class="fa fa-lg fa-tasks"></i>
+                            <label class="pull-right">{{cell.name}}</label>
+                        </div>
+                        <version class="pull-right">{{'version:' + cell.version}}</version>
+                        <desc>{{cell.desc}}</desc>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

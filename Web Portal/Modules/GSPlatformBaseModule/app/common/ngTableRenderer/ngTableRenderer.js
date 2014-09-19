@@ -1,9 +1,8 @@
 /**
  * Created by runmengz on 8/27/2014.
  */
-define(['angular',
-        'ngTableX'], function(angular){
-    angular.module('ngTableRenderer', ['ngTableX'])
+define(['angular'], function(angular){
+    angular.module('ngTableRenderer', [])
         .directive('ngTableRenderer', function($window, $compile, $timeout) {
 
             var trim = function(value1, value2){

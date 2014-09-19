@@ -12,7 +12,7 @@ define(['angular',
     signalRHubProxyFactory){
 
     angular.module("job.services", [])
-        .factory('Utility',function(){
+        .factory('Utility', function(){
             // job status
             var all='All';
             var running="Running";
@@ -32,8 +32,6 @@ define(['angular',
                 "Aborted":completed,
                 "NotBuilt":created
             };
-
-
 
             // menu option
             var menuOption ={
@@ -73,7 +71,8 @@ define(['angular',
                 reportTab: reportTab,
                 gitScmType:gitScmType,
                 svnScmType:svnScmType,
-                perforceScmType:perforceScmType
+                perforceScmType:perforceScmType,
+                modulePath: "modules/job/"
             };
         })
         .service('signalRHubProxy', function signalRHubProxy($injector, $rootScope, serviceUrl, Utility) {

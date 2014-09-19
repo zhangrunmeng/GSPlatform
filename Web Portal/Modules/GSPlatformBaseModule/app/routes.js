@@ -22,5 +22,4 @@ define(['angular',
             });
             $routeProvider.otherwise({redirectTo: '/'});
         }]);
-
 });

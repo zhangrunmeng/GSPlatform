@@ -6,6 +6,19 @@
 /*
  * Layouts
  */
+body, html {
+  height: 100%;
+}
+
+body {
+  &>div {
+    height: 100%;
+    &>div {
+      height: 100%;
+    }
+  }
+}
+
 .square {
   height: auto;
   width: 100%;

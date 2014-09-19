@@ -14,27 +14,25 @@ var requireConfig = {
     paths: {
         angular: 'lib/angular/angular',
         angularRoute: 'lib/angular-route/angular-route',
+        angularUIRoute : "lib/angular-ui-router/release/angular-ui-router",
         angularMocks: 'lib/angular-mocks/angular-mocks',
         angularResource: 'lib/angular-resource/angular-resource',
         angularMessage: 'lib/angular-messages/angular-messages',
         angularGrid: 'lib/angular-grid/ng-grid-2.0.13.debug',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
-        es5shim : 'lib/es5-shim/es5-shim',
         jquery : 'lib/jquery/dist/jquery',
-        json3   : 'lib/json3/lib/json3',
         lodashCompat: 'lib/lodash/dist/lodash.compat',
-        ngTableX: 'lib/ng-table-x/ng-table-x',
-        pace: 'lib/pace/pace',
         restAngular : "lib/restangular/dist/restangular",
         requireLess : "lib/require-less/less",
-        signalR: 'lib/signalr/jquery.signalR-2.0.2',
         uiBootstrap: 'lib/angular-bootstrap/ui-bootstrap-tpls',
         text: 'lib/requirejs-text/text',
-        less: 'lib/less/dist/less-1.7.5.min'
+        less: 'lib/less/dist/less-1.7.5.min',
+        ocLazyload : 'lib/oclazyload/dist/ocLazyLoad'
     },
     shim: {
         'angular' : {'exports' : 'angular'},
         'angularRoute': ['angular'],
+        'angularUIRoute': ['angular'],
         'angularMessage' : ['angular'],
         'angularGrid' : ['angular', 'jquery', 'lodashCompat'],
         'restAngular' : ['angular', 'lodashCompat'],
@@ -42,8 +40,7 @@ var requireConfig = {
             deps:['angular'],
             'exports':'angular.mock'
         },
-        'ngTableX' : ['angular'],
-        'signalR' : ['jquery']
+        'ocLazyload' : ['angular']
     },
     map: {
         '*': {
@@ -83,8 +80,10 @@ require([
     'jquery',
     'angular',
     'angularRoute',
+    'angularUIRoute',
     'text',
-    'less'
+    'less',
+    'ocLazyload'
 ], function($, angular, angularRoute) {
 
     $.ajax("/api/app/", {
@@ -98,16 +97,9 @@ require([
             }
         }
         window.$installedModules = data;
-        var requireModuleList = [];
-        angular.forEach($installedModules, function(module){
-            requireModuleList.push('modules/' + module.id + "/app");
-        });
         require([
-            'app',
-            'routes'
-        ].concat(requireModuleList), function(uiBootstrap, app){
-            var $html = angular.element(document.getElementsByTagName('html')[0]);
-
+            'app'
+        ], function(app){
             angular.element().ready(function() {
                 angular.resumeBootstrap([app['name']]);
             });

@@ -25,7 +25,8 @@ define(['angular',
                 'job.filters',
                 'job.directives',
                 'job.services'
-            ]).constant('serviceUrl','http://vhwebdevserver.eng.citrite.net')
+            ])
+            .constant('serviceUrl','http://vhwebdevserver.eng.citrite.net')
             .constant('serviceUrl2', "http://localhost:61586/")
             .config(function(RestangularProvider, serviceUrl){
                 RestangularProvider.setBaseUrl(serviceUrl+'/api/');

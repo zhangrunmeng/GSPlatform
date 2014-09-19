@@ -14,7 +14,7 @@ define(['angular',
     'css!styles/themes/css/' + $theme + '/common',
     //temporary support current feature, move to base in progress
     'css!styles/themes/' + $theme + '/custom'
-//    'less!styles/theme/default/default'
+    //'less!styles/theme/default/default'
     ], function(
         angular
     ){
@@ -23,11 +23,46 @@ define(['angular',
             moduleDependencyList.push(module.module);
         });
 
-        return angular.module('gsPlatformClient', ['ngRoute'].concat(moduleDependencyList))
-            .controller("gsPlatformController", function($rootScope, $scope, $location, $element, $window){
-                //Set global theme
-                $scope.$theme = "default";
+        return angular.module('gsPlatformClient',[
+            'ui.router',
+            'oc.lazyLoad'])
+            .config([
+                '$ocLazyLoadProvider',
+                '$urlRouterProvider',
+                '$locationProvider',
+                '$stateProvider',
+                function($ocLazyLoadProvider,
+                         $urlRouterProvider,
+                         $locationProvider,
+                         $stateProvider) {
+                    $urlRouterProvider.otherwise("");
 
+                    $ocLazyLoadProvider.config ({
+                        debug: true,
+                        jsLoader: requirejs,
+                        loadedModules: ['gsPlatformClient']
+                    });
+                    $stateProvider.state('index', {
+                        url : "",
+                        templateUrl : 'views/main.html',
+                        controller : 'appContainerCtrl'
+                    });
+                    angular.forEach($installedModules, function(module){
+                        $stateProvider.state(module.id, {
+                           url : '/' + module.id + '/',
+                           templateUrl: 'modules/' + module.id + '/main.html',
+                           resolve: {
+                               loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
+                                   return $ocLazyLoad.load({
+                                       name : module.module,
+                                       files: ['modules/' + module.id + '/app.js']
+                                   });
+                               }]
+                           }
+                        });
+                    });
+            }])
+            .controller("gsPlatformController", function($rootScope, $scope, $location, $element, $window){
                 var rendererNavMenu = function(){
                     var options = {
                         accordion: false,
@@ -36,13 +71,13 @@ define(['angular',
                         openedSign: '<em class="fa fa-minus-square-o"></em>'
                     };
 
-                    if($scope.getModulePath() != "/"){
+                    if($scope.getModulePath() != ""){
                         //render custom module nav menu
                         require(["text!" + $scope.getModulePath() + $rootScope.selectedModule.nav],
                             function(navTemplate){
                                 //add a mark [+] to a multilevel menu
                                 $element.find("aside[id='left-panel'] nav ul").html("<li>"
-                                    + "<a href='#/' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
+                                    + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
                                     + "</li>" + navTemplate);
                                 $element.find("li").each(function () {
                                     if ($(this).find("ul").size() != 0) {
@@ -123,8 +158,8 @@ define(['angular',
                 };
 
                 $rootScope.getModulePath = $scope.getModulePath = function(){
-                    if($location.url() == "/"){
-                        return "/";
+                    if($location.url() == ""){
+                        return "";
                     } else {
                         for(var i=0; i < $installedModules.length; i++){
                             var module = $installedModules[i];
@@ -132,13 +167,13 @@ define(['angular',
                                 return 'modules/' + module.id + '/';
                             }
                         }
-                        return "/";
+                        return "";
                     }
                 };
 
                 $rootScope.getSelectedModule = $scope.getSelectedModule = function(){
-                    if($location.url() == "/"){
-                        return {id : "framework", url : "/"};
+                    if($location.url() == ""){
+                        return {id : "framework", url : ""};
                     } else {
                         for(var i=0; i < $installedModules.length; i++){
                             var module = $installedModules[i];
@@ -146,14 +181,14 @@ define(['angular',
                                 return module;
                             }
                         }
-                        return null;
+                        return "";
                     }
                 };
                 initialize($location.url());
                 $scope.$watch(function(){return $location.url()}, initialize);
 
                 $scope.$contentScale = function(){
-                    return {width: $element.width(), height: $element.height()}
+                    return {width: $element.find('[id=main]').width(), height: $element.find('[id=main]').height()}
                 };
                 angular.element($window).bind('resize',function(){
                     $scope.$broadcast('updateSize', {width: $element.width(), height: $element.height() - 63});

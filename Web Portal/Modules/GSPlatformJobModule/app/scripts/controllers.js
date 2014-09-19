@@ -4,8 +4,8 @@
 define(['angular'], function(angular){
 
     angular.module("job.controllers", ['job.services'])
-        .controller('JobCreateCtrl', function($rootScope, $scope ,$element, $modal, Restangular, $injector){
-            require([$scope.getModulePath() + 'scripts/controllers/jobCreate'], function(jobCreate){
+        .controller('JobCreateCtrl', function($rootScope, $scope ,$element, $modal, Restangular, $injector, Utility){
+            require([Utility.modulePath + 'scripts/controllers/jobCreate'], function(jobCreate){
                 $injector.invoke(jobCreate, this, {
                     '$scope': $scope,
                     '$element': $element,
@@ -15,7 +15,7 @@ define(['angular'], function(angular){
             });
         })
         .controller('JobDetailCtrl', function($scope, $element, Restangular, Utility, $injector){
-            require([$scope.getModulePath() + 'scripts/controllers/jobDetail'], function(jobDetail){
+            require([Utility.modulePath + 'scripts/controllers/jobDetail'], function(jobDetail){
                 $scope.jobHistoryBuilds = [];
                 $scope.totalBuilds = $scope.jobHistoryBuilds.length;
                 $scope.jobHistoryGridOptions = {
@@ -65,7 +65,7 @@ define(['angular'], function(angular){
                 multiSelect : false
             };
 
-            require([$scope.getModulePath() + 'scripts/controllers/main'], function(mainCtrl){
+            require([Utility.modulePath + 'scripts/controllers/main'], function(mainCtrl){
                 $injector.invoke(mainCtrl, this, {
                     '$scope': $scope,
                     '$element': $element,

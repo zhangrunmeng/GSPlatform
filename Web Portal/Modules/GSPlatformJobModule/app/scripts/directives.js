@@ -1,15 +1,11 @@
 /**
  * Created by hammer on 2014/8/31.
  */
-define(['angular',
-        './directives/customMenu'], function(
-            angular,
-            customMenu
-        ){
+define(['angular'], function(angular){
             angular.module("job.directives", ['job.services'])
                 .directive('mainPanel', function ($window, $rootScope, Utility) {
                     return {
-                        templateUrl: $rootScope.getModulePath() + 'views/main.html',
+                        templateUrl: Utility.modulePath + 'views/main.html',
                         restrict: 'E',
                         /*controller:'MainCtrl',*/
                         link: function postLink(scope, element, attrs) {
@@ -40,14 +36,9 @@ define(['angular',
                         }
                     };
                 })
-                .directive('customMenu', function(Utility, $injector){
-                    return $injector.invoke(customMenu, this, {
-                        'Utility' : Utility
-                    });
-                })
-                .directive('jobDetail', function ($rootScope) {
+                .directive('jobDetail', function (Utility) {
                     return {
-                        templateUrl: $rootScope.getModulePath() + 'views/partials/jobDetail.html',
+                        templateUrl:  Utility.modulePath + 'views/partials/jobDetail.html',
                         restrict: 'E',
                         link: function postLink(scope, element, attrs) {
                             scope.scrollReport= function (){
@@ -171,9 +162,9 @@ define(['angular',
                         }
                     };
                 })
-                .directive('simpleGridPager', function($rootScope){
+                .directive('simpleGridPager', function(Utility){
                    return {
-                        templateUrl: $rootScope.getModulePath() + 'views/templates/simpleGridPager.html',
+                        templateUrl: Utility.modulePath + 'views/templates/simpleGridPager.html',
                         restrict : 'E',
                         link : function($scope, element, attrs){
 
