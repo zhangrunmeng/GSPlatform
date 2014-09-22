@@ -24,23 +24,19 @@ define(['angular',
         });
 
         return angular.module('gsPlatformClient',[
+            'restangular',
             'ui.router',
             'oc.lazyLoad'])
-            .config([
-                '$ocLazyLoadProvider',
-                '$urlRouterProvider',
-                '$locationProvider',
-                '$stateProvider',
-                function($ocLazyLoadProvider,
+            .config(function($ocLazyLoadProvider,
                          $urlRouterProvider,
                          $locationProvider,
-                         $stateProvider) {
+                         $stateProvider,
+                         RestangularProvider) {
                     $urlRouterProvider.otherwise("");
-
                     $ocLazyLoadProvider.config ({
                         debug: true,
                         jsLoader: requirejs,
-                        loadedModules: ['gsPlatformClient']
+                        loadedModules: ['gsPlatformClient', 'restangular', 'ui.router']
                     });
                     $stateProvider.state('index', {
                         url : "",
@@ -49,19 +45,25 @@ define(['angular',
                     });
                     angular.forEach($installedModules, function(module){
                         $stateProvider.state(module.id, {
-                           url : '/' + module.id + '/',
-                           templateUrl: 'modules/' + module.id + '/main.html',
-                           resolve: {
-                               loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
-                                   return $ocLazyLoad.load({
-                                       name : module.module,
-                                       files: ['modules/' + module.id + '/app.js']
-                                   });
-                               }]
-                           }
+                            url : '/' + module.id + '/',
+                            templateUrl: 'modules/' + module.id + '/main.html',
+                            resolve: {
+                                loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
+                                    if(module.serviceUrl){
+                                        RestangularProvider.setBaseUrl(module.serviceUrl);
+                                    } else {
+                                        RestangularProvider.setBaseUrl("");
+                                    }
+                                    return $ocLazyLoad.load({
+                                        name : module.module,
+                                        files: ['modules/' + module.id + '/app.js'],
+                                        cache: false
+                                    });
+                                }]
+                            }
                         });
                     });
-            }])
+            })
             .controller("gsPlatformController", function($rootScope, $scope, $location, $element, $window){
                 var rendererNavMenu = function(){
                     var options = {

@@ -79,30 +79,46 @@ window.$theme = "default";
 require([
     'jquery',
     'angular',
-    'angularRoute',
+    'restAngular',
     'angularUIRoute',
     'text',
     'less',
     'ocLazyload'
-], function($, angular, angularRoute) {
+], function($, angular) {
 
     $.ajax("/api/app/", {
         dataType : "json"
-    }).done(function( data ) {
+    }).done(function(data) {
         if(!data) return;
-        for(var i=0; i < data.length; i++){
+        for(var i=data.length-1; i >= 0; i--){
             if(data[i].id == "framework"){
                 data.splice(i, 1);
                 break;
             }
         }
-        window.$installedModules = data;
-        require([
-            'app'
-        ], function(app){
-            angular.element().ready(function() {
-                angular.resumeBootstrap([app['name']]);
-            });
-        });
+        window.$installedModules = [];
+        var count = data.length - 1;
+        var getModuleConfig = function(){
+            if(count >= 0){
+                var module = data[count];
+                require(['text!modules/' + module.id + "/config.json"], function(config){
+                    if(!config) return;
+                    try {
+                        $installedModules.push(JSON.parse(config));
+                        count --;
+                        getModuleConfig();
+                    } catch(e){
+                        console.error("Fail to parse config file for " + module.id);
+                    }
+                });
+            } else {
+                require(['app'], function(app){
+                    angular.element().ready(function() {
+                        angular.resumeBootstrap([app['name']]);
+                    });
+                });
+            }
+        }
+        getModuleConfig();
     });
 });

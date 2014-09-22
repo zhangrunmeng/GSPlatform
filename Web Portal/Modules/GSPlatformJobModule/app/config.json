@@ -4,5 +4,6 @@
     "module" : "jobManagement",
     "version" : "1.3",
     "nav" : "views/templates/navMenu.html",
-    "desc" : "Manage and monitor Jobs to check source code automatically"
+    "desc" : "Manage and monitor Jobs to check source code automatically",
+    "serviceUrl" : "http://vhwebdevserver.eng.citrite.net/api"
 }

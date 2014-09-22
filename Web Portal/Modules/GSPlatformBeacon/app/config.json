@@ -1,0 +1,9 @@
+{
+    "id" : "beacon",
+    "name" : "Beacon",
+    "module" : "beacon",
+    "version" : "1.0",
+    "nav" : "views/templates/navMenu.html",
+    "desc" : "Dashboard for code prevention",
+    "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1"
+}

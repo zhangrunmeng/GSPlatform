@@ -1,0 +1,25 @@
+/*
+ * styles override and specified by different theme, like color, background, borders etc.
+ */
+/*
+ * variables and functions
+ */
+/*
+ * styles override and shared by all themes, like layouts, margins, paddings etc.
+ */
+.app.default div[ng-grid].ngGridDiv {
+  border: 1px solid #d4d4d4;
+}
+.app.default div[ng-grid] .ngTopPanel {
+  background: #8CC152;
+  color: white;
+}
+.app.default div[ng-grid] .ngRow.selected {
+  background-color: lightsteelblue !important;
+}
+.app.default div[ng-grid] .ngRow.odd {
+  background-color: #efefef;
+}
+.app.default div[ng-grid] .ngRow.even {
+  background-color: #fefefe;
+}

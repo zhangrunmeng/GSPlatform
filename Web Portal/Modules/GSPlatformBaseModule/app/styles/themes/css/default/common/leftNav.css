@@ -1,0 +1,93 @@
+nav ul li a,
+nav ul li.open > a,
+nav ul li.open > a b {
+  color: #444 !important;
+}
+aside {
+  background: #f2f2f2;
+  border-right: 2px solid #ccc;
+}
+nav > ul > li {
+  background-color: #f2f2f2;
+  background-image: -moz-linear-gradient(top, #f9f9f9, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f9f9f9), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #f9f9f9, #f2f2f2);
+  background-image: -o-linear-gradient(top, #f9f9f9, #f2f2f2);
+  background-image: linear-gradient(to bottom, #f9f9f9, #f2f2f2);
+  border-bottom: 1px solid #DFDFDF;
+  border-top: 1px solid #FFFFFF;
+}
+nav > ul > li > a {
+  padding: 12px 10px 12px 11px;
+  font-size: 15px;
+}
+nav > ul > li > a b {
+  top: 12px;
+}
+nav > ul > li > a > i {
+  color: #058dc7;
+  font-size: 20px;
+}
+nav > ul > li.active > a:before {
+  top: 10px !important;
+}
+nav > ul > li.open {
+  border-left: 4px solid #058dc7;
+}
+nav > ul > li.open > a {
+  padding-left: 7px;
+}
+nav > ul > li.open ul li > a {
+  padding-left: 38px;
+}
+nav > ul > li.open > ul > li > a {
+  padding-left: 38px;
+}
+nav ul li.active > a:before {
+  top: 6px;
+  color: #bbb;
+}
+nav ul li.active > a {
+  font-weight: bold;
+}
+nav ul ul {
+  background: none;
+}
+nav ul ul li > a {
+  font-size: 13px;
+}
+nav ul li a:active {
+  background: #c9c9c9 !important;
+}
+nav ul li a:focus {
+  color: #c9c9c9;
+}
+nav ul li a:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #ffffff;
+  text-decoration: none;
+}
+nav > ul ul li::before,
+nav > ul > li > ul::before {
+  border: none;
+}
+.inbox-footer,
+.superbox-show {
+  background: #3D3B39;
+}
+.minified nav > ul > li {
+  border-bottom: 1px solid #E9E4E4;
+  border-top: 1px solid #FFFFFF;
+}
+.minified nav > ul > li.open ul li > a {
+  padding-left: 14px;
+}
+.minified nav > ul > li > ul,
+.minified nav > ul > li > ul > li > ul > li {
+  background-color: rgba(69, 69, 69, 0.9);
+}
+.minified nav ul li a,
+.minified nav ul li.open  > a,
+.minified nav ul li.open  > a b {
+  color: #fff !important;
+}

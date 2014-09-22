@@ -2,7 +2,6 @@
  * Created by hammer on 2014/8/31.
  */
 define(['angular',
-       'restAngular',
        'uiBootstrap',
        'angularMessage',
        'angularGrid',
@@ -16,7 +15,6 @@ define(['angular',
     ], function(angular){
         return angular
             .module('jobManagement', [
-                'restangular',
                 'ui.bootstrap',
                 'ngMessages',
                 'ngGrid',
@@ -26,9 +24,5 @@ define(['angular',
                 'job.directives',
                 'job.services'
             ])
-            .constant('serviceUrl','http://vhwebdevserver.eng.citrite.net')
-            .constant('serviceUrl2', "http://localhost:61586/")
-            .config(function(RestangularProvider, serviceUrl){
-                RestangularProvider.setBaseUrl(serviceUrl+'/api/');
-            });
+            .constant('serviceUrl','http://vhwebdevserver.eng.citrite.net');
     });
