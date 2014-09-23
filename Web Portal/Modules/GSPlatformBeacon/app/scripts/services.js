@@ -10,11 +10,18 @@
 
 define(['angular'], function(angular){
     angular.module("beacon.services", [])
-        .factory('BeaconUtil', function(){
+        .factory('beacon.utility', function(){
+            return {
+                modulePath : "modules/beacon/"
+            };
+        })
+        .provider('beacon', function(){
             return {
                 modulePath : "modules/beacon/",
-                serviceUrl : "http://nkgbeacon.eng.citrite.net/api/1/"
-            };
+                $get : function(){
+                    return {modulePath : "modules/beacon/"};
+                }
+            }
         });
 
 });

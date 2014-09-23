@@ -9,6 +9,7 @@
  * Main module of the application.
  */
 define(['angular',
+    'common/utils/Rest',
     'css!styles/themes/css/' + $theme + '/app',
     'css!styles/themes/css/' + $theme + '/custom2',
     'css!styles/themes/css/' + $theme + '/common',
@@ -16,27 +17,30 @@ define(['angular',
     'css!styles/themes/' + $theme + '/custom'
     //'less!styles/theme/default/default'
     ], function(
-        angular
+        angular,
+        Rest
     ){
-        var moduleDependencyList = [];
-        angular.forEach($installedModules, function(module){
-            moduleDependencyList.push(module.module);
-        });
-
         return angular.module('gsPlatformClient',[
-            'restangular',
             'ui.router',
-            'oc.lazyLoad'])
-            .config(function($ocLazyLoadProvider,
+            'oc.lazyLoad',
+            Rest.name])
+            .config([
+                '$ocLazyLoadProvider',
+                '$urlRouterProvider',
+                '$locationProvider',
+                '$stateProvider',
+                'RestUtilProvider',
+                function($ocLazyLoadProvider,
                          $urlRouterProvider,
                          $locationProvider,
                          $stateProvider,
-                         RestangularProvider) {
+                         RestUtilProvider) {
                     $urlRouterProvider.otherwise("");
                     $ocLazyLoadProvider.config ({
                         debug: true,
+                        events: true,
                         jsLoader: requirejs,
-                        loadedModules: ['gsPlatformClient', 'restangular', 'ui.router']
+                        loadedModules: ['gsPlatformClient']
                     });
                     $stateProvider.state('index', {
                         url : "",
@@ -50,9 +54,9 @@ define(['angular',
                             resolve: {
                                 loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
                                     if(module.serviceUrl){
-                                        RestangularProvider.setBaseUrl(module.serviceUrl);
+                                        RestUtilProvider.setBaseUrl(module.serviceUrl);
                                     } else {
-                                        RestangularProvider.setBaseUrl("");
+                                        RestUtilProvider.setBaseUrl("");
                                     }
                                     return $ocLazyLoad.load({
                                         name : module.module,
@@ -63,84 +67,95 @@ define(['angular',
                             }
                         });
                     });
-            })
-            .controller("gsPlatformController", function($rootScope, $scope, $location, $element, $window){
-                var rendererNavMenu = function(){
-                    var options = {
-                        accordion: false,
-                        speed: 235,
-                        closedSign: '<em class="fa fa-plus-square-o"></em>',
-                        openedSign: '<em class="fa fa-minus-square-o"></em>'
-                    };
-
-                    if($scope.getModulePath() != ""){
+            }])
+            .controller("gsPlatformController",[
+                '$rootScope',
+                '$scope',
+                '$location',
+                '$element',
+                '$window',
+                function($rootScope,
+                         $scope,
+                         $location,
+                         $element,
+                         $window){
+                var rendererNavMenu = function(force){
+                    if($scope.getModulePath() != "" || force){
                         //render custom module nav menu
-                        require(["text!" + $scope.getModulePath() + $rootScope.selectedModule.nav],
+                        var navpath = $scope.getModulePath() + $scope.selectedModule.nav;
+                        if(force){
+                            navpath = force;
+                        }
+                        require(["text!" + navpath],
                             function(navTemplate){
-                                //add a mark [+] to a multilevel menu
-                                $element.find("aside[id='left-panel'] nav ul").html("<li>"
+                                $scope.$broadcast('onNavLoaded', "<li>"
                                     + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
                                     + "</li>" + navTemplate);
-                                $element.find("li").each(function () {
-                                    if ($(this).find("ul").size() != 0) {
-                                        //add the multilevel sign next to the link
-                                        $(this).find("a:first").append("<b class='collapse-sign'>" + options.closedSign + "</b>");
 
-                                        //avoid jumping to the top of the page when the href is an #
-                                        if ($(this).find("a:first").attr('href') == "#") {
-                                            $(this).find("a:first").click(function () {
-                                                return false;
-                                            });
-                                        }
-                                    }
-                                });
-
-                                //open active level
-                                $element.find("li.active").each(function () {
-                                    $(this).parents("ul").slideDown(options.speed);
-                                    $(this).parents("ul").parent("li").find("b:first").html(options.openedSign);
-                                    $(this).parents("ul").parent("li").addClass("open")
-                                });
-                                $element.find("li a").click(function () {
-                                    if ($(this).parent().find("ul").size() != 0) {
-                                        if (options.accordion) {
-                                            //Do nothing when the list is open
-                                            if (!$(this).parent().find("ul").is(':visible')) {
-                                                var parents = $(this).parent().parents("ul");
-                                                var visible = element.find("ul:visible");
-                                                visible.each(function (visibleIndex) {
-                                                    var close = true;
-                                                    parents.each(function (parentIndex) {
-                                                        if (parents[parentIndex] == visible[visibleIndex]) {
-                                                            close = false;
-                                                            return false;
-                                                        }
-                                                    });
-                                                    if (close) {
-                                                        if ($(this).parent().find("ul") != visible[visibleIndex]) {
-                                                            $(visible[visibleIndex]).slideUp(options.speed, function () {
-                                                                $(this).parent("li").find("b:first").html(options.closedSign);
-                                                                $(this).parent("li").removeClass("open");
-                                                            });
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }// end if
-                                        if ($(this).parent().find("ul:first").is(":visible") && !$(this).parent().find("ul:first").hasClass("active")) {
-                                            $(this).parent().find("ul:first").slideUp(options.speed, function () {
-                                                $(this).parent("li").removeClass("open");
-                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.closedSign);
-                                            });
-                                        } else {
-                                            $(this).parent().find("ul:first").slideDown(options.speed, function () {
-                                                /*$(this).effect("highlight", {color : '#616161'}, 500); - disabled due to CPU clocking on phones*/
-                                                $(this).parent("li").addClass("open");
-                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.openedSign);
-                                            });
-                                        } // end else
-                                    } // end if
-                                });
+//                                //add a mark [+] to a multilevel menu
+//                                $element.find("aside[id='left-panel'] nav ul").html("<li>"
+//                                    + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
+//                                    + "</li>" + navTemplate);
+//                                $element.find("li").each(function () {
+//                                    if ($(this).find("ul").size() != 0) {
+//                                        //add the multilevel sign next to the link
+//                                        $(this).find("a:first").append("<b class='collapse-sign'>" + options.closedSign + "</b>");
+//
+//                                        //avoid jumping to the top of the page when the href is an #
+//                                        if ($(this).find("a:first").attr('href') == "#") {
+//                                            $(this).find("a:first").click(function () {
+//                                                return false;
+//                                            });
+//                                        }
+//                                    }
+//                                });
+//
+//                                //open active level
+//                                $element.find("li.active").each(function () {
+//                                    $(this).parents("ul").slideDown(options.speed);
+//                                    $(this).parents("ul").parent("li").find("b:first").html(options.openedSign);
+//                                    $(this).parents("ul").parent("li").addClass("open")
+//                                });
+//                                $element.find("li a").click(function () {
+//                                    if ($(this).parent().find("ul").size() != 0) {
+//                                        if (options.accordion) {
+//                                            //Do nothing when the list is open
+//                                            if (!$(this).parent().find("ul").is(':visible')) {
+//                                                var parents = $(this).parent().parents("ul");
+//                                                var visible = element.find("ul:visible");
+//                                                visible.each(function (visibleIndex) {
+//                                                    var close = true;
+//                                                    parents.each(function (parentIndex) {
+//                                                        if (parents[parentIndex] == visible[visibleIndex]) {
+//                                                            close = false;
+//                                                            return false;
+//                                                        }
+//                                                    });
+//                                                    if (close) {
+//                                                        if ($(this).parent().find("ul") != visible[visibleIndex]) {
+//                                                            $(visible[visibleIndex]).slideUp(options.speed, function () {
+//                                                                $(this).parent("li").find("b:first").html(options.closedSign);
+//                                                                $(this).parent("li").removeClass("open");
+//                                                            });
+//                                                        }
+//                                                    }
+//                                                });
+//                                            }
+//                                        }// end if
+//                                        if ($(this).parent().find("ul:first").is(":visible") && !$(this).parent().find("ul:first").hasClass("active")) {
+//                                            $(this).parent().find("ul:first").slideUp(options.speed, function () {
+//                                                $(this).parent("li").removeClass("open");
+//                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.closedSign);
+//                                            });
+//                                        } else {
+//                                            $(this).parent().find("ul:first").slideDown(options.speed, function () {
+//                                                /*$(this).effect("highlight", {color : '#616161'}, 500); - disabled due to CPU clocking on phones*/
+//                                                $(this).parent("li").addClass("open");
+//                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.openedSign);
+//                                            });
+//                                        } // end else
+//                                    } // end if
+//                                });
                             });
                     } else {
                         $element.find("aside[id='left-panel'] nav ul").html("");
@@ -151,7 +166,9 @@ define(['angular',
                     if(newvalue !== oldvalue){
                         $scope.modulePath = $rootScope.modulePath = $scope.getModulePath();
                         $scope.selectedModule = $rootScope.selectedModule = $scope.getSelectedModule();
-                        rendererNavMenu();
+                        if(newvalue == ""){
+                            rendererNavMenu();
+                        }
                     }
                 };
 
@@ -187,6 +204,16 @@ define(['angular',
                     }
                 };
                 initialize($location.url());
+                var onModuleLoaded = function(e, module) {
+                    for(var i=0; i < $installedModules.length; i++){
+                        if(module == $installedModules[i].module){
+                            rendererNavMenu('modules/' + $installedModules[i].id + '/' + $installedModules[i].nav);
+                            break;
+                        }
+                    }
+                }
+                $scope.$on('ocLazyLoad.moduleLoaded', onModuleLoaded);
+                $scope.$on('ocLazyLoad.moduleReloaded', onModuleLoaded);
                 $scope.$watch(function(){return $location.url()}, initialize);
 
                 $scope.$contentScale = function(){
@@ -199,10 +226,10 @@ define(['angular',
                     $scope.selectedModule = module;
                     $rootScope.selectedModule = module;
                 };
-            })
-            .controller("appContainerCtrl", function($scope){
+            }])
+            .controller("appContainerCtrl", ['$scope', function($scope){
                 $scope.installedModules =  $installedModules || [];
-            })
+            }])
             .directive("appContainer", function(){
                 return {
                     restrict : 'A',
@@ -229,6 +256,88 @@ define(['angular',
                         initialize(scope[attrs.applist]);
                     }
                 };
-            });
+            })
+            .directive("dynNav", ['$compile', function($compile){
+                return {
+                    restrict : 'A',
+                    scope : false,
+                    link : function(scope, element, attrs){
+                        var options = {
+                            accordion: false,
+                            speed: 235,
+                            closedSign: '<em class="fa fa-plus-square-o"></em>',
+                            openedSign: '<em class="fa fa-minus-square-o"></em>'
+                        };
+
+                        scope.$on('onNavLoaded', function(evt, template){
+                            var linkFn = $compile(template);
+                            var content = linkFn(scope);
+                            element.find("nav ul").append(content);
+
+                            //add a mark [+] to a multilevel menu
+                            element.find("li").each(function () {
+                                if ($(this).find("ul").size() != 0) {
+                                    //add the multilevel sign next to the link
+                                    $(this).find("a:first").append("<b class='collapse-sign'>" + options.closedSign + "</b>");
+
+                                    //avoid jumping to the top of the page when the href is an #
+                                    if ($(this).find("a:first").attr('href') == "#") {
+                                        $(this).find("a:first").click(function () {
+                                            return false;
+                                        });
+                                    }
+                                }
+                            });
+
+                            //open active level
+                            element.find("li.active").each(function () {
+                                $(this).parents("ul").slideDown(options.speed);
+                                $(this).parents("ul").parent("li").find("b:first").html(options.openedSign);
+                                $(this).parents("ul").parent("li").addClass("open")
+                            });
+                            element.find("li a").click(function () {
+                                if ($(this).parent().find("ul").size() != 0) {
+                                    if (options.accordion) {
+                                        //Do nothing when the list is open
+                                        if (!$(this).parent().find("ul").is(':visible')) {
+                                            var parents = $(this).parent().parents("ul");
+                                            var visible = element.find("ul:visible");
+                                            visible.each(function (visibleIndex) {
+                                                var close = true;
+                                                parents.each(function (parentIndex) {
+                                                    if (parents[parentIndex] == visible[visibleIndex]) {
+                                                        close = false;
+                                                        return false;
+                                                    }
+                                                });
+                                                if (close) {
+                                                    if ($(this).parent().find("ul") != visible[visibleIndex]) {
+                                                        $(visible[visibleIndex]).slideUp(options.speed, function () {
+                                                            $(this).parent("li").find("b:first").html(options.closedSign);
+                                                            $(this).parent("li").removeClass("open");
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }// end if
+                                    if ($(this).parent().find("ul:first").is(":visible") && !$(this).parent().find("ul:first").hasClass("active")) {
+                                        $(this).parent().find("ul:first").slideUp(options.speed, function () {
+                                            $(this).parent("li").removeClass("open");
+                                            $(this).parent("li").find("b:first").delay(options.speed).html(options.closedSign);
+                                        });
+                                    } else {
+                                        $(this).parent().find("ul:first").slideDown(options.speed, function () {
+                                            /*$(this).effect("highlight", {color : '#616161'}, 500); - disabled due to CPU clocking on phones*/
+                                            $(this).parent("li").addClass("open");
+                                            $(this).parent("li").find("b:first").delay(options.speed).html(options.openedSign);
+                                        });
+                                    } // end else
+                                } // end if
+                            });
+                        });
+                    }
+                }
+            }]);
     });
 

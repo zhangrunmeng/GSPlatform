@@ -22,17 +22,8 @@
     <!-- endbuild -->
 </head>
   <body ng-class="$theme!=undefined?'app ' + $theme:'app default'">
-        <!--div ng-controller="gsPlatformController" style="width: 100%; height: 100%">
-          <div>
-              <ul class="nav nav-pills pull-right">
-                  <li ng-repeat="module in $installedModules" ng-class="{true: 'active', false: 'inactive'}[selectedModule == module.id]">
-                      <a ng-href="{{'#/' + module.id}}" ng-click="selectModule(module)">{{module.name}}</a>
-                  </li>
-              </ul>
-              <h3 class="text-muted">GS Platform</h3>
-          </div-->
         <div ng-controller="gsPlatformController" class="minified">
-           <aside id="left-panel" role="aside">
+           <aside id="left-panel" role="aside" dyn-nav>
                <nav>
                    <ul></ul>
                </nav>
