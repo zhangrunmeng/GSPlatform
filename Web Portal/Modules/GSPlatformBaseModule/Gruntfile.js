@@ -16,6 +16,7 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-compress');
 
   var fs = require('fs');
@@ -479,8 +480,8 @@ module.exports = function (grunt) {
 
 
   grunt.registerTask('css-compass', ['compass:dev']);
-
   grunt.registerTask('css', ['less:development']);
+
   grunt.registerTask('zip', ['compress']);
 
   grunt.registerTask('install', 'install dev module', function(){

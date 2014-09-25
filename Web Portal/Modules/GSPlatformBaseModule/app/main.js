@@ -20,7 +20,13 @@ var requireConfig = {
         angularMessage: 'lib/angular-messages/angular-messages',
         angularGrid: 'lib/angular-grid/ng-grid-2.0.13.debug',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
+        highcharts : 'lib/highcharts/highcharts.src',
+        'hc-drilldown' : 'lib/highcharts/modules/drilldown.src',
+        'hc-data' : 'lib/highcharts/modules/data.src',
+        hc3d : 'lib/highcharts/highcharts-3d.src',
+        hcmore : 'lib/highcharts/highcharts-more.src',
         jquery : 'lib/jquery/dist/jquery',
+        jqueryui : "lib/jquery-ui/jquery-ui",
         lodashCompat: 'lib/lodash/dist/lodash.compat',
         restAngular : "lib/restangular/dist/restangular",
         requireLess : "lib/require-less/less",
@@ -40,7 +46,12 @@ var requireConfig = {
             deps:['angular'],
             'exports':'angular.mock'
         },
-        'ocLazyload' : ['angular']
+        'ocLazyload' : ['angular'],
+        'highcharts' : ['jquery'],
+        'hc3d' : ['highcharts'],
+        'hcmore' : ['highcharts'],
+        'hc-drilldown' : ['highcharts'],
+        'hc-data' : ['highcharts']
     },
     map: {
         '*': {
@@ -78,13 +89,18 @@ window.$theme = "default";
 
 require([
     'jquery',
+    'jqueryui',
     'angular',
     'restAngular',
     'angularUIRoute',
     'text',
     'less',
-    'ocLazyload'
-], function($, angular) {
+    'ocLazyload',
+    'highcharts',
+    'hcmore',
+    'hc-drilldown',
+    'hc-data'
+], function($, jqueryui, angular) {
 
     $.ajax("/api/app/", {
         dataType : "json"
@@ -102,9 +118,9 @@ require([
             if(count >= 0){
                 var module = data[count];
                 require(['text!modules/' + module.id + "/config.json"], function(config){
-                    if(!config) return;
                     try {
-                        $installedModules.push(JSON.parse(config));
+                        if(config)
+                            $installedModules.push(JSON.parse(config));
                         count --;
                         getModuleConfig();
                     } catch(e){

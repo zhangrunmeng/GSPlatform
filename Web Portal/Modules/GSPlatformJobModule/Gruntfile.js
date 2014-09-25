@@ -15,15 +15,20 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-contrib-compress');
+
   var fs = require('fs');
   var request = require('request');
 
-  var pkg = grunt.file.readJSON('package.json');
-
-    // Configurable paths for the application
+  // Configurable paths for the application
+  var bowerConf = require('./bower.json');
   var appConfig = {
-    app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+      app  : bowerConf.appPath || 'app',
+      dist : 'dist',
+      url  : bowerConf.server,
+      name : bowerConf.name
   };
 
   // Define the configuration for all the tasks
@@ -32,7 +37,6 @@ module.exports = function (grunt) {
     // Project settings
     yeoman: appConfig,
 
-    pkg : pkg,
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
@@ -366,13 +370,56 @@ module.exports = function (grunt) {
     compress: {
       main: {
           options: {
-              archive: '<%= pkg.name %>.zip'
+              archive: '<%= yeoman.name %>.zip'
           },
           files: [
               {expand: true, cwd: '<%= yeoman.app %>/', src: ['*/**','*.json', '*.js', '*.html']}
           ]
       }
-    }
+    },
+
+  less: {
+      development: {
+          options: {
+              paths : ['<%= yeoman.app %>/styles/themes'],
+              sourceMap: false,
+              sourceMapBasepath : "<%= yeoman.app %>/styles/themes/default",
+              sourceMapFilename : "<%= yeoman.app %>/styles/themes/default/default.css.map"
+          },
+          files: [{
+              expand: true,
+              cwd: "<%= yeoman.app %>/styles/themes",
+              src: ["**/*.less"],
+              dest: "<%= yeoman.app %>/styles/themes/css/",
+              ext: ".css"
+          }]
+      },
+      production: {
+          options: {
+              paths: ["<%= yeoman.app %>/styles/themes"],
+              cleancss: true
+          },
+          files: {
+              "path/to/result.css": "path/to/source.less"
+          }
+      }
+  },
+
+  compass: {                  // Task
+      dist: {                   // Target
+          options: {              // Target options
+              sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
+              cssDir: "<%= yeoman.app %>/styles/themes/default/css",
+              environment: 'production'
+          }
+      },
+      dev: {                    // Another target
+          options: {
+              sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
+              cssDir: "<%= yeoman.app %>/styles/themes/default/css"
+          }
+      }
+  }
   });
 
 
@@ -428,32 +475,32 @@ module.exports = function (grunt) {
   ]);
 
 
-  //Add tasks for module dev and debug
-  grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.registerTask('css-compass', ['compass:dev']);
+  grunt.registerTask('css', ['less:development']);
+
+  grunt.registerTask('zip', ['compress']);
 
   grunt.registerTask('install', 'install dev module', function(){
-    var str = fs.realpathSync('./' + pkg.name + '.zip');
-    console.log(str);
-    var done = this.async();
-    request.post({
-            url: "http://" + pkg.url + "/api/app/install/",
-            qs: {localFile: str}
-        }, function(err, response, body) {
-            if(!err && response != undefined && response.statusCode == 200) {
-                console.log("Success to install module");
-            } else {
-                var code = "unknown";
-                if(response) code = response.statusCode;
-                console.log('Fail to install module ' + err + ', code: ' + code);
+        var str = fs.realpathSync('./' + appConfig.name + '.zip');
+        console.log(str);
+        var done = this.async();
+        request.post({
+                url: "http://" + appConfig.url + "/api/app/install/",
+                qs: {localFile: str}
+            }, function(err, response) {
+                if(!err && response != undefined && response.statusCode == 200) {
+                    console.log("Success to install module");
+                } else {
+                    var code = "unknown";
+                    if(response) code = response.statusCode;
+                    console.log('Fail to install module ' + err + ', code: ' + code);
+                }
+                done();
             }
-            done();
-        }
-    );
+        );
     }
   );
 
-  grunt.registerTask('dev', ['compress', 'install']);
-
-  grunt.registerTask('zip', ['compress']);
+  grunt.registerTask('dev', ['less:development', 'compress', 'install']);
 
 };

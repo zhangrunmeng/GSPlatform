@@ -1,5 +1,6 @@
 {
   "name": "gsPlatformJob",
+  "server": "localhost:49824",
   "version": "0.0.0",
   "dependencies": {
     "signalr": "2.0.2"

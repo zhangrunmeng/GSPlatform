@@ -9,7 +9,7 @@ define(['angular'], function(angular){
         .provider('RestUtil', ['RestangularProvider', function(RestangularProvider){
             this.setBaseUrl = function(url){
                 me._baseUrl = /\/$/.test(url)
-                    ? url.substring(0, newBaseUrl.length-1)
+                    ? url.substring(0, url.length-1)
                     : url;
                 RestangularProvider.setBaseUrl(url);
             };

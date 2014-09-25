@@ -11,7 +11,8 @@ define(['angular',
        './scripts/directives',
        './scripts/filters',
        './lib/signalr/jquery.signalR-2.0.2',
-       'css!./styles/themes/' + $theme + '/app'
+       'css!./styles/themes/css/' + $theme + '/app',
+       'css!./styles/themes/css/' + $theme + '/custom'
     ], function(angular){
         return angular
             .module('jobManagement', [

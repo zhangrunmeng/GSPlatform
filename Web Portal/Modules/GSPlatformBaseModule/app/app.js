@@ -11,19 +11,17 @@
 define(['angular',
     'common/utils/Rest',
     'css!styles/themes/css/' + $theme + '/app',
-    'css!styles/themes/css/' + $theme + '/custom2',
-    'css!styles/themes/css/' + $theme + '/common',
-    //temporary support current feature, move to base in progress
-    'css!styles/themes/' + $theme + '/custom'
+    'css!styles/themes/css/' + $theme + '/custom',
+    'css!styles/themes/css/' + $theme + '/common'
     //'less!styles/theme/default/default'
     ], function(
         angular,
-        Rest
+        rest
     ){
         return angular.module('gsPlatformClient',[
             'ui.router',
             'oc.lazyLoad',
-            Rest.name])
+            rest.name])
             .config([
                 '$ocLazyLoadProvider',
                 '$urlRouterProvider',
@@ -79,14 +77,10 @@ define(['angular',
                          $location,
                          $element,
                          $window){
-                var rendererNavMenu = function(force){
-                    if($scope.getModulePath() != "" || force){
+                var rendererNavMenu = function(){
+                    if($scope.modulePath != ""){
                         //render custom module nav menu
-                        var navpath = $scope.getModulePath() + $scope.selectedModule.nav;
-                        if(force){
-                            navpath = force;
-                        }
-                        require(["text!" + navpath],
+                        require(["text!" + $scope.modulePath + $scope.selectedModule.nav],
                             function(navTemplate){
                                 $scope.$broadcast('onNavLoaded', "<li>"
                                     + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
@@ -163,12 +157,10 @@ define(['angular',
                 }
 
                 var initialize = function(newvalue, oldvalue) {
-                    if(newvalue !== oldvalue){
-                        $scope.modulePath = $rootScope.modulePath = $scope.getModulePath();
-                        $scope.selectedModule = $rootScope.selectedModule = $scope.getSelectedModule();
-                        if(newvalue == ""){
-                            rendererNavMenu();
-                        }
+                    if(newvalue !== oldvalue && newvalue == ""){
+                        $scope.modulePath = $rootScope.modulePath = "";
+                        $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
+                        rendererNavMenu();
                     }
                 };
 
@@ -203,10 +195,13 @@ define(['angular',
                         return "";
                     }
                 };
+
                 initialize($location.url());
                 var onModuleLoaded = function(e, module) {
                     for(var i=0; i < $installedModules.length; i++){
                         if(module == $installedModules[i].module){
+                            $scope.modulePath = $rootScope.modulePath = 'modules/' + $installedModules[i].id + "/"
+                            $scope.selectedModule = $rootScope.selectedModule = $installedModules[i];
                             rendererNavMenu('modules/' + $installedModules[i].id + '/' + $installedModules[i].nav);
                             break;
                         }
@@ -340,4 +335,3 @@ define(['angular',
                 }
             }]);
     });
-

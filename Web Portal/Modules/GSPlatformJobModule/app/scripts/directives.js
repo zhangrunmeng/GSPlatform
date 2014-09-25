@@ -1,8 +1,8 @@
 /**
  * Created by hammer on 2014/8/31.
  */
-define(['angular'], function(angular){
-            angular.module("job.directives", ['job.services'])
+define(['angular', 'common/components/simpleGridPager'], function(angular, pager){
+            angular.module("job.directives", ['job.services', pager.name])
                 .directive('mainPanel', function ($window, $rootScope, Utility) {
                     return {
                         templateUrl: Utility.modulePath + 'views/main.html',
@@ -161,51 +161,5 @@ define(['angular'], function(angular){
                             element.find('input[type=file]').bind('change',scope.changeConfigFile);
                         }
                     };
-                })
-                .directive('simpleGridPager', function(Utility){
-                   return {
-                        templateUrl: Utility.modulePath + 'views/templates/simpleGridPager.html',
-                        restrict : 'E',
-                        link : function($scope, element, attrs){
-
-                            $scope.maxPages = function () {
-                                if($scope[attrs.total] === 0) {
-                                    return 1;
-                                }
-                                return Math.ceil($scope[attrs.total] / $scope[attrs.pagingOptions].pageSize);
-                            }
-
-                            $scope.togglePage = function(step){
-                                var page = $scope[attrs.pagingOptions].currentPage;
-                                if(step < 0){
-                                    $scope[attrs.pagingOptions].currentPage = Math.max(page + step, 1);
-                                } else {
-                                    if ($scope[attrs.total] > 0) {
-                                        $scope[attrs.pagingOptions].currentPage = Math.min(page + step, $scope.maxPages());
-                                    } else {
-                                        $scope[attrs.pagingOptions].currentPage++;
-                                    }
-                                }
-                            }
-
-                            $scope.$watch(attrs.pagingOptions, function(newvalue, oldvalue){
-                                if(newvalue !== oldvalue && (newvalue.currentPage != oldvalue.currentPage)){
-                                    updatePagingInfo();
-                                }
-                            }, true);
-
-                            $scope.$watch(attrs.total, function(newvalue, oldvalue){
-                                if(newvalue !== oldvalue){
-                                    updatePagingInfo();
-                                }
-                            }, true);
-
-                            var updatePagingInfo = function(){
-                                $scope.pageDisplayInfo = 'Showing ' + ($scope[attrs.total] > 0 ? (($scope[attrs.pagingOptions].currentPage - 1) * $scope[attrs.pagingOptions].pageSize + 1) : 0) + ' to '
-                                    + Math.min($scope[attrs.pagingOptions].currentPage * $scope[attrs.pagingOptions].pageSize, $scope.totalJobs) + ' of total ' + $scope[attrs.total] + ' Jobs';
-                            }
-                        }
-                   }
                 });
-
         });

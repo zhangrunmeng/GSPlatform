@@ -4,6 +4,6 @@
     "module" : "beacon",
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
-    "desc" : "Dashboard for code prevention",
+    "desc" : "A dashboard to monitor code analyze results",
     "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1"
 }
