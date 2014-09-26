@@ -3,30 +3,34 @@
         <div class="col-lg-8 col-lg-offset-2">
             <tabset justified="true">
                 <tab heading="Predefined Groups">
-                    <accordion close-others="false">
-                        <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroups">
-                            <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
-                                <div class="repo-item">
-                                    <div class="repo">{{repository.shortname}}</div>
-                                    <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                    <div style="margin-top: 30px">
+                        <accordion close-others="false">
+                            <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroupsList">
+                                <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
+                                    <div class="repo-item">
+                                        <div class="repo">{{repository.shortname}}</div>
+                                        <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </accordion-group>
-                    </accordion>
+                            </accordion-group>
+                        </accordion>
+                    </div>
                 </tab>
                 <tab heading="Customize Groups">
-                    <div class="container-fluid">
+                    <div class="container-fluid" style="margin-top: 30px">
                         <div class="row">
-                            <div class="pull-right">
-                                <span class="widget-icon" ng-hide="configEdit" ng-click="configEdit=!configEdit">
-                                <i class="btn btn-primary fa fa-edit" title="edit"></i></span>
-                                <span class="widget-icon" ng-show="configEdit" ng-click="configEdit=!configEdit">
-                                <i class="btn btn-primary fa fa-save" title="save"></i></span>
+                            <div class="col-lg-12">
+                                <div class="pull-right">
+                                    <span class="widget-icon" ng-hide="configEdit" ng-click="configEdit=!configEdit">
+                                    <i class="btn btn-primary fa fa-edit" title="edit"></i></span>
+                                    <span class="widget-icon" ng-show="configEdit" ng-click="configEdit=!configEdit">
+                                    <i class="btn btn-primary fa fa-save" title="save"></i></span>
+                                </div>
                             </div>
                         </div>
-                        <div ng-hide="configEdit" class="row">
+                        <div ng-hide="configEdit" class="row" style="margin-top: 20px">
                             <accordion close-others="false">
-                                <accordion-group heading="{{group.name}}" ng-repeat="group in myGroups">
+                                <accordion-group heading="{{group.name}}" ng-repeat="group in myGroupsList">
                                     <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
                                         <div class="repo-item">
                                             <div class="repo">{{repository.shortname}}</div>
@@ -36,12 +40,18 @@
                                 </accordion-group>
                             </accordion>
                         </div>
-                        <div ng-show="configEdit" class="row">
+                        <div ng-show="configEdit" class="row" style="margin-top: 20px">
                             <div class="col-lg-4">
                                 <accordion close-others="false">
-                                    <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroups" data-jqyoui-options="{revert: 'invalid'}" data-drag="true" jqyoui-draggable="{animate:true}">
+                                    <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroupsList"
+                                                     data-jqyoui-options="{revert:'invalid',helper:'clone'}"
+                                                     data-drag="true"
+                                                     jqyoui-draggable="{placeholder:'keep',animate:true}">
                                         <div ng-repeat="repository in group.repositories">
-                                            <div class="repo-sm-item" data-jqyoui-options="{revert: 'invalid'}" data-drag="true" jqyoui-draggable="{animate:true}">
+                                            <div class="repo-sm-item"
+                                                 data-jqyoui-options="{revert:'invalid',helper:'clone'}"
+                                                 data-drag="true"
+                                                 jqyoui-draggable="{placeholder:'keep',animate:true}">
                                                 <div class="repo">{{repository.shortname}}</div>
                                             </div>
                                         </div>
@@ -49,7 +59,28 @@
                                 </accordion>
                             </div>
                             <div class="col-lg-8 panel">
-                                <div class="thumbnail" data-drop="true" style="height: 600px;width: 100%" jqyoui-droppable="{onDrop:'addComponents(item)'}">
+                                <div class="thumbnail"  style="height:650px;width:100%" >
+                                    <div class="input-group">
+                                        <input ng-model="groupToAdd.name" type="text" class="form-control" placeholder="Group Name"  required>
+                                        <span ng-click="addNewGroup()" class="input-group-addon">
+                                            <i class="btn btn-xs btn-primary fa fa-plus" title="Add new group"></i>
+                                        </span>
+                                    </div>
+                                    <div style="margin-top: 20px">
+                                        <accordion close-others="false">
+                                            <accordion-group heading="{{group.name}}" ng-repeat="group in myGroupsList"
+                                                             data-drop="true" jqyoui-droppable="{onDrop:'addRepositories(item)', multiple:true}">
+                                                <div ng-repeat="repository in group.repositories">
+                                                    <div class="repo-sm-item in-my-groups"
+                                                         data-jqyoui-options ="{revert:'invalid'}"
+                                                         data-drag="true"
+                                                         jqyoui-draggable ="{animate:true}">
+                                                        <div class="repo in-my-groups">{{repository.shortname}}</div>
+                                                    </div>
+                                                </div>
+                                            </accordion-group>
+                                        </accordion>
+                                    </div>
                                 </div>
                             </div>
                         </div>

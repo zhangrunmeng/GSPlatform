@@ -102,6 +102,7 @@ define(['angular',
                 HighChartConfig.setHighchartsColor();
                 $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
                     $scope.repositories = BeaconUtil.buildRepositories(result.data);
+                    $scope.myGroups = {};
                     $state.go('settings');
                     //$scope.currentView = "Products View";
                 });
