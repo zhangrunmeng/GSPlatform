@@ -1,5 +1,4 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using SharpCompress.Archive;
+﻿using SharpCompress.Archive;
 using SharpCompress.Common;
 using System;
 using System.Collections.Generic;
@@ -81,63 +80,6 @@ namespace GSPlatformPortal.Services
         //    }
         //    return hsResult;
         //}
-
-        public static bool UnpackFiles2(string file, string dir)
-        {
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            FastZip fastZip = new FastZip();
-            fastZip.ExtractZip(file, dir, string.Empty);
-            return true;
-        }
-
-        public static bool UnpackFiles(string file, string dir)
-        {
-            try
-            {
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                ZipInputStream s = new ZipInputStream(File.OpenRead(file));
-
-                ZipEntry theEntry;
-                while ((theEntry = s.GetNextEntry()) != null)
-                {
-
-                    string directoryName = Path.GetDirectoryName(theEntry.Name);
-                    string fileName = Path.GetFileName(theEntry.Name);
-
-                    if (directoryName != String.Empty)
-                        Directory.CreateDirectory(dir + "/" + directoryName);
-
-                    if (fileName != String.Empty)
-                    {
-                        FileStream streamWriter = File.Create(dir + theEntry.Name);
-                        int size = 2048;
-                        byte[] data = new byte[2048];
-                        while (true)
-                        {
-                            size = s.Read(data, 0, data.Length);
-                            if (size > 0)
-                            {
-                                streamWriter.Write(data, 0, size);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        streamWriter.Close();
-                    }
-                }
-                s.Close();
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                throw e;
-            }
-        }
+       
     }
 }
