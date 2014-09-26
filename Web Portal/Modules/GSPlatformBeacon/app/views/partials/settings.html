@@ -1,0 +1,61 @@
+<div ng-controller="settingsCtrl" class="container-fluid">
+    <div class="row" style="margin-top: 30px">
+        <div class="col-lg-8 col-lg-offset-2">
+            <tabset justified="true">
+                <tab heading="Predefined Groups">
+                    <accordion close-others="false">
+                        <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroups">
+                            <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
+                                <div class="repo-item">
+                                    <div class="repo">{{repository.shortname}}</div>
+                                    <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                                </div>
+                            </div>
+                        </accordion-group>
+                    </accordion>
+                </tab>
+                <tab heading="Customize Groups">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="pull-right">
+                                <span class="widget-icon" ng-hide="configEdit" ng-click="configEdit=!configEdit">
+                                <i class="btn btn-primary fa fa-edit" title="edit"></i></span>
+                                <span class="widget-icon" ng-show="configEdit" ng-click="configEdit=!configEdit">
+                                <i class="btn btn-primary fa fa-save" title="save"></i></span>
+                            </div>
+                        </div>
+                        <div ng-hide="configEdit" class="row">
+                            <accordion close-others="false">
+                                <accordion-group heading="{{group.name}}" ng-repeat="group in myGroups">
+                                    <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
+                                        <div class="repo-item">
+                                            <div class="repo">{{repository.shortname}}</div>
+                                            <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                                        </div>
+                                    </div>
+                                </accordion-group>
+                            </accordion>
+                        </div>
+                        <div ng-show="configEdit" class="row">
+                            <div class="col-lg-4">
+                                <accordion close-others="false">
+                                    <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroups" data-jqyoui-options="{revert: 'invalid'}" data-drag="true" jqyoui-draggable="{animate:true}">
+                                        <div ng-repeat="repository in group.repositories">
+                                            <div class="repo-sm-item" data-jqyoui-options="{revert: 'invalid'}" data-drag="true" jqyoui-draggable="{animate:true}">
+                                                <div class="repo">{{repository.shortname}}</div>
+                                            </div>
+                                        </div>
+                                    </accordion-group>
+                                </accordion>
+                            </div>
+                            <div class="col-lg-8 panel">
+                                <div class="thumbnail" data-drop="true" style="height: 600px;width: 100%" jqyoui-droppable="{onDrop:'addComponents(item)'}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

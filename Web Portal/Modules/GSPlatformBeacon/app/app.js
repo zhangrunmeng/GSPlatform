@@ -6,13 +6,13 @@ define(['angular',
        'angularMessage',
        'angularGrid',
        'common/utils/Rest',
-       'common/components/columnChart',
+       'common/components/highChartRenderer',
        'common/components/gridView',
        './scripts/services',
        'css!./styles/themes/css/' + $theme + '/app',
        './lib/highcharts-ng/dist/highcharts-ng',
        './lib/angular-dragdrop/src/angular-dragdrop'
-    ], function(angular, uibootstrap, ngmessage, nggrid, rest, columnChart, gridView){
+    ], function(angular, uibootstrap, ngmessage, nggrid, rest, highChartRenderer, gridView){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
             COLOR_OK: '#A4E2C6',
@@ -42,13 +42,14 @@ define(['angular',
                 'highcharts-ng',
                 'ngDragDrop',
                 rest.name,
-                columnChart.name,
+                highChartRenderer.name,
                 gridView.name,
                 'beacon.services'
             ])
             .config(['$stateProvider', 'beaconProvider', function($stateProvider, beaconProvider){
                 $stateProvider.state('product', {
                     parent: 'beacon',
+                    url : "product",
                     templateUrl: beaconProvider.modulePath + 'views/partials/product.html',
                     resolve: {
                         loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
@@ -61,14 +62,16 @@ define(['angular',
                         }]
                     }
                 })
-                .state('detail', {
+                .state('settings', {
                     parent: 'beacon',
-                    templateUrl: beaconProvider.modulePath + 'views/partials/detail.html',
+                    url : "settings",
+                    templateUrl: beaconProvider.modulePath + 'views/partials/settings.html',
                     resolve: {
                         loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
+                            angular.module('beacon.settingsModule', []);
                             return $ocLazyLoad.load({
-                                name : 'beacon.DetailModule',
-                                files: [beaconProvider.modulePath + 'scripts/DetailModule/DetailModule.js'],
+                                name : 'beacon.settingsModule',
+                                files: [beaconProvider.modulePath + 'scripts/settingsModule/settingsModule.js'],
                                 cache: false
                             });
                         }]
@@ -76,6 +79,7 @@ define(['angular',
                 })
                 .state('revisions', {
                     parent: 'beacon',
+                    url : "revisions/:repository/:revision",
                     templateUrl: beaconProvider.modulePath + 'views/partials/revisions.html',
                     resolve: {
                         loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
@@ -85,7 +89,10 @@ define(['angular',
                                 cache: false
                             });
                         }]
-                    }
+                    },
+                    controller: ['$stateParams', '$scope', function($stateParams, $scope){
+
+                    }]
                 });
             }])
             .controller('beaconCtrl', ['$scope', '$state', '$http', 'beacon.utility', 'RestUtil', function($scope, $state, $http, BeaconUtil, RestUtil){
@@ -95,7 +102,22 @@ define(['angular',
                 HighChartConfig.setHighchartsColor();
                 $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
                     $scope.repositories = BeaconUtil.buildRepositories(result.data);
-                    $state.go('product');
+                    $state.go('settings');
+                    //$scope.currentView = "Products View";
                 });
+                $scope.$on('$viewContentLoading',
+                    function(event, viewConfig){
+                        var includes = viewConfig.view.includes;
+                        if(includes["product"]){
+                            $scope.currentView = "Products View";
+                        } else if(includes["revisions"]){
+                            $scope.currentView = "Revisions View";
+                        } else if(includes["settings"]) {
+                            $scope.currentView = "Manage Groups";
+                        }
+                        // Access to all the view config properties.
+                        // and one special property 'targetView'
+                        // viewConfig.targetView
+                    });
             }]);
     });

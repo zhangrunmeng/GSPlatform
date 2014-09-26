@@ -4,9 +4,67 @@
 @COLOR_VIP: #3B2E7E;
 @COLOR_TEXT: #666;
 
-.error {
-  background: @COLOR_ERROR
-}
-.warning {
-  background: @COLOR_WARNING
+.app.default {
+  .beacon {
+    .error {
+      background: @COLOR_ERROR
+    }
+
+    .warning {
+      background: @COLOR_WARNING
+    }
+
+    .grid-item {
+      margin: 15px 30px;
+      height: 350px;
+      width : 280px;
+      background: rgba(200, 200, 200, 0.1);
+      padding: 15px;
+      color: dimgray;
+      border-radius: 1em;
+      box-shadow: 10px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+
+    .repo-item {
+      margin: 15px 30px;
+      height: 150px;
+      width : 280px;
+      background: rgba(200, 200, 200, 0.1);
+      padding: 15px;
+      color: dimgray;
+      border-radius: 1em;
+      box-shadow: 10px 5px rgba(0,0,0,0.1);
+
+      .repo {
+       font: bold;
+      }
+      .revision {
+        word-wrap: break-word;
+        white-space: pre;
+      }
+    }
+
+    .repo-sm-item {
+      margin: 15px 30px;
+      height: 50px;
+      width : 280px;
+      background: rgba(200, 200, 200, 0.1);
+      padding: 15px;
+      color: dimgray;
+      border-radius: 1em;
+      box-shadow: 10px 5px rgba(0,0,0,0.1);
+      .repo {
+        font: bold;
+      }
+    }
+
+
+    .drillupBtn {
+      position: absolute;
+      float: right;
+      top: 20px;
+      right: 50px;
+    }
+  }
 }

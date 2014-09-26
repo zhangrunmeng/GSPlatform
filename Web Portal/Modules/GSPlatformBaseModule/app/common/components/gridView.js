@@ -6,12 +6,9 @@ define(['angular'], function(angular){
         .directive("gridView", function($compile, $templateCache){
             return {
                 restrict : 'A',
-                templateUrl : 'gridViewTemplate.html',
-                scope : true,
-                transclude : true,
+                scope : false,
                 link : function postLink(scope, element, attrs){
                     var pagesize = attrs.size;
-                    scope.cellClass= attrs.cellClass;
                     var initialize = function(newvalue, oldvalue){
                         if(newvalue !== oldvalue && angular.isDefined(newvalue)){
                             var total = newvalue.length;
@@ -28,20 +25,21 @@ define(['angular'], function(angular){
                             }
                         }
                     }
-                    scope.$watch(attrs.data, initialize);
+                    scope.$watch(attrs.data, initialize, true);
+                    scope.$watch(attrs.size, initialize);
                     initialize(scope[attrs.data]);
                 }
             };
-        })
-        .run(function($templateCache){
-            'use strict';
-            var template =
-                  "<div class='row' ng-repeat='row in rows'>"
-                    + "<div ng-class='cellClass' ng-repeat='cell in row.cells'>"
-                    +    '<div class="grid-view-item" ng-transclude>'
-                    +    '</div>'
-                    + '</div>'
-                + '</div>';
-            $templateCache.put('gridViewTemplate.html', template);
         });
+//        .run(function($templateCache){
+//            'use strict';
+//            var template =
+//                  "<div class='row' ng-repeat='row in rows'>"
+//                    + "<div ng-class='cellClass' ng-repeat='cell in row.cells'>"
+//                    +    '<div class="grid-view-item" ng-transclude>'
+//                    +    '</div>'
+//                    + '</div>'
+//                + '</div>';
+//            $templateCache.put('gridViewTemplate.html', template);
+//        });
 });

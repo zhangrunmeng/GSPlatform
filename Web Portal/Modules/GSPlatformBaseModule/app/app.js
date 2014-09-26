@@ -62,7 +62,10 @@ define(['angular',
                                         cache: false
                                     });
                                 }]
-                            }
+                            },
+                            controller: ['$stateParams','$scope', function($stateParams, $scope){
+                                $scope.path = $stateParams.path;
+                            }]
                         });
                     });
             }])
@@ -72,11 +75,13 @@ define(['angular',
                 '$location',
                 '$element',
                 '$window',
+                '$state',
                 function($rootScope,
                          $scope,
                          $location,
                          $element,
-                         $window){
+                         $window,
+                         $state){
                 var rendererNavMenu = function(){
                     if($scope.modulePath != ""){
                         //render custom module nav menu
@@ -157,10 +162,20 @@ define(['angular',
                 }
 
                 var initialize = function(newvalue, oldvalue) {
-                    if(newvalue !== oldvalue && newvalue == ""){
-                        $scope.modulePath = $rootScope.modulePath = "";
-                        $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
-                        rendererNavMenu();
+                    if(newvalue !== oldvalue){
+                        if(newvalue == ""){
+                            $scope.modulePath = $rootScope.modulePath = "";
+                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
+                            rendererNavMenu();
+                        } else {
+//                            for(var i=0; i < $installedModules.length; i++){
+//                                var module = $installedModules[i];
+//                                if($location.url().indexOf('/' + module.id + "/") == 0){
+//                                    $state.go(module.id);
+//                                    break;
+//                                }
+//                            }
+                        }
                     }
                 };
 
@@ -168,33 +183,33 @@ define(['angular',
                     $element.toggleClass("minified");
                 };
 
-                $rootScope.getModulePath = $scope.getModulePath = function(){
-                    if($location.url() == ""){
-                        return "";
-                    } else {
-                        for(var i=0; i < $installedModules.length; i++){
-                            var module = $installedModules[i];
-                            if($location.url().indexOf('/' + module.id + "/") == 0){
-                                return 'modules/' + module.id + '/';
-                            }
-                        }
-                        return "";
-                    }
-                };
-
-                $rootScope.getSelectedModule = $scope.getSelectedModule = function(){
-                    if($location.url() == ""){
-                        return {id : "framework", url : ""};
-                    } else {
-                        for(var i=0; i < $installedModules.length; i++){
-                            var module = $installedModules[i];
-                            if($location.url().indexOf('/' + module.id + "/") == 0){
-                                return module;
-                            }
-                        }
-                        return "";
-                    }
-                };
+//                $rootScope.getModulePath = $scope.getModulePath = function(){
+//                    if($location.url() == ""){
+//                        return "";
+//                    } else {
+//                        for(var i=0; i < $installedModules.length; i++){
+//                            var module = $installedModules[i];
+//                            if($location.url().indexOf('/' + module.id + "/") == 0){
+//                                return 'modules/' + module.id + '/';
+//                            }
+//                        }
+//                        return "";
+//                    }
+//                };
+//
+//                $rootScope.getSelectedModule = $scope.getSelectedModule = function(){
+//                    if($location.url() == ""){
+//                        return {id : "framework", url : ""};
+//                    } else {
+//                        for(var i=0; i < $installedModules.length; i++){
+//                            var module = $installedModules[i];
+//                            if($location.url().indexOf('/' + module.id + "/") == 0){
+//                                return module;
+//                            }
+//                        }
+//                        return "";
+//                    }
+//                };
 
                 initialize($location.url());
                 var onModuleLoaded = function(e, module) {
@@ -209,7 +224,15 @@ define(['angular',
                 }
                 $scope.$on('ocLazyLoad.moduleLoaded', onModuleLoaded);
                 $scope.$on('ocLazyLoad.moduleReloaded', onModuleLoaded);
-                $scope.$watch(function(){return $location.url()}, initialize);
+                $scope.$watch(function(){return $location.url()}, function(newvalue, oldvalue) {
+                    if(newvalue !== oldvalue){
+                        if(newvalue == ""){
+                            $scope.modulePath = $rootScope.modulePath = "";
+                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
+                            rendererNavMenu();
+                        }
+                    }
+                });
 
                 $scope.$contentScale = function(){
                     return {width: $element.find('[id=main]').width(), height: $element.find('[id=main]').height()}
