@@ -2,10 +2,6 @@
  * Created by hammer on 2014/8/31.
  */
 define(['angular',
-       'uiBootstrap',
-       'angularMessage',
-       'angularGrid',
-       'common/ngTableRenderer/ngTableRenderer',
        './scripts/services',
        './scripts/controllers',
        './scripts/directives',
@@ -16,10 +12,6 @@ define(['angular',
     ], function(angular){
         return angular
             .module('jobManagement', [
-                'ui.bootstrap',
-                'ngMessages',
-                'ngGrid',
-                'ngTableRenderer',
                 'job.controllers',
                 'job.filters',
                 'job.directives',

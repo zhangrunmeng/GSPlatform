@@ -11,14 +11,14 @@
         <div class='row' ng-repeat='row in rows'>
             <div class='col-xs-12 col-sm-6 col-md-4 col-lg-3' ng-repeat='cell in row.cells'>
                 <div class="app-item">
-                    <a href="{{'#' + cell.default || cell.id}}">
+                    <a href="{{'#' + (cell.default || ('/' + cell.id + '/'))}}">
                         <div>
                             <i class="fa fa-lg fa-tasks"></i>
                             <label class="pull-right">{{cell.name}}</label>
                         </div>
                         <version class="pull-right">{{'version:' + cell.version}}</version>
                     </a>
-                    <a ui-sref="{{cell.id}}"><desc>{{cell.desc}}</desc></a>
+                    <a href="{{'#' + (cell.default || ('/' + cell.id + '/'))}}"><desc>{{cell.desc}}</desc></a>
                 </div>
             </div>
         </div>

@@ -2,17 +2,11 @@
  * Created by hammer on 2014/8/31.
  */
 define(['angular',
-       'uiBootstrap',
-       'angularMessage',
-       'angularGrid',
-       'common/utils/Rest',
        'common/components/highChartRenderer',
-       'common/components/gridView',
        './scripts/services',
-       'css!./styles/themes/css/' + $theme + '/app',
-       './lib/highcharts-ng/dist/highcharts-ng',
-       './lib/angular-dragdrop/src/angular-dragdrop'
-    ], function(angular, uibootstrap, ngmessage, nggrid, rest, highChartRenderer, gridView){
+       './lib/angular-dragdrop/src/angular-dragdrop',
+        'css!./styles/themes/css/' + $theme + '/app',
+    ], function(angular, highChartRenderer){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
             COLOR_OK: '#A4E2C6',
@@ -36,14 +30,8 @@ define(['angular',
             }
         }
         return angular.module('beacon',[
-                'ui.bootstrap',
-                'ngMessages',
-                'ngGrid',
-                'highcharts-ng',
                 'ngDragDrop',
-                rest.name,
                 highChartRenderer.name,
-                gridView.name,
                 'beacon.services'
             ])
             .controller('beaconCtrl', ['$scope', '$state', '$http', 'beacon.utility', 'RestUtil', function($scope, $state, $http, BeaconUtil, RestUtil){

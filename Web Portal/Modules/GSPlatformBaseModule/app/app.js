@@ -11,6 +11,12 @@
 define(['angular',
     'common/utils/Rest',
     'common/components/gridView',
+    'restAngular',
+    'angularUIRoute',
+    'uiBootstrap',
+    'angularMessage',
+    'angularGrid',
+    'ocLazyload',
     'css!styles/themes/css/' + $theme + '/app',
     'css!styles/themes/css/' + $theme + '/custom',
     'css!styles/themes/css/' + $theme + '/common'
@@ -41,7 +47,9 @@ define(['angular',
 
         return angular.module('gsPlatformClient',[
             'ui.router',
-            'ui.router.stateHelper',
+            'ui.bootstrap',
+            'ngMessages',
+            'ngGrid',
             'oc.lazyLoad',
             rest.name,
             grid.name])
@@ -50,13 +58,11 @@ define(['angular',
                 '$urlRouterProvider',
                 '$locationProvider',
                 '$stateProvider',
-                'stateHelperProvider',
                 'RestUtilProvider',
                 function($ocLazyLoadProvider,
                          $urlRouterProvider,
                          $locationProvider,
                          $stateProvider,
-                         stateHelperProvider,
                          RestUtilProvider) {
                     $urlRouterProvider.otherwise("");
                     $ocLazyLoadProvider.config ({
@@ -134,71 +140,6 @@ define(['angular',
                                 $scope.$broadcast('onNavLoaded', "<li>"
                                     + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
                                     + "</li>" + navTemplate);
-
-//                                //add a mark [+] to a multilevel menu
-//                                $element.find("aside[id='left-panel'] nav ul").html("<li>"
-//                                    + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
-//                                    + "</li>" + navTemplate);
-//                                $element.find("li").each(function () {
-//                                    if ($(this).find("ul").size() != 0) {
-//                                        //add the multilevel sign next to the link
-//                                        $(this).find("a:first").append("<b class='collapse-sign'>" + options.closedSign + "</b>");
-//
-//                                        //avoid jumping to the top of the page when the href is an #
-//                                        if ($(this).find("a:first").attr('href') == "#") {
-//                                            $(this).find("a:first").click(function () {
-//                                                return false;
-//                                            });
-//                                        }
-//                                    }
-//                                });
-//
-//                                //open active level
-//                                $element.find("li.active").each(function () {
-//                                    $(this).parents("ul").slideDown(options.speed);
-//                                    $(this).parents("ul").parent("li").find("b:first").html(options.openedSign);
-//                                    $(this).parents("ul").parent("li").addClass("open")
-//                                });
-//                                $element.find("li a").click(function () {
-//                                    if ($(this).parent().find("ul").size() != 0) {
-//                                        if (options.accordion) {
-//                                            //Do nothing when the list is open
-//                                            if (!$(this).parent().find("ul").is(':visible')) {
-//                                                var parents = $(this).parent().parents("ul");
-//                                                var visible = element.find("ul:visible");
-//                                                visible.each(function (visibleIndex) {
-//                                                    var close = true;
-//                                                    parents.each(function (parentIndex) {
-//                                                        if (parents[parentIndex] == visible[visibleIndex]) {
-//                                                            close = false;
-//                                                            return false;
-//                                                        }
-//                                                    });
-//                                                    if (close) {
-//                                                        if ($(this).parent().find("ul") != visible[visibleIndex]) {
-//                                                            $(visible[visibleIndex]).slideUp(options.speed, function () {
-//                                                                $(this).parent("li").find("b:first").html(options.closedSign);
-//                                                                $(this).parent("li").removeClass("open");
-//                                                            });
-//                                                        }
-//                                                    }
-//                                                });
-//                                            }
-//                                        }// end if
-//                                        if ($(this).parent().find("ul:first").is(":visible") && !$(this).parent().find("ul:first").hasClass("active")) {
-//                                            $(this).parent().find("ul:first").slideUp(options.speed, function () {
-//                                                $(this).parent("li").removeClass("open");
-//                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.closedSign);
-//                                            });
-//                                        } else {
-//                                            $(this).parent().find("ul:first").slideDown(options.speed, function () {
-//                                                /*$(this).effect("highlight", {color : '#616161'}, 500); - disabled due to CPU clocking on phones*/
-//                                                $(this).parent("li").addClass("open");
-//                                                $(this).parent("li").find("b:first").delay(options.speed).html(options.openedSign);
-//                                            });
-//                                        } // end else
-//                                    } // end if
-//                                });
                             });
                     } else {
                         $element.find("aside[id='left-panel'] nav ul").html("");
@@ -211,14 +152,6 @@ define(['angular',
                             $scope.modulePath = $rootScope.modulePath = "";
                             $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
                             rendererNavMenu();
-                        } else {
-//                            for(var i=0; i < $installedModules.length; i++){
-//                                var module = $installedModules[i];
-//                                if($location.url().indexOf('/' + module.id + "/") == 0){
-//                                    $state.go(module.id);
-//                                    break;
-//                                }
-//                            }
                         }
                     }
                 };
@@ -226,34 +159,6 @@ define(['angular',
                 $scope.minifyToggle = function () {
                     $element.toggleClass("minified");
                 };
-
-//                $rootScope.getModulePath = $scope.getModulePath = function(){
-//                    if($location.url() == ""){
-//                        return "";
-//                    } else {
-//                        for(var i=0; i < $installedModules.length; i++){
-//                            var module = $installedModules[i];
-//                            if($location.url().indexOf('/' + module.id + "/") == 0){
-//                                return 'modules/' + module.id + '/';
-//                            }
-//                        }
-//                        return "";
-//                    }
-//                };
-//
-//                $rootScope.getSelectedModule = $scope.getSelectedModule = function(){
-//                    if($location.url() == ""){
-//                        return {id : "framework", url : ""};
-//                    } else {
-//                        for(var i=0; i < $installedModules.length; i++){
-//                            var module = $installedModules[i];
-//                            if($location.url().indexOf('/' + module.id + "/") == 0){
-//                                return module;
-//                            }
-//                        }
-//                        return "";
-//                    }
-//                };
 
                 initialize($location.url());
                 var onModuleLoaded = function(e, module) {
