@@ -5,5 +5,23 @@
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
     "desc" : "A dashboard to monitor code analyze results",
-    "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1"
+    "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1",
+    "routers" : [{
+            "name" : "product",
+            "default" : true,
+            "templateUrl": "views/partials/product.html",
+            "script" : "scripts/ProductModule/ProductModule.js"
+        },
+        {
+            "name" : "revisions",
+            "url"  : "revisions/:repo/:revision",
+            "controller" : "revisionRouteCtrl",
+            "templateUrl": "views/partials/revisions.html",
+            "script" : "scripts/revisionsModule/revisionsModule.js"
+        },
+        {
+            "name" : "settings",
+            "templateUrl": "views/partials/settings.html",
+            "script" : "scripts/settingsModule/settingsModule.js"
+        }]
 }

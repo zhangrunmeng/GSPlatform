@@ -46,55 +46,6 @@ define(['angular',
                 gridView.name,
                 'beacon.services'
             ])
-            .config(['$stateProvider', 'beaconProvider', function($stateProvider, beaconProvider){
-                $stateProvider.state('product', {
-                    parent: 'beacon',
-                    url : "product",
-                    templateUrl: beaconProvider.modulePath + 'views/partials/product.html',
-                    resolve: {
-                        loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
-                            angular.module('beacon.productModule', []);
-                            return $ocLazyLoad.load({
-                                name : 'beacon.productModule',
-                                files: [beaconProvider.modulePath + 'scripts/ProductModule/ProductModule.js'],
-                                cache: false
-                            });
-                        }]
-                    }
-                })
-                .state('settings', {
-                    parent: 'beacon',
-                    url : "settings",
-                    templateUrl: beaconProvider.modulePath + 'views/partials/settings.html',
-                    resolve: {
-                        loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
-                            angular.module('beacon.settingsModule', []);
-                            return $ocLazyLoad.load({
-                                name : 'beacon.settingsModule',
-                                files: [beaconProvider.modulePath + 'scripts/settingsModule/settingsModule.js'],
-                                cache: false
-                            });
-                        }]
-                    }
-                })
-                .state('revisions', {
-                    parent: 'beacon',
-                    url : "revisions/:repository/:revision",
-                    templateUrl: beaconProvider.modulePath + 'views/partials/revisions.html',
-                    resolve: {
-                        loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
-                            return $ocLazyLoad.load({
-                                name : 'beacon.revisionsModule',
-                                files: [beaconProvider.modulePath + 'scripts/revisionsModule/revisionsModule.js'],
-                                cache: false
-                            });
-                        }]
-                    },
-                    controller: ['$stateParams', '$scope', function($stateParams, $scope){
-
-                    }]
-                });
-            }])
             .controller('beaconCtrl', ['$scope', '$state', '$http', 'beacon.utility', 'RestUtil', function($scope, $state, $http, BeaconUtil, RestUtil){
 //                RestUtil.jsonp('repository', function(data){
 //
@@ -103,22 +54,10 @@ define(['angular',
                 $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
                     $scope.repositories = BeaconUtil.buildRepositories(result.data);
                     $scope.myGroups = {};
-                    $state.go('settings');
-                    //$scope.currentView = "Products View";
+                    $scope.$broadcast('bootstrap');
                 });
-                $scope.$on('$viewContentLoading',
-                    function(event, viewConfig){
-                        var includes = viewConfig.view.includes;
-                        if(includes["product"]){
-                            $scope.currentView = "Products View";
-                        } else if(includes["revisions"]){
-                            $scope.currentView = "Revisions View";
-                        } else if(includes["settings"]) {
-                            $scope.currentView = "Manage Groups";
-                        }
-                        // Access to all the view config properties.
-                        // and one special property 'targetView'
-                        // viewConfig.targetView
-                    });
+                $scope.$on('setCurrentView', function(e, view){
+                    $scope.currentView = view;
+                });
             }]);
     });

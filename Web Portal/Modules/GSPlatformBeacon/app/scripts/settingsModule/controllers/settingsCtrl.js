@@ -11,10 +11,6 @@ define(['angular',
             'beacon.utility',
             'RestUtil',
             function ($scope, $element, BeaconUtil, RestUtil) {
-                $scope.predefinedGroupsList = [];
-                $scope.myGroupsList = [];
-                $scope.configEdit = false;
-                $scope.groupToAdd = {name : "My Group"};
 
                 $scope.addRepositories = function(e){
                     var sourceElement = angular.element(e.toElement);
@@ -77,6 +73,10 @@ define(['angular',
                 }
 
                 var bootstrap = function(){
+                    $scope.predefinedGroupsList = [];
+                    $scope.myGroupsList = [];
+                    $scope.configEdit = false;
+                    $scope.groupToAdd = {name : "My Group"};
                     for(var key in $scope.repositories){
                         $scope.predefinedGroupsList.push({name : key, repositories: $scope.repositories[key]});
                     }
@@ -84,8 +84,10 @@ define(['angular',
                         $scope.myGroupsList.push({name : key, repositories: $scope.myGroups[key]});
                     }
                 }
-                bootstrap();
+                $scope.$on('bootstrap', bootstrap);
+                $scope.$emit('setCurrentView', 'Group Management');
 
+                bootstrap();
             }]);
         }
 );

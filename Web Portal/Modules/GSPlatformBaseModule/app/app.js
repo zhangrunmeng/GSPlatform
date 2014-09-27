@@ -10,28 +10,53 @@
  */
 define(['angular',
     'common/utils/Rest',
+    'common/components/gridView',
     'css!styles/themes/css/' + $theme + '/app',
     'css!styles/themes/css/' + $theme + '/custom',
     'css!styles/themes/css/' + $theme + '/common'
     //'less!styles/theme/default/default'
     ], function(
         angular,
-        rest
+        rest,
+        grid
     ){
+        var compileRouters = function(module, routers){
+            angular.forEach(routers, function(router){
+               var moduleName = router.name + 'Module';
+               var modulePath = 'modules/' + module.id +'/';
+               router.templateUrl = modulePath + router.templateUrl;
+               router.resolve = {
+                   loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+                       angular.module(module.id + '.' + moduleName, []);
+                       return $ocLazyLoad.load({
+                           name: module.id + '.' + moduleName,
+                           files: [modulePath + router.script],
+                           cache: false
+                       });
+                   }]
+               }
+            });
+            return routers;
+        }
+
         return angular.module('gsPlatformClient',[
             'ui.router',
+            'ui.router.stateHelper',
             'oc.lazyLoad',
-            rest.name])
+            rest.name,
+            grid.name])
             .config([
                 '$ocLazyLoadProvider',
                 '$urlRouterProvider',
                 '$locationProvider',
                 '$stateProvider',
+                'stateHelperProvider',
                 'RestUtilProvider',
                 function($ocLazyLoadProvider,
                          $urlRouterProvider,
                          $locationProvider,
                          $stateProvider,
+                         stateHelperProvider,
                          RestUtilProvider) {
                     $urlRouterProvider.otherwise("");
                     $ocLazyLoadProvider.config ({
@@ -67,6 +92,25 @@ define(['angular',
                                 $scope.path = $stateParams.path;
                             }]
                         });
+
+                        if(module.routers){
+                            compileRouters(module, module.routers);
+                            angular.forEach(module.routers, function(router){
+                                var conf = {
+                                    parent : module.id,
+                                    url : router.url || (router.name + '/'),
+                                    templateUrl : router.templateUrl,
+                                    resolve : router.resolve
+                                };
+                                if(!module.default && router.default == true){
+                                    module.default = "/" + module.id + "/" + router.name + "/";
+                                }
+                                if(router.controller){
+                                    conf.controller = router.controller;
+                                }
+                                $stateProvider.state(router.name, conf);
+                            });
+                        }
                     });
             }])
             .controller("gsPlatformController",[
@@ -248,33 +292,6 @@ define(['angular',
             .controller("appContainerCtrl", ['$scope', function($scope){
                 $scope.installedModules =  $installedModules || [];
             }])
-            .directive("appContainer", function(){
-                return {
-                    restrict : 'A',
-                    scope : true,
-                    link : function(scope, element, attrs){
-                        var pagesize = 4;
-                        var initialize = function(newvalue, oldvalue){
-                            if(newvalue !== oldvalue && angular.isDefined(newvalue)){
-                                var total = newvalue.length;
-                                var rowcount = Math.ceil(total/pagesize);
-                                scope.rows = [];
-                                for(var i=0; i < rowcount; i++){
-                                    var cells = [];
-                                    var begin = i * pagesize;
-                                    var end = (i + 1) * pagesize - 1 > total - 1 ? total - 1 : (i + 1) * pagesize - 1;
-                                    for(var i=begin; i <= end; i++){
-                                        cells.push(newvalue[i]);
-                                    }
-                                    scope.rows.push({cells : cells});
-                                }
-                            }
-                        }
-                        scope.$watch(attrs.applist, initialize);
-                        initialize(scope[attrs.applist]);
-                    }
-                };
-            })
             .directive("dynNav", ['$compile', function($compile){
                 return {
                     restrict : 'A',

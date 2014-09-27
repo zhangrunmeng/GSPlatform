@@ -11,38 +11,14 @@ define(['angular',
             'beacon.utility',
             'RestUtil',
             function ($scope, $element, BeaconUtil, RestUtil) {
-                $scope.inDrillMode = false;
-                $scope.displayCards = [];
-
-                var groups = [], series = {
-                    "ok" : [],
-                    "warning" : [],
-                    "error" : []
-                };
-                var groupSeries = [
-                    {
-                        name: "OK",
-                        data: series["ok"],
-                        visible: false
-                    },
-                    {
-                        name: "Warning",
-                        data: series["warning"]
-                    },
-                    {
-                        name: "Error",
-                        data: series["error"]
-                    }
-                ];
-                var groupCards = [];
-                var drilldownSeries = [];
+                var groups, series, groupSeries, groupCards, drillDownSeries;
 
                 var notify = function(){
                     if(!$scope.$$phase)
                         $scope.$apply();
                 }
 
-                $scope.drillup = function(){
+                $scope.drillUp = function(){
                     $scope.compareChartConf.series = groupSeries;
                     $scope.displayCards = groupCards;
                     delete $scope.currentDisplayGroup;
@@ -62,13 +38,12 @@ define(['angular',
                     return base;
                 }
 
-                var drilldownGroup = function(drilldownSeries, gp){
+                var drillDownGroup = function(gp){
                     var series = [];
                     var cards = {};
-                    angular.forEach(drilldownSeries, function(item){
-                        var group = item.id.split("_")[0] + '_' + item.id.split("_")[1];
-                        var type = item.id.split("_")[2];
-                        if(group == gp){
+                    angular.forEach(drillDownSeries, function(item){
+                        var type = item.series;
+                        if(item.group == gp){
                             //only collect current components in current drilldown group
                             series.push({
                                 name : type,
@@ -95,10 +70,11 @@ define(['angular',
                             });
                         }
                     });
-                    $scope.displayCards = [];
+                    var displayCards = [];
                     for(var key in cards){
-                        $scope.displayCards.push(cards[key]);
+                        displayCards.push(cards[key]);
                     }
+                    $scope.displayCards = displayCards;
                     $scope.compareChartConf.series = series;
                     $scope.currentDisplayGroup = gp;
                     notify();
@@ -127,7 +103,7 @@ define(['angular',
                                 events : {
                                     click : function(e){
                                         if(!$scope.currentDisplayGroup)
-                                            drilldownGroup(drilldownSeries, e.point.name);
+                                            drillDownGroup(e.point.name);
                                     }
                                 },
                                 cursor : 'pointer'
@@ -136,7 +112,7 @@ define(['angular',
                         series: groupSeries
 //                        ,
 //                        drilldown: {
-//                            series: drilldownSeries,
+//                            series: drillDownSeries,
 //                            drillUpButton : {
 //                                position : {
 //                                    y : -40
@@ -146,9 +122,9 @@ define(['angular',
                     }
                 }
 
-                var bootstrap = function(){
-                    for(var group in $scope.repositories){
-                        groups.push(group);
+                var collectByGroups = function(groups){
+                    for(var group in groups){
+                        //groups.push(group);
                         var displayCard = newDefaultCard({
                             title: {
                                 text: group
@@ -161,7 +137,7 @@ define(['angular',
                         });
                         for(var type in series){
                             var item = {
-                                y : $scope.repositories[group].reduce(function(prev, repo){
+                                y : groups[group].reduce(function(prev, repo){
                                     return prev + repo.lastRevision[type + "Count"];
                                 }, 0),
                                 name : group
@@ -169,22 +145,58 @@ define(['angular',
                             };
                             series[type].push(item);
                             var groupdrilldowndata = [];
-                            angular.forEach($scope.repositories[group], function(repo){
+                            angular.forEach(groups[group], function(repo){
                                 groupdrilldowndata.push([repo.shortname, repo.lastRevision[type + "Count"]]);
                             });
-                            drilldownSeries.push({
+                            drillDownSeries.push({
                                 name : type,
                                 id : group + '_' + type,
+                                group : group,
+                                series : type,
                                 data : groupdrilldowndata
                             });
                             displayCard.pieChartConf.series[0].data.push({name:type, y:item.y});
                         }
                         groupCards.push(displayCard);
                     }
-                    $scope.displayCards = groupCards;
-                    renderGroupChart();
                 }
 
+                var initial = function(){
+                    $scope.displayCards = [];
+                    groups = [];
+                    series = {
+                        "ok" : [],
+                        "warning" : [],
+                        "error" : []
+                    };
+                    groupSeries = [
+                        {
+                            name: "OK",
+                            data: series["ok"],
+                            visible: false
+                        },
+                        {
+                            name: "Warning",
+                            data: series["warning"]
+                        },
+                        {
+                            name: "Error",
+                            data: series["error"]
+                        }
+                    ];
+                    groupCards = [];
+                    drillDownSeries = [];
+                }
+
+                var bootstrap = function(){
+                    initial();
+                    collectByGroups($scope.repositories);
+                    collectByGroups($scope.myGroups);
+                    renderGroupChart();
+                    $scope.displayCards = groupCards;
+                }
+                $scope.$on('bootstrap', bootstrap);
+                $scope.$emit('setCurrentView', 'Products View');
                 bootstrap();
             }]);
 });
