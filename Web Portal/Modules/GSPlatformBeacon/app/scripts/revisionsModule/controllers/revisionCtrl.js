@@ -18,6 +18,8 @@ define(['angular',
                 var seriesData;
 
                 var rendererTrendChart = function(){
+                    trendSeries = [];
+                    seriesData = {"ok":{name:'Ok', data:[]}, "error":{name:"Error",data:[]}, "warning":{name:"Warning",data:[]}};
                     var revisions = $scope.selectedRepo.revisions;
                     for(var i=0; i < revisions.length; i++){
                         for(var type in seriesData){
@@ -60,30 +62,39 @@ define(['angular',
 
                 var setFilteredDetails = function(data){
                     $scope.filteredData = data;
+                    $scope.totalDetails = data.length;
                     if(!$scope.$$phase){
                         $scope.$apply();
                     }
                 }
 
+                $scope.$watch('fieldFilters', function(v, o){
+
+                }, true);
+
                 var bootstrap = function(){
-                    trendSeries = [];
-                    seriesData = {"ok":{name:'Ok', data:[]}, "error":{name:"Error",data:[]}, "warning":{name:"Warning",data:[]}};
                     $scope.filteredData = [];
                     $scope.totalDetails = $scope.filteredData.length;
+                    $scope.fieldFilters = {};
                     $scope.detailGridOptions = {
                         data : 'filteredData',
                         columnDefs: [
-                            {field:'severity', displayName: 'Severity', width: "70px",
-                             cellTemplate: "<div ng-class='col.colIndex()' class='ngCellText'><div class='text-center' ng-class='{true: \"error\", false: \"warning\"}[row.getProperty(col.field) == \"error\"]'>{{row.getProperty(col.field)}}</div></div>"},
-                            {field:'code', displayName:'Code', width: "auto", cellClass: 'cellToolTip', cellTemplate: "<div ng-class='col.colIndex()' class='ngCellText'><span tooltip-placement='bottom' tooltip='{{row.getProperty(\"message\")}}'>{{row.getProperty(col.field)}}</span></div>"},
+                            {field:'severity', displayName: 'Severity', width: "80px",
+                                cellTemplate: "<div ng-class='col.colIndex()' class='ngCellText'><div class='text-center' ng-class='{true: \"error\", false: \"warning\"}[row.getProperty(col.field) == \"error\"]'>{{row.getProperty(col.field)}}</div></div>"},
+                            {field:'code', displayName:'Code', width: "auto", cellClass:'cellToolTip',
+                                cellTemplate: "<div ng-class='col.colIndex()' class='ngCellText'><span tooltip-placement='bottom' tooltip='{{row.getProperty(\"message\")}}'>{{row.getProperty(col.field)}}</span></div>"},
                             {field:'file', displayName:'File', width: "20%", resizable:true},
                             {field:'line', displayName:'Line', width: "auto"},
-                            {field:'context', displayName: 'Context', width: "auto", cellTemplate: 'modules/beacon/views/templates/detailContextCell.html',resizable:true, sortable: false, width: "**"}
+                            {field:'context', displayName: 'Context', width: "*",
+                                cellTemplate: 'modules/beacon/views/templates/detailContextCell.html',resizable:true, sortable: false}
                         ],
+                        showHeaderFilter : true,
                         enableColumnReordering : true,
                         enableColumnResize : true,
-                        enablePaging: false,
+                        enablePaging: true,
                         showFooter: false,
+                        pagingOptions: $scope.pagingOptions,
+                        totalServerItems: 'totalDetails',
 //                        selectedItems : $scope.selectedJobs,
                         showSelectionCheckbox : false,
                         multiSelect : false
@@ -103,18 +114,23 @@ define(['angular',
                         $state.go('revisions', {'repo': defaultRepo, 'revision': defaultRev});
                         return;
                     }
-//                    $http.get(BeaconUtil.modulePath + "data/revision.json").then(function(result){
-//
-//                    });
                     $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
                     if($scope.selectedRepo){
                         RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
                             $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
                             setFilteredDetails($scope.selectedRevision.details)
                             rendererTrendChart();
-
                         });
                     }
+
+                    //For test
+//                    $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
+//                    $http.get(BeaconUtil.modulePath + "data/revision.json").then(function(result){
+//                        $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
+//                        setFilteredDetails($scope.selectedRevision.details);
+//                        rendererTrendChart();
+//                    });
+                    //End
                 }
 
                 $scope.$emit('setCurrentView', 'Revisions Details');

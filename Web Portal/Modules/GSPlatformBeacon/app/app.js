@@ -3,10 +3,11 @@
  */
 define(['angular',
        'common/components/highChartRenderer',
+       'common/components/enhancedNgGrid',
        './scripts/services',
        './lib/angular-dragdrop/src/angular-dragdrop',
         'css!./styles/themes/css/' + $theme + '/app',
-    ], function(angular, highChartRenderer){
+    ], function(angular, highChartRenderer, enhancedNgGrid){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
             COLOR_OK: '#A4E2C6',
@@ -32,6 +33,7 @@ define(['angular',
         return angular.module('beacon',[
                 'ngDragDrop',
                 highChartRenderer.name,
+                enhancedNgGrid.name,
                 'beacon.services'
             ])
             .controller('beaconCtrl', ['$scope', '$element', '$http', 'beacon.utility', 'RestUtil', function($scope, $element, $http, BeaconUtil, RestUtil){
