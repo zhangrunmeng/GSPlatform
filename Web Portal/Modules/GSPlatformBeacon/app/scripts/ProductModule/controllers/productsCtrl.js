@@ -7,10 +7,11 @@ define(['angular',
     productModule){
     return productModule.controller('productsCtrl', [
             '$scope',
+            '$state',
             '$element',
             'beacon.utility',
             'RestUtil',
-            function ($scope, $element, BeaconUtil, RestUtil) {
+            function ($scope, $state, $element, BeaconUtil, RestUtil) {
                 var groups, series, groupSeries, groupCards, drillDownSeries;
 
                 var notify = function(){
@@ -25,12 +26,41 @@ define(['angular',
                     notify();
                 };
 
-                var newDefaultCard = function(options){
+                showRevisions = function(reponame){
+                    if($scope.currentDisplayGroup){
+                        var currentGPRepos = $scope.repositories[$scope.currentDisplayGroup] || $scope.myGroups[$scope.currentDisplayGroup];
+                        if(currentGPRepos){
+                            for(var i=0; i < currentGPRepos.length; i++){
+                                if(currentGPRepos[i].shortname === reponame){
+                                    $state.go('revisions', {'repo' : currentGPRepos[i].id, 'revision' : 'latest'});
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var newDefaultCard = function(options, id){
                     var base = {
                         pieChartConf: {
+                            plotOptions: {
+                                pie: {
+                                    size: '70%',
+                                    innerSize: '30%'
+                                }
+                            },
                             chart: {
                                 marginTop: 0,
                                 marginRight: 20
+                            }
+                        }
+                    };
+                    if(id) base.pieChartConf.chart.events = {
+                        click : function(e){
+                            if($scope.currentDisplayGroup){
+                                showRevisions(id)
+                            } else {
+                                drillDownGroup(id);
                             }
                         }
                     };
@@ -51,7 +81,7 @@ define(['angular',
                                 visible : type != 'ok'
                             });
                             angular.forEach(item.data, function(comp){
-                                var card = cards[comp[0]]
+                                var card = cards[comp[0]];
                                 if(!card) {
                                     card = newDefaultCard({
                                         title: {
@@ -62,7 +92,7 @@ define(['angular',
                                             name: comp[0],
                                             data: [{name: type, y: comp[1]}]
                                         }]
-                                    });
+                                    }, comp[0]);
                                     cards[comp[0]] = card;
                                 } else {
                                     card.pieChartConf.series[0].data.push({name: type, y: comp[1]});
@@ -102,8 +132,11 @@ define(['angular',
                             column : {
                                 events : {
                                     click : function(e){
-                                        if(!$scope.currentDisplayGroup)
+                                        if(!$scope.currentDisplayGroup){
                                             drillDownGroup(e.point.name);
+                                        } else {
+                                            showRevisions(e.point.name);
+                                        }
                                     }
                                 },
                                 cursor : 'pointer'
@@ -134,16 +167,19 @@ define(['angular',
                                 name : group,
                                 data : []
                             }]
-                        });
+                        }, group);
                         for(var type in series){
                             var item = {
                                 y : groups[group].reduce(function(prev, repo){
                                     return prev + repo.lastRevision[type + "Count"];
                                 }, 0),
-                                name : group
+                                name : group,
                                 //drilldown : group + '_' + type
                             };
                             series[type].push(item);
+                            displayCard.pieChartConf.series[0].data.push({name:type, y:item.y});
+
+                            //maintain data for drill down later
                             var groupdrilldowndata = [];
                             angular.forEach(groups[group], function(repo){
                                 groupdrilldowndata.push([repo.shortname, repo.lastRevision[type + "Count"]]);
@@ -155,7 +191,6 @@ define(['angular',
                                 series : type,
                                 data : groupdrilldowndata
                             });
-                            displayCard.pieChartConf.series[0].data.push({name:type, y:item.y});
                         }
                         groupCards.push(displayCard);
                     }

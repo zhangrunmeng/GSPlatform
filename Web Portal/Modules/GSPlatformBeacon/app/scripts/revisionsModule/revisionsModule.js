@@ -8,8 +8,8 @@ define(['angular',
             '$stateParams',
             '$scope',
             function($stateParams,$scope){
-                $scope.repository = $stateParams.repo;
-                $scope.revision = $stateParams.revision;
+                $scope.repositoryId = $stateParams.repo;
+                $scope.revisionId = $stateParams.revision;
             }
         ]);
 });

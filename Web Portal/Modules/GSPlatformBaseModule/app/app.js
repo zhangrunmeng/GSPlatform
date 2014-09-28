@@ -139,7 +139,8 @@ define(['angular',
                             function(navTemplate){
                                 $scope.$broadcast('onNavLoaded', "<li>"
                                     + "<a href='#' title='Home'><i class='fa fa-lg fa-fw fa-home'></i> <span class='menu-item-parent'>Home</span></a>"
-                                    + "</li>" + navTemplate);
+                                    + "</li>"
+                                    + navTemplate);
                             });
                     } else {
                         $element.find("aside[id='left-panel'] nav ul").html("");
@@ -187,7 +188,7 @@ define(['angular',
                     return {width: $element.find('[id=main]').width(), height: $element.find('[id=main]').height()}
                 };
                 angular.element($window).bind('resize',function(){
-                    $scope.$broadcast('updateSize', {width: $element.width(), height: $element.height() - 63});
+                    $scope.$broadcast('updateSize', $scope.$contentScale());
                 });
                 $scope.selectModule = function(module){
                     $scope.selectedModule = module;

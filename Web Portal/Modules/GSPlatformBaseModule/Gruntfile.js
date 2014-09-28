@@ -506,5 +506,6 @@ module.exports = function (grunt) {
   );
   
   grunt.registerTask('dev', ['less:development', 'compress', 'install']);
+  grunt.registerTask('fast', ['compress', 'install']);
 
 };

@@ -1,25 +1,30 @@
 <div ng-controller="productsCtrl" class="container-fluid">
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
-            <div high-chart-renderer chart-options="compareChartConf"></div>
-            <a class="btn btn-primary drillUpBtn" ng-click="drillUp()" ng-show="currentDisplayGroup!=undefined"><i class="fa fa-lg fa-fw fa-mail-reply"></i>Back to groups</a>
+            <h3>{{currentDisplayGroup || "All Groups"}}</h3>
         </div>
     </div>
-    <div class="row" ng-show="currentDisplayGroup!=undefined">
-        <div class="col-lg-8 col-lg-offset-2">
-            <h3 class="text-center">{{currentDisplayGroup}}</h3>
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-2">
+            <div class="display-card">
+                <div high-chart-renderer chart-options="compareChartConf"></div>
+                <a class="btn btn-primary drillUpBtn" ng-click="drillUp()" ng-show="currentDisplayGroup!=undefined">
+                    <i class="fa fa-lg fa-fw fa-mail-reply"></i>Back to groups</a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="display-card">
+                <div>
+
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
-            <div class="container-fluid">
-                <div grid-view data="displayCards" size="3">
-                    <div class='row' ng-repeat='row in rows'>
-                        <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat='cell in row.cells'>
-                            <div class="grid-item">
-                                <div high-chart-renderer chart-options="cell.pieChartConf"></div>
-                            </div>
-                        </div>
+                <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat='card in displayCards'>
+                    <div class="grid-item">
+                        <div high-chart-renderer chart-options="card.pieChartConf"></div>
                     </div>
                 </div>
             </div>

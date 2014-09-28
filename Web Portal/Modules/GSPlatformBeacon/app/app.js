@@ -34,18 +34,23 @@ define(['angular',
                 highChartRenderer.name,
                 'beacon.services'
             ])
-            .controller('beaconCtrl', ['$scope', '$state', '$http', 'beacon.utility', 'RestUtil', function($scope, $state, $http, BeaconUtil, RestUtil){
+            .controller('beaconCtrl', ['$scope', '$element', '$http', 'beacon.utility', 'RestUtil', function($scope, $element, $http, BeaconUtil, RestUtil){
 //                RestUtil.jsonp('repository', function(data){
 //
 //                });
                 HighChartConfig.setHighchartsColor();
+                $scope.repositories = {};
+                $scope.myGroups = {};
                 $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
                     $scope.repositories = BeaconUtil.buildRepositories(result.data);
-                    $scope.myGroups = {};
                     $scope.$broadcast('bootstrap');
                 });
                 $scope.$on('setCurrentView', function(e, view){
                     $scope.currentView = view;
                 });
+                var updateSize = function(scale){
+                    $element.find('#content').height(scale.height - 69);
+                }
+                updateSize($scope.$contentScale());
             }]);
     });

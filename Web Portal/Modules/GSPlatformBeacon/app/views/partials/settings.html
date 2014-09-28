@@ -5,7 +5,7 @@
                 <tab heading="Predefined Groups">
                     <div style="margin-top: 30px">
                         <accordion close-others="false">
-                            <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroupsList">
+                            <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in predefinedGroupsList">
                                 <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
                                     <div class="repo-item">
                                         <div class="repo">{{repository.shortname}}</div>
@@ -30,7 +30,7 @@
                         </div>
                         <div ng-hide="configEdit" class="row" style="margin-top: 20px">
                             <accordion close-others="false">
-                                <accordion-group heading="{{group.name}}" ng-repeat="group in myGroupsList">
+                                <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in myGroupsList" >
                                     <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat="repository in group.repositories">
                                         <div class="repo-item">
                                             <div class="repo">{{repository.shortname}}</div>
@@ -43,7 +43,7 @@
                         <div ng-show="configEdit" class="row" style="margin-top: 20px">
                             <div class="col-lg-4">
                                 <accordion close-others="false">
-                                    <accordion-group heading="{{group.name}}" ng-repeat="group in predefinedGroupsList"
+                                    <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in predefinedGroupsList"
                                                      data-jqyoui-options="{revert:'invalid',helper:'clone'}"
                                                      data-drag="true"
                                                      jqyoui-draggable="{placeholder:'keep',animate:true}">
@@ -59,18 +59,26 @@
                                 </accordion>
                             </div>
                             <div class="col-lg-8 panel">
-                                <div class="thumbnail"  style="height:650px;width:100%" >
+                                <div class="thumbnail panel-body"  style="height:650px;width:100%" >
                                     <div class="input-group">
                                         <input ng-model="groupToAdd.name" type="text" class="form-control" placeholder="Group Name"  required>
                                         <span ng-click="addNewGroup()" class="input-group-addon">
-                                            <i class="btn btn-xs btn-primary fa fa-plus" title="Add new group"></i>
+                                            <i class="btn btn-xs fa fa-plus" title="Add new group"></i>
                                         </span>
+                                    </div>
+                                    <div style="margin-top: 5px" ng-show="errors">
+                                        <div ng-repeat="error in errors">
+                                            <alert type="{{error.type}}" close="dismissError()">{{error.msg}}</alert>
+                                        </div>
                                     </div>
                                     <div style="margin-top: 20px">
                                         <accordion close-others="false">
-                                            <accordion-group heading="{{group.name}}" ng-repeat="group in myGroupsList"
-                                                             data-drop="true" jqyoui-droppable="{onDrop:'addRepositories(item)', multiple:true}">
-                                                <div ng-repeat="repository in group.repositories">
+                                            <accordion-group heading="{{group.name}}"
+                                                             is-open="group.isOpen"
+                                                             ng-repeat="group in myGroupsList"
+                                                             data-drop="true"
+                                                             jqyoui-droppable="{onDrop:'addRepositories(item)'}">
+                                                <div class='col-xs-12 col-sm-6 col-md-6 col-lg-6' ng-repeat="repository in group.repositories">
                                                     <div class="repo-sm-item in-my-groups"
                                                          data-jqyoui-options ="{revert:'invalid'}"
                                                          data-drag="true"

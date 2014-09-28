@@ -6,6 +6,15 @@
 
 .app.default {
   .beacon {
+
+    .cellToolTip {
+      overflow: visible;
+    }
+
+    .tooltip-inner {
+      white-space: normal;
+    }
+
     .error {
       background: @COLOR_ERROR
     }
@@ -14,10 +23,18 @@
       background: @COLOR_WARNING
     }
 
+    .display-card {
+      margin: 15px;
+      background: rgba(200, 200, 200, 0.1);
+      padding: 15px;
+      color: dimgray;
+      border-radius: 1em;
+      box-shadow: 10px 5px rgba(0,0,0,0.1);
+    }
+
     .grid-item {
-      margin: 15px 30px;
-      height: 350px;
-      width : 280px;
+      margin: 15px;
+      height: 380px;
       background: rgba(200, 200, 200, 0.1);
       padding: 15px;
       color: dimgray;
@@ -37,7 +54,8 @@
       box-shadow: 10px 5px rgba(0,0,0,0.1);
 
       .repo {
-       font: bold;
+        font-weight: bold;
+        font-size: medium;
       }
       .revision {
         word-wrap: break-word;
@@ -55,7 +73,7 @@
       border-radius: 1em;
       box-shadow: 10px 5px rgba(0,0,0,0.1);
       .repo {
-        font: bold;
+        font-weight: bold;
       }
     }
 
@@ -63,8 +81,8 @@
     .drillUpBtn {
       position: absolute;
       float: right;
-      top: 20px;
-      right: 50px;
+      top: 40px;
+      right: 70px;
     }
   }
 }

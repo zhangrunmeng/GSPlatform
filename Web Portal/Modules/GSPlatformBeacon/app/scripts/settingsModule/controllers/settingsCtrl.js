@@ -38,9 +38,26 @@ define(['angular',
                 }
 
                 $scope.addNewGroup = function(evt){
-                    var name = $scope.groupToAdd.name
-                    $scope.myGroups[name] = [];
-                    $scope.myGroupsList.push({name: name, repositories: $scope.myGroups[name]});
+                    if(!$scope.groupToAdd.name){
+                        $scope.errors = [{
+                            type : 'danger',
+                            msg  : "Group name can't be empty!"
+                        }];
+                    } else if($scope.myGroups[$scope.groupToAdd.name]){
+                        $scope.errors = [{
+                            type : 'danger',
+                            msg  : 'Group name exists!'
+                        }];
+                    } else {
+                        var name = $scope.groupToAdd.name
+                        $scope.myGroups[name] = [];
+                        $scope.myGroupsList.push({isOpen: true, name: name, repositories: $scope.myGroups[name]});
+                        $scope.dismissError();
+                    }
+                }
+
+                $scope.dismissError = function(){
+                    delete $scope.errors;
                 }
 
                 var addNewRepository = function(targetGroup, repo, sourceElement, e){
@@ -77,11 +94,15 @@ define(['angular',
                     $scope.myGroupsList = [];
                     $scope.configEdit = false;
                     $scope.groupToAdd = {name : "My Group"};
+                    var idx = 0;
                     for(var key in $scope.repositories){
-                        $scope.predefinedGroupsList.push({name : key, repositories: $scope.repositories[key]});
+                        $scope.predefinedGroupsList.push({isOpen: idx==0, name: key, repositories: $scope.repositories[key]});
+                        idx++;
                     }
+                    idx = 0;
                     for(var key in $scope.myGroups){
-                        $scope.myGroupsList.push({name : key, repositories: $scope.myGroups[key]});
+                        $scope.myGroupsList.push({isOpen: idx==0, name: key, repositories: $scope.myGroups[key]});
+                        idx++;
                     }
                 }
                 $scope.$on('bootstrap', bootstrap);
