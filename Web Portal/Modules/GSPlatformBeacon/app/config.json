@@ -1,6 +1,6 @@
 {
     "id" : "beacon",
-    "name" : "Beacon",
+    "name" : "Beacon23",
     "module" : "beacon",
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
@@ -8,20 +8,17 @@
     "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1",
     "routers" : [{
             "name" : "product",
-            "default" : true,
-            "templateUrl": "views/partials/product.html",
+            "templateUrl": "views/product.html",
             "script" : "scripts/ProductModule/ProductModule.js"
-        },
-        {
+        },{
             "name" : "revisions",
             "url"  : "revisions/:repo/:revision",
             "controller" : "revisionRouteCtrl",
-            "templateUrl": "views/partials/revisions.html",
+            "templateUrl": "views/revisions.html",
             "script" : "scripts/revisionsModule/revisionsModule.js"
-        },
-        {
+        },{
             "name" : "settings",
-            "templateUrl": "views/partials/settings.html",
+            "templateUrl": "views/settings.html",
             "script" : "scripts/settingsModule/settingsModule.js"
         }]
 }

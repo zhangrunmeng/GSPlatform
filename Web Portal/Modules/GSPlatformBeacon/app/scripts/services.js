@@ -104,6 +104,15 @@ define(['angular'], function(angular){
                 return null;
             }
 
+            var getRevisionById = function(repo, revId){
+                for(var i=0; i<repo.revisions.length; i++){
+                    if(repo.revisions[i].id == revId){
+                        return repo.revisions[i];
+                    }
+                }
+                return null;
+            }
+
             var code2message = {
                 1000: 'hardcoded string in source code',
                 2000: 'missing key in localized resource file',
@@ -124,6 +133,7 @@ define(['angular'], function(angular){
                 buildRepositories : buildRepositories,
                 updateRevision : updateRevision,
                 getRepoById : getRepoById,
+                getRevisionById : getRevisionById,
                 code2message : code2message
             };
         })

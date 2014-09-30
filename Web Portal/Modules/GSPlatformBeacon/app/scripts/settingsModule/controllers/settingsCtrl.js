@@ -5,12 +5,17 @@ define(['angular',
         '../settingsModule'], function(
         angular,
         settingsModule){
-        return settingsModule.controller('settingsCtrl', [
+        return settingsModule.controller('beacon.settingsCtrl', [
             '$scope',
             '$element',
             'beacon.utility',
             'RestUtil',
             function ($scope, $element, BeaconUtil, RestUtil) {
+
+                var notify = function(){
+                    if(!$scope.$$phase)
+                        $scope.$apply();
+                }
 
                 $scope.addRepositories = function(e){
                     var sourceElement = angular.element(e.toElement);
@@ -104,7 +109,9 @@ define(['angular',
                         $scope.myGroupsList.push({isOpen: idx==0, name: key, repositories: $scope.myGroups[key]});
                         idx++;
                     }
+                    notify();
                 }
+
                 $scope.$on('bootstrap', bootstrap);
                 $scope.$emit('setCurrentView', 'Group Management');
 

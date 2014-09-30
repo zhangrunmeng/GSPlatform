@@ -1,0 +1,18 @@
+<div ng-controller="productsCtrl" class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="display-card">
+                <div high-chart-renderer chart-options="compareChartConf"></div>
+                <a class="btn btn-primary drillUpBtn" ng-click="drillUp()" ng-show="currentDisplayGroup!=undefined">
+                    <i class="fa fa-lg fa-fw fa-mail-reply"></i>Back to groups</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class='col-xs-12 col-sm-6 col-md-4 col-lg-4' ng-repeat='card in displayCards'>
+            <div class="grid-item">
+                <div high-chart-renderer chart-options="card.pieChartConf"></div>
+            </div>
+        </div>
+    </div>
+</div>
