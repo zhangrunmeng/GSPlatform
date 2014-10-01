@@ -78,7 +78,7 @@ define(['angular',
                     });
                     angular.forEach($installedModules, function(module){
                         $stateProvider.state(module.id, {
-                            url : '/' + module.id + '/',
+                            url : '/' + module.id,
                             templateUrl: 'modules/' + module.id + '/main.html',
                             resolve: {
                                 loadMyCtrl : ['$ocLazyLoad', function($ocLazyLoad){
@@ -104,12 +104,12 @@ define(['angular',
                             angular.forEach(module.routers, function(router){
                                 var conf = {
                                     parent : module.id,
-                                    url : router.url || (router.name + '/'),
+                                    url : router.url != undefined? router.url : (router.name + '/'),
                                     templateUrl : router.templateUrl,
                                     resolve : router.resolve
                                 };
                                 if(!module.default && router.default == true){
-                                    module.default = "/" + module.id + "/" + router.name + "/";
+                                    module.default = "/" + module.id + "/" + (router.url != undefined? router.url : (router.name + '/'));
                                 }
                                 if(router.controller){
                                     conf.controller = router.controller;

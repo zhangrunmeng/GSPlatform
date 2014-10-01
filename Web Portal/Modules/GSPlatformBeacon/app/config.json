@@ -8,13 +8,13 @@
     "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1",
     "routers" : [{
             "name" : "product",
-            "default" : true,
+            "url" : "/",
             "templateUrl": "views/partials/product.html",
             "script" : "scripts/ProductModule/ProductModule.js"
         },
         {
             "name" : "revisions",
-            "url"  : "revisions/:repo/:revision",
+            "url"  : "/revisions/:repo/:revision",
             "controller" : "revisionRouteCtrl",
             "templateUrl": "views/partials/revisions.html",
             "script" : "scripts/revisionsModule/revisionsModule.js"
