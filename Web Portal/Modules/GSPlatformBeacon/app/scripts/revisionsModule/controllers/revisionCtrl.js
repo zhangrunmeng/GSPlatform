@@ -13,69 +13,85 @@ define(['angular',
             'beacon.utility',
             'RestUtil',
             '$stateParams',
-            function ($scope, $element,$http,$state, BeaconUtil, RestUtil, $stateParams) {
+            '$timeout',
+            function ($scope, $element, $http, $state, BeaconUtil, RestUtil, $stateParams, $timeout) {
                 var trendSeries;
                 var seriesData;
 
                 var rendererTrendChart = function(){
-                    trendSeries = [];
-                    seriesData = {"ok":{name:'Ok', data:[]}, "error":{name:"Error",data:[]}, "warning":{name:"Warning",data:[]}};
-                    var revisions = $scope.selectedRepo.revisions;
-                    for(var i=0; i < revisions.length; i++){
-                        for(var type in seriesData){
-                            seriesData[type].data.push({name: revisions[i].time, y: revisions[i][type + 'Count']});
+                    $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
+                    if($scope.selectedRepo){
+                        trendSeries = [];
+                        seriesData = {"ok":{name:'Ok', data:[]}, "error":{name:"Error",data:[]}, "warning":{name:"Warning",data:[]}};
+                        var revisions = $scope.selectedRepo.revisions;
+                        for(var i=0; i < revisions.length; i++){
+                            for(var type in seriesData){
+                                seriesData[type].data.push({name: revisions[i].time, y: revisions[i][type + 'Count'], revision: revisions[i].id});
+                            }
                         }
-                    }
-                    for(var type in seriesData){
-                        trendSeries.push({
-                            name : seriesData[type].name,
-                            data : seriesData[type].data,
-                            visible : type != "ok"
-                        })
-                    }
-                    $scope.trendChartConf = {
-                        chart: {
-                            type: "area"
-                        },
-                        title: {
-                            text: "Trend of Defects"
-                        },
-                        xAxis: {
-                            type: 'category'
-                        },
-                        yAxis: {
-                            allowDecimals: false,
-                            min: 0,
+                        for(var type in seriesData){
+                            trendSeries.push({
+                                name : seriesData[type].name,
+                                data : seriesData[type].data,
+                                visible : type != "ok"
+                            });
+                        }
+                        $scope.trendChartConf = {
+                            chart: {
+                                type: "area"
+                            },
                             title: {
-                                text: "Defects Count"
-                            }
-                        },
-                        plotOptions: {
-                            area: {
-                                stacking: 'normal',
-                                lineWidth: 1
-                            }
-                        },
-                        series: trendSeries
+                                text: "Trend of Defects"
+                            },
+                            xAxis: {
+                                type: 'category'
+                            },
+                            yAxis: {
+                                allowDecimals: false,
+                                min: 0,
+                                title: {
+                                    text: "Defects Count"
+                                }
+                            },
+                            plotOptions: {
+                                area: {
+                                    stacking: 'normal',
+                                    lineWidth: 1,
+                                    events : {
+                                        click : function(e){
+                                            if(e.point.revision && e.point.revision != $scope.selectedRevision.id){
+                                                $scope.loading = true;
+                                                $scope.revisionId = e.point.revision;
+                                                getRevisionDetails();
+                                            }
+                                        }
+                                    },
+                                    cursor : 'pointer'
+                                }
+                            },
+                            series: trendSeries
+                        }
+                        getRevisionDetails();
                     }
                 }
 
                 var setFilteredDetails = function(data){
                     $scope.filteredData = data;
-                    $scope.totalDetails = data.length;
-                    if(!$scope.$$phase){
-                        $scope.$apply();
-                    }
+                    $scope.loading = false;
+                    //notify();
                 }
-
-                $scope.$watch('fieldFilters', function(v, o){
-
-                }, true);
 
                 var bootstrap = function(){
                     $scope.filteredData = [];
                     $scope.totalDetails = $scope.filteredData.length;
                     $scope.fieldFilters = {};
+                    $scope.filterOptions = {
+                        filterText: "",
+                        useExternalFilter: false
+                    };
+                    $scope.filterString = {
+                        value : ''
+                    }
                     $scope.detailGridOptions = {
                         data : 'filteredData',
                         columnDefs: [
@@ -86,23 +102,20 @@ define(['angular',
                             {field:'file', displayName:'File', width: "20%", resizable:true},
                             {field:'line', displayName:'Line', width: "auto"},
                             {field:'context', displayName: 'Context', width: "*",
-                                cellTemplate: 'modules/beacon/views/templates/detailContextCell.html',resizable:true, sortable: false}
+                                cellTemplate: 'modules/beacon/views/templates/detailContextCell.html',resizable:true, sortable: true}
                         ],
                         showHeaderFilter : true,
                         enableColumnReordering : true,
                         enableColumnResize : true,
                         enablePaging: true,
                         showFooter: false,
+                        showFilter: true,
                         pagingOptions: $scope.pagingOptions,
-                        totalServerItems: 'totalDetails',
-//                        selectedItems : $scope.selectedJobs,
+//                        selectedItems : $scope.selectedDetails,
                         showSelectionCheckbox : false,
-                        multiSelect : false
+                        multiSelect : false,
+                        filterOptions: $scope.filterOptions
                     };
-                    getRevisionDetails();
-                }
-
-                var getRevisionDetails = function(){
                     if(!$scope.repositoryId || !$scope.revisionId){
                         var defaultRepo = '';
                         var defaultRev = 'latest';
@@ -114,13 +127,21 @@ define(['angular',
                         $state.go('revisions', {'repo': defaultRepo, 'revision': defaultRev});
                         return;
                     }
-                    $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
+                    rendererTrendChart();
+                }
+
+                var getRevisionDetails = function(){
                     if($scope.selectedRepo){
-                        RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
-                            $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
-                            setFilteredDetails($scope.selectedRevision.details)
-                            rendererTrendChart();
-                        });
+                        var revision = BeaconUtil.getRevisionById($scope.selectedRepo, $scope.revisionId);
+                        if(!revision || !revision.details || revision.details.length == 0){
+                            RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
+                                $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
+                                $scope.$apply(setFilteredDetails($scope.selectedRevision.details));
+                            });
+                        } else {
+                            $scope.selectedRevision = revision;
+                            $timeout(function(){setFilteredDetails($scope.selectedRevision.details)}, 10);
+                        }
                     }
 
                     //For test

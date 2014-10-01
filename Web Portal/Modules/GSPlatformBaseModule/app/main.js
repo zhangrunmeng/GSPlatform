@@ -88,12 +88,12 @@ var less = {
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
 window.$theme = "default";
+window.DEBUG_MODE = true;
 
 require([
     'jquery',
     'jqueryui',
     'angular',
-    'bootstrap',
     'text',
     'less',
     'highcharts',
@@ -102,39 +102,57 @@ require([
     'hc-data'
 ], function($, jqueryui, angular) {
 
-    $.ajax("/api/app/", {
-        dataType : "json"
-    }).done(function(data) {
-        if(!data) return;
-        for(var i=data.length-1; i >= 0; i--){
-            if(data[i].id == "framework"){
-                data.splice(i, 1);
-                break;
+    if(!DEBUG_MODE){
+        $.ajax("/api/app/", {
+            dataType : "json"
+        }).done(function(data) {
+            if(!data) return;
+            for(var i=data.length-1; i >= 0; i--){
+                if(data[i].id == "framework"){
+                    data.splice(i, 1);
+                    break;
+                }
             }
-        }
-        window.$installedModules = [];
-        var count = data.length - 1;
-        var getModuleConfig = function(){
-            if(count >= 0){
-                var module = data[count];
-                require(['text!modules/' + module.id + "/config.json"], function(config){
-                    try {
-                        if(config)
-                            $installedModules.push(JSON.parse(config));
-                        count --;
-                        getModuleConfig();
-                    } catch(e){
-                        console.error("Fail to parse config file for " + module.id);
-                    }
-                });
-            } else {
-                require(['app'], function(app){
-                    angular.element().ready(function() {
-                        angular.resumeBootstrap([app['name']]);
+            window.$installedModules = [];
+            var count = data.length - 1;
+            var getModuleConfig = function(){
+                if(count >= 0){
+                    var module = data[count];
+                    require(['text!modules/' + module.id + "/config.json"], function(config){
+                        try {
+                            if(config)
+                                $installedModules.push(JSON.parse(config));
+                            count --;
+                            getModuleConfig();
+                        } catch(e){
+                            console.error("Fail to parse config file for " + module.id);
+                        }
                     });
-                });
+                } else {
+                    require(['app'], function(app){
+                        angular.element().ready(function() {
+                            angular.resumeBootstrap([app['name']]);
+                        });
+                    });
+                }
             }
-        }
-        getModuleConfig();
-    });
+            getModuleConfig();
+        });
+    } else {
+        window.$installedModules = [];
+        require(['text!modules/beacon/config.json'], function(config){
+            try {
+                if(config)
+                    $installedModules.push(JSON.parse(config));
+                    require(['app'], function(app){
+                        angular.element().ready(function() {
+                            angular.resumeBootstrap([app['name']]);
+                        });
+                    });
+            } catch(e){
+                console.error("Fail to parse config file for " + module.id);
+            }
+        });
+    }
+
 });

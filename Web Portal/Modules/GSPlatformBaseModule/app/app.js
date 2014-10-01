@@ -10,6 +10,7 @@
  */
 define(['angular',
     'common/utils/Rest',
+    'common/utils/HighchartsUtil',
     'common/components/gridView',
     'restAngular',
     'angularUIRoute',
@@ -24,6 +25,7 @@ define(['angular',
     ], function(
         angular,
         rest,
+        highchartsUtil,
         grid
     ){
         var compileRouters = function(module, routers){
@@ -52,6 +54,7 @@ define(['angular',
             'ngGrid',
             'oc.lazyLoad',
             rest.name,
+            highchartsUtil.name,
             grid.name])
             .config([
                 '$ocLazyLoadProvider',

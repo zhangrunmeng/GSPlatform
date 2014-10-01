@@ -27,6 +27,7 @@ module.exports = function (grunt) {
 
     var appConfig = {
         app  : bowerConf.appPath || 'app',
+        id   : bowerConf.id,
         dist : 'dist',
         url  : bowerConf.server,
         name : bowerConf.name
@@ -70,7 +71,7 @@ module.exports = function (grunt) {
                 files: [
                     '<%= yeoman.app %>/{,*/}*.html',
                     '.tmp/styles/{,*/}*.css',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                    '<%= yeoman.app %>/styles/themes/**/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
         },
@@ -81,19 +82,26 @@ module.exports = function (grunt) {
                 port: 9000,
                 // Change this to '0.0.0.0' to access the server from outside.
                 hostname: 'localhost',
-                livereload: 35729
+                base: '.tmp'
+                // livereload: 35729
+            },
+            dev: {
+                options: {
+                    open: true,
+                    keepalive: true
+                }
             },
             livereload: {
                 options: {
                     open: true,
                     middleware: function (connect) {
                         return [
-                            connect.static('.tmp'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
-                            connect.static(appConfig.app)
+                            connect.static('.tmp')
+//                            connect().use(
+//                                '/bower_components',
+//                                connect.static('./bower_components')
+//                            ),
+                            //connect.static(appConfig.app)
                         ];
                     }
                 }
@@ -314,35 +322,36 @@ module.exports = function (grunt) {
         // Copies remaining files to places other tasks can use
         copy: {
             dist: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    cwd: '<%= yeoman.app %>',
-                    dest: '<%= yeoman.dist %>',
-                    src: [
-                        '*.{ico,png,txt}',
-                        '.htaccess',
-                        '*.html',
-                        'views/{,*/}*.html',
-                        'images/{,*/}*.{webp}',
-                        'fonts/*'
-                    ]
-                }, {
-                    expand: true,
-                    cwd: '.tmp/images',
-                    dest: '<%= yeoman.dist %>/images',
-                    src: ['generated/*']
-                }, {
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/lib/bootstrap/dist',
-                    src: 'fonts/*',
-                    dest: '<%= yeoman.dist %>'
-                },{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/lib/font-awesome',
-                    src: 'fonts/*',
-                    dest: '<%= yeoman.dist %>'
-                }
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            '*.{ico,png,txt}',
+                            '.htaccess',
+                            '*.html',
+                            'views/{,*/}*.html',
+                            'images/{,*/}*.{webp}',
+                            'fonts/*'
+                        ]
+                    }, {
+                        expand: true,
+                        cwd: '.tmp/images',
+                        dest: '<%= yeoman.dist %>/images',
+                        src: ['generated/*']
+                    }, {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/lib/bootstrap/dist',
+                        src: 'fonts/*',
+                        dest: '<%= yeoman.dist %>'
+                    },{
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/lib/font-awesome',
+                        src: 'fonts/*',
+                        dest: '<%= yeoman.dist %>'
+                    }
                 ]
             },
             styles: {
@@ -350,16 +359,51 @@ module.exports = function (grunt) {
                 cwd: '<%= yeoman.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+            all: {
+                files: [{
+                        expand: true,
+                        cwd: '../GSPlatformBaseModule/app/',
+                        dest: '.tmp',
+                        src: '**/*.*'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/',
+                        dest: '.tmp/modules/<%= yeoman.id %>',
+                        src: '**/*.*'
+                    }
+                ]
+            },
+            dev: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/',
+                        dest: '.tmp/modules/<%= yeoman.id %>',
+                        src: '**/*.*'
+                    }
+                ]
+            },
+            base: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '../GSPlatformBaseModule/app/',
+                        dest: '.tmp',
+                        src: '**/*.*'
+                    },
+                ]
             }
         },
 
         // Run some tasks in parallel to speed up the build process
         concurrent: {
             server: [
-                'copy:styles'
+                'copy:all'
             ],
             test: [
-                'copy:styles'
+                'copy:all'
             ],
             dist: [
                 'copy:styles',
@@ -445,18 +489,18 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
-            'wiredep',
+//            'wiredep',
             'concurrent:server',
-            'autoprefixer',
-            'connect:livereload',
-            'watch'
+//            'autoprefixer',
+            'connect:dev',
+//            'watch'
         ]);
     });
 
     grunt.registerTask('test', [
         'clean:server',
         'concurrent:test',
-        'autoprefixer',
+//        'autoprefixer',
         'connect:test',
         'karma'
     ]);
@@ -505,6 +549,8 @@ module.exports = function (grunt) {
         }
     );
 
-    grunt.registerTask('dev', ['less:development', 'compress', 'install']);
+//    grunt.registerTask('dev', ['less:development', 'compress', 'install']);
+    grunt.registerTask('dev', ['copy:dev']);
+    grunt.registerTask('base', ['copy:base']);
 
 };
