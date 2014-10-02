@@ -4,9 +4,8 @@
 define(['angular',
        'common/components/highChartRenderer',
        'common/components/enhancedNgGrid',
-       'lib/angular-dragdrop/src/angular-dragdrop',
        './scripts/services',
-        'css!./styles/themes/css/' + $theme + '/app'
+       'css!./styles/themes/css/' + $theme + '/app'
     ], function(angular, highChartRenderer, enhancedNgGrid){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
@@ -30,25 +29,26 @@ define(['angular',
                 };
             }
         }
+
         return angular.module('beacon',[
-                'ngDragDrop',
                 highChartRenderer.name,
                 enhancedNgGrid.name,
                 'beacon.services'
             ])
             .controller('beaconCtrl', ['$scope', '$element', '$http', 'beacon.utility', 'RestUtil', 'HighchartsUtil',
                 function($scope, $element, $http, BeaconUtil, RestUtil, HighchartsUtil){
+                    $scope.test = [];
                     HighchartsUtil.setOptions(HighChartConfig.createHighchartsColor());
                     $scope.repositories = {};
                     $scope.myGroups = {};
-    //                $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
-    //                    $scope.repositories = BeaconUtil.buildRepositories(result.data);
-    //                    $scope.$broadcast('bootstrap');
-    //                });
-                    RestUtil.jsonp('repository', function(result){
-                        $scope.repositories = BeaconUtil.buildRepositories(result);
+                    $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
+                        $scope.repositories = BeaconUtil.buildRepositories(result.data);
                         $scope.$broadcast('bootstrap');
                     });
+//                    RestUtil.jsonp('repository', function(result){
+//                        $scope.repositories = BeaconUtil.buildRepositories(result);
+//                        $scope.$broadcast('bootstrap');
+//                    });
                     $scope.$on('setCurrentView', function(e, view){
                         $scope.currentView = view;
                     });

@@ -1,11 +1,9 @@
 /**
  * Created by runmengz on 9/26/2014.
  */
-define(['angular',
-        '../settingsModule'], function(
-        angular,
-        settingsModule){
-        return settingsModule.controller('beacon.settingsCtrl', [
+define(['angular'], function(
+        angular){
+        return angular.module('beacon.settingsModule').controller('beacon.settingsCtrl', [
             '$scope',
             '$element',
             'beacon.utility',

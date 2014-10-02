@@ -1,16 +1,15 @@
 /**
  * Created by runmengz on 9/22/2014.
  */
-define(['angular',
-        '../ProductModule'], function(
-        angular,
-        productModule){
-        return productModule.controller('productsCtrl', [
+define(['angular'], function(
+        angular){
+        return angular.module('beacon.productModule').controller('productsCtrl', [
                 '$scope',
                 '$state',
                 'beacon.utility',
                 'RestUtil',
                 function ($scope, $state, BeaconUtil, RestUtil) {
+                    $scope.test = [];
                     var groups, series, groupSeries, groupCards, drillDownSeries;
                     var notify = function(){
                         if(!$scope.$$phase)
@@ -21,7 +20,6 @@ define(['angular',
                         $scope.compareChartConf.series = groupSeries;
                         $scope.displayCards = groupCards;
                         delete $scope.currentDisplayGroup;
-                        notify();
                     };
 
                     showRevisions = function(reponame){
@@ -62,7 +60,7 @@ define(['angular',
                                 if($scope.currentDisplayGroup){
                                     showRevisions(id)
                                 } else {
-                                    drillDownGroup(id);
+                                    $scope.$apply(drillDownGroup(id));
                                 }
                             }
                         };
@@ -193,7 +191,7 @@ define(['angular',
                         }
                     }
 
-                    var initial = function(){
+                    this.initial = function(){
                         $scope.displayCards = [];
                         groups = [];
                         series = {
@@ -220,16 +218,19 @@ define(['angular',
                         drillDownSeries = [];
                     }
 
-                    var bootstrap = function(){
-                        initial();
+                    this.bootstrap = function(){
+                        this.initial();
                         collectByGroups($scope.repositories);
                         collectByGroups($scope.myGroups);
                         renderGroupChart();
                         $scope.displayCards = groupCards;
-                        notify();
+                        //notify();
                     }
-                    $scope.$on('bootstrap', bootstrap);
+                    var me = this;
+                    $scope.$on('bootstrap', function(){
+                        me.bootstrap();
+                    });
                     $scope.$emit('setCurrentView', 'Products View');
-                    bootstrap();
+//                    this.bootstrap();
                 }]);
 });

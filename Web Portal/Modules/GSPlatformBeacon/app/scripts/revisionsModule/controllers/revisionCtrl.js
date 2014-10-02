@@ -1,11 +1,9 @@
 /**
  * Created by runmengz on 9/26/2014.
  */
-define(['angular',
-        '../revisionsModule'], function(
-        angular,
-        module){
-        return module.controller('revisionCtrl', [
+define(['angular'], function(
+        angular){
+        return angular.module('beacon.revisionsModule').controller('revisionCtrl', [
             '$scope',
             '$element',
             '$http',
@@ -131,26 +129,28 @@ define(['angular',
                 }
 
                 var getRevisionDetails = function(){
-                    if($scope.selectedRepo){
-                        var revision = BeaconUtil.getRevisionById($scope.selectedRepo, $scope.revisionId);
-                        if(!revision || !revision.details || revision.details.length == 0){
-                            RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
-                                $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
-                                $scope.$apply(setFilteredDetails($scope.selectedRevision.details));
-                            });
-                        } else {
-                            $scope.selectedRevision = revision;
-                            $timeout(function(){setFilteredDetails($scope.selectedRevision.details)}, 10);
-                        }
-                    }
+//                    if($scope.selectedRepo){
+//                        var revision = BeaconUtil.getRevisionById($scope.selectedRepo, $scope.revisionId);
+//                        if(!revision || !revision.details || revision.details.length == 0){
+//                            RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
+//                                $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
+//                                $scope.$apply(setFilteredDetails($scope.selectedRevision.details));
+//                            });
+//                        } else {
+//                            $scope.selectedRevision = revision;
+//                            $timeout(function(){setFilteredDetails($scope.selectedRevision.details)}, 10);
+//                        }
+//                    }
 
                     //For test
-//                    $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
-//                    $http.get(BeaconUtil.modulePath + "data/revision.json").then(function(result){
-//                        $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
-//                        setFilteredDetails($scope.selectedRevision.details);
-//                        rendererTrendChart();
-//                    });
+                    if($scope.selectedRepo) {
+                        $http.get(BeaconUtil.modulePath + "data/revision.json").then(function (result) {
+                            $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
+                            $timeout(function () {
+                                setFilteredDetails($scope.selectedRevision.details)
+                            }, 10);
+                        });
+                    }
                     //End
                 }
 

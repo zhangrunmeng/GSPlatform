@@ -14,21 +14,27 @@ module.exports = function(config) {
     basePath: '../',
 
     // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['jasmine'],
+    frameworks: ['requirejs', 'jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-animate/angular-animate.js',
-      'bower_components/angular-cookies/angular-cookies.js',
-      'bower_components/angular-resource/angular-resource.js',
-      'bower_components/angular-route/angular-route.js',
-      'bower_components/angular-sanitize/angular-sanitize.js',
-      'bower_components/angular-touch/angular-touch.js',
-      'app/scripts/**/*.js',
-      'test/mock/**/*.js',
-      'test/spec/**/*.js'
+        {pattern: 'lib/jquery/dist/jquery.js', included: false},
+        {pattern: 'lib/jquery-ui/jquery-ui.js',included: false},
+        {pattern: 'lib/angular/angular.js',included: false},
+        {pattern: 'lib/angular-mocks/angular-mocks.js',included: false},
+        {pattern: 'lib/angular-dragdrop/src/angular-dragdrop.js',included: false},
+        {pattern: 'lib/angular-grid/ng-grid-2.0.12.debug.js',included: false},
+        {pattern: 'lib/restangular/dist/restangular.js',included: false},
+        {pattern: 'lib/lodash/dist/lodash.compat.js', included: false},
+        {pattern: 'lib/require-css/css.js', included: false},
+        {pattern: 'common/**/*.js', included: false},
+        {pattern: 'app/scripts/**/*.js', included: false},
+        {pattern: 'app/styles/**/*.css', included: false},
+        {pattern: 'app/app.js', included: false},
+        {pattern: 'test/unit/**/*.js', included: false},
+        'test/test-main.js'
+//        'test/mock/**/*.js',
+//        'test/scripts/**/*.js',
     ],
 
     // list of files / patterns to exclude
@@ -46,13 +52,15 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'PhantomJS'
+      'PhantomJS',
     ],
 
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
-      'karma-jasmine'
+      'karma-jasmine',
+      'karma-requirejs',
+      'karma-htmlfile-reporter'
     ],
 
     // Continuous Integration mode
@@ -63,8 +71,13 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-    logLevel: config.LOG_INFO
+    logLevel: config.LOG_INFO,
 
+    reporters: ['progress', 'html'],
+
+    htmlReporter: {
+      outputFile: 'test/units.html'
+    }
     // Uncomment the following lines if you are using grunt's server to run the tests
     // proxies: {
     //   '/': 'http://localhost:9000/'

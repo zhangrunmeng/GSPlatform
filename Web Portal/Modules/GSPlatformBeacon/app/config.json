@@ -1,6 +1,6 @@
 {
     "id" : "beacon",
-    "name" : "Beacon",
+    "name" : "Beacon23",
     "module" : "beacon",
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
@@ -10,7 +10,7 @@
             "name" : "product",
             "url" : "/",
             "templateUrl": "views/product.html",
-            "script" : "scripts/ProductModule/ProductModule.js"
+            "script" : "scripts/productModule/productModule.js"
         },{
             "name" : "revisions",
             "url"  : "/revisions/:repo/:revision",

@@ -18,6 +18,7 @@ define(['angular',
     'angularMessage',
     'angularGrid',
     'ocLazyload',
+    'angularDnD',
     'css!styles/themes/css/' + $theme + '/app',
     'css!styles/themes/css/' + $theme + '/custom',
     'css!styles/themes/css/' + $theme + '/common'
@@ -30,14 +31,14 @@ define(['angular',
     ){
         var compileRouters = function(module, routers){
             angular.forEach(routers, function(router){
-               var moduleName = router.name + 'Module';
+               var moduleName = module.id + '.' + router.name + 'Module';
                var modulePath = 'modules/' + module.id +'/';
                router.templateUrl = modulePath + router.templateUrl;
                router.resolve = {
                    loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                       angular.module(module.id + '.' + moduleName, []);
+                       angular.module(moduleName, []);
                        return $ocLazyLoad.load({
-                           name: module.id + '.' + moduleName,
+                           name: moduleName,
                            files: [modulePath + router.script],
                            cache: false
                        });
@@ -53,6 +54,7 @@ define(['angular',
             'ngMessages',
             'ngGrid',
             'oc.lazyLoad',
+            'ngDragDrop',
             rest.name,
             highchartsUtil.name,
             grid.name])
@@ -107,7 +109,7 @@ define(['angular',
                             angular.forEach(module.routers, function(router){
                                 var conf = {
                                     parent : module.id,
-                                    url : router.url != undefined? router.url : (router.name + '/'),
+                                    url : router.url != undefined? router.url : ('/' + router.name),
                                     templateUrl : router.templateUrl,
                                     resolve : router.resolve
                                 };

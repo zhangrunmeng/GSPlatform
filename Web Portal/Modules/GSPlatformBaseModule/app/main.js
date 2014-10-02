@@ -13,6 +13,7 @@ function getQueryString(name) {
 var requireConfig = {
     paths: {
         angular: 'lib/angular/angular',
+        angularDnD : 'lib/angular-dragdrop/src/angular-dragdrop',
         angularRoute: 'lib/angular-route/angular-route',
         angularUIRoute : "lib/angular-ui-router/release/angular-ui-router",
         angularUIRouteHelper : 'lib/angular-ui-router.stateHelper/statehelper',

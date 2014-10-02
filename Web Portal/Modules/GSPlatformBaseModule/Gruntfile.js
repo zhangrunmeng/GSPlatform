@@ -32,7 +32,6 @@ module.exports = function (grunt) {
     name : bowerConf.name
   };
 
-
   // Define the configuration for all the tasks
   grunt.initConfig({
 
