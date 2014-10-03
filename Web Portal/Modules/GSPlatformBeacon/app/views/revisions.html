@@ -1,4 +1,4 @@
-<div ng-controller="revisionCtrl" class="container">
+<div ng-controller="revisionsCtrl" class="container">
    <div class="row">
        <div class="col-lg-6">
            <h3>{{selectedRepo.shortname}} <small>{{selectedRepo.product}}</small></h3>
@@ -22,13 +22,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel-body">
-                <p class="bg-info revision-title">
-                    <progressbar ng-show="loading" class="progress-striped active" value="100" max="100" type="primary"></progressbar>
-                    {{selectedRevision.id + " Defects"}}
-                </p>
-                <div ng-grid="detailGridOptions" class="detail-grid"></div>
-            </div>
+            <div ui-view></div>
         </div>
     </div>
 </div>

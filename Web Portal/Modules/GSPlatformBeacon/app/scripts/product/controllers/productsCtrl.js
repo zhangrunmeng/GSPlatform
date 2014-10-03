@@ -3,7 +3,8 @@
  */
 define(['angular'], function(
         angular){
-        return angular.module('beacon.productModule').controller('productsCtrl', [
+        return angular.module('beacon.product')
+            .controller('productsCtrl', [
                 '$scope',
                 '$state',
                 'beacon.utility',
@@ -11,10 +12,10 @@ define(['angular'], function(
                 function ($scope, $state, BeaconUtil, RestUtil) {
                     $scope.test = [];
                     var groups, series, groupSeries, groupCards, drillDownSeries;
-                    var notify = function(){
-                        if(!$scope.$$phase)
-                            $scope.$apply();
-                    }
+//                    var notify = function(){
+//                        if(!$scope.$$phase)
+//                            $scope.$apply();
+//                    }
                     $scope.drillUp = function(){
                         $scope.compareChartConf.title.text = "All Groups Defects";
                         $scope.compareChartConf.series = groupSeries;
@@ -28,7 +29,7 @@ define(['angular'], function(
                             if(currentGPRepos){
                                 for(var i=0; i < currentGPRepos.length; i++){
                                     if(currentGPRepos[i].shortname === reponame){
-                                        $state.go('revisions', {'repo' : currentGPRepos[i].id, 'revision' : 'latest'});
+                                        $state.go('revisions', {'repo' : currentGPRepos[i].id});
                                         return;
                                     }
                                 }
@@ -108,7 +109,7 @@ define(['angular'], function(
                         $scope.compareChartConf.title.text = gp + " Defects";
                         $scope.compareChartConf.series = series;
                         $scope.currentDisplayGroup = gp;
-                        notify();
+                        //notify();
                     };
 
                     var renderGroupChart = function() {
@@ -134,7 +135,7 @@ define(['angular'], function(
                                     events : {
                                         click : function(e){
                                             if(!$scope.currentDisplayGroup){
-                                                drillDownGroup(e.point.name);
+                                                $scope.$apply(drillDownGroup(e.point.name));
                                             } else {
                                                 showRevisions(e.point.name);
                                             }
@@ -231,6 +232,6 @@ define(['angular'], function(
                         me.bootstrap();
                     });
                     $scope.$emit('setCurrentView', 'Products View');
-//                    this.bootstrap();
+                    this.bootstrap();
                 }]);
 });

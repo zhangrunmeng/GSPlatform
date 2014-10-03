@@ -3,5 +3,5 @@
  */
 define(['angular',
     './controllers/settingsCtrl'], function(angular){
-    return angular.module('beacon.settingsModule');
+    return angular.module('beacon.settings');
 });

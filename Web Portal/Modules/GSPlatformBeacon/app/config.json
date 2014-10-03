@@ -1,6 +1,6 @@
 {
     "id" : "beacon",
-    "name" : "Beacon23",
+    "name" : "Beacon",
     "module" : "beacon",
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
@@ -10,16 +10,24 @@
             "name" : "product",
             "url" : "/",
             "templateUrl": "views/product.html",
-            "script" : "scripts/productModule/productModule.js"
+            "script" : "scripts/product/product.js"
         },{
             "name" : "revisions",
-            "url"  : "/revisions/:repo/:revision",
-            "controller" : "revisionRouteCtrl",
+            "url"  : "/revisions/:repo",
+            "controller" : "revisionsRouteCtrl",
             "templateUrl": "views/revisions.html",
-            "script" : "scripts/revisionsModule/revisionsModule.js"
+            "script" : "scripts/revisions/revisions.js",
+            "children" : [
+                {
+                    "name" : "revision",
+                    "url" : "/revision/:rev",
+                    "controller" : "revisionRouteCtrl",
+                    "templateUrl": "scripts/revisions/revision/templates/revision.html",
+                    "script" : "scripts/revisions/revision/revision.js"
+                }]
         },{
             "name" : "settings",
             "templateUrl": "views/settings.html",
-            "script" : "scripts/settingsModule/settingsModule.js"
+            "script" : "scripts/settings/settings.js"
         }]
 }

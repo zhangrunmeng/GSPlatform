@@ -176,8 +176,8 @@ module.exports = function (grunt) {
                 files: [{
                     src: ['<%= yeoman.app %>/styles/themes/css/']
                 },{
-                    src: ['styles/themes/css/'],
-                    cwd: '../GSPlatformBaseModule/app/'
+                    cwd: '../GSPlatformBaseModule/app/styles/themes/',
+                    src: ['css/']
                 }]
             }
         },
@@ -620,7 +620,7 @@ module.exports = function (grunt) {
         grunt.task.run(['clean:styles']);
     });
 
-    grunt.registerTask('cleanup', 'Clean up workspace', function(){
+    grunt.registerTask('cls', 'Clean up workspace', function(){
         grunt.task.run(['clean:zip','clean:server','clean:test','clean:styles']);
     })
 };

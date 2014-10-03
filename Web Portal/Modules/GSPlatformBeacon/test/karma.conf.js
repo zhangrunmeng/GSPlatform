@@ -21,6 +21,7 @@ module.exports = function(config) {
         {pattern: 'lib/jquery/dist/jquery.js', included: false},
         {pattern: 'lib/jquery-ui/jquery-ui.js',included: false},
         {pattern: 'lib/angular/angular.js',included: false},
+        {pattern: 'lib/angular-ui-router/release/angular-ui-router.js',included: false},
         {pattern: 'lib/angular-mocks/angular-mocks.js',included: false},
         {pattern: 'lib/angular-dragdrop/src/angular-dragdrop.js',included: false},
         {pattern: 'lib/angular-grid/ng-grid-2.0.12.debug.js',included: false},
@@ -52,12 +53,13 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'PhantomJS',
+      'PhantomJS'
     ],
 
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
       'karma-jasmine',
       'karma-requirejs',
       'karma-htmlfile-reporter'
@@ -77,7 +79,9 @@ module.exports = function(config) {
 
     htmlReporter: {
       outputFile: 'test/units.html'
-    }
+    },
+
+    type: 'html'
     // Uncomment the following lines if you are using grunt's server to run the tests
     // proxies: {
     //   '/': 'http://localhost:9000/'

@@ -5,5 +5,5 @@ define([
     'angular',
     './controllers/productsCtrl'],
     function(angular){
-        return angular.module('beacon.productModule');
+        return angular.module('beacon.product');
     });

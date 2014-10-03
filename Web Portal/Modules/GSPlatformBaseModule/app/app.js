@@ -29,23 +29,37 @@ define(['angular',
         highchartsUtil,
         grid
     ){
-        var compileRouters = function(module, routers){
-            angular.forEach(routers, function(router){
-               var moduleName = module.id + '.' + router.name + 'Module';
-               var modulePath = 'modules/' + module.id +'/';
-               router.templateUrl = modulePath + router.templateUrl;
-               router.resolve = {
-                   loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
-                       angular.module(moduleName, []);
-                       return $ocLazyLoad.load({
-                           name: moduleName,
-                           files: [modulePath + router.script],
-                           cache: false
-                       });
-                   }]
-               }
-            });
-            return routers;
+        var compileRouters = function(modulePath, parent, parentModule, routers, result){
+            if(routers && routers instanceof Array){
+                angular.forEach(routers, function(router){
+                    if(router.name){
+                        var moduleName = parentModule + '.' + router.name;
+                        router.templateUrl = modulePath + router.templateUrl;
+                        var url;
+                        if(router.url){
+                            url = router.url;
+                        } else {
+                            url = "/" + router.name;
+                        }
+                        if(url.slice(0, 1) != "/")
+                            url = "/" + url;
+                        router.url = url;
+                        router.resolve = {
+                            loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+                                angular.module(moduleName, []);
+                                return $ocLazyLoad.load({
+                                    name: moduleName,
+                                    files: [modulePath + router.script],
+                                    cache: false
+                                });
+                            }]
+                        }
+                        router.parent = parent;
+                        result.push(router);
+                        compileRouters(modulePath, router.name, moduleName, router.children, result);
+                    }
+                });
+            }
         }
 
         return angular.module('gsPlatformClient',[
@@ -98,29 +112,24 @@ define(['angular',
                                         cache: false
                                     });
                                 }]
-                            },
-                            controller: ['$stateParams','$scope', function($stateParams, $scope){
-                                $scope.path = $stateParams.path;
-                            }]
+                            }
                         });
+                        var routers = [];
+                        compileRouters('modules/' + module.id + '/', module.id, module.id, module.routers, routers);
 
-                        if(module.routers){
-                            compileRouters(module, module.routers);
-                            angular.forEach(module.routers, function(router){
-                                var conf = {
-                                    parent : module.id,
-                                    url : router.url != undefined? router.url : ('/' + router.name),
-                                    templateUrl : router.templateUrl,
-                                    resolve : router.resolve
-                                };
-                                if(!module.default && router.default == true){
-                                    module.default = "/" + module.id + "/" + (router.url != undefined? router.url : (router.name + '/'));
-                                }
-                                if(router.controller){
-                                    conf.controller = router.controller;
-                                }
-                                $stateProvider.state(router.name, conf);
-                            });
+                        angular.forEach(routers, function(router){
+                            var conf = router;
+                            if(!module.default && conf.default == true){
+                                module.default = "/" + module.id + conf.url;
+                            }
+                            $stateProvider.state(router.name, conf);
+                        });
+                        if(!module.default){
+                            if(routers.length > 0){
+                                module.default = "/" + module.id + routers[0].url;
+                            } else {
+                                module.default = "/" + module.id;
+                            }
                         }
                     });
             }])

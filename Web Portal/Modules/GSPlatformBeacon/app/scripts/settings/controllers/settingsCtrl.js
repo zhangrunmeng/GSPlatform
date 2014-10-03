@@ -3,7 +3,7 @@
  */
 define(['angular'], function(
         angular){
-        return angular.module('beacon.settingsModule').controller('beacon.settingsCtrl', [
+        return angular.module('beacon.settings').controller('beacon.settingsCtrl', [
             '$scope',
             '$element',
             'beacon.utility',

@@ -29,6 +29,7 @@ require.config({
       'angularMocks': root + 'angular-mocks/angular-mocks',
       'angularDnD' : root + 'angular-dragdrop/src/angular-dragdrop',
       'angularGrid' : root + 'angular-grid/ng-grid-2.0.12.debug',
+      'angularUIRouter' : root + 'angular-ui-router/release/angular-ui-router',
       'restAngular' : root + 'restangular/dist/restangular',
       'lodashCompat' : root + 'lodash/dist/lodash.compat'
     },
@@ -36,7 +37,7 @@ require.config({
     shim: {
         'angular' : {'exports' : 'angular'},
 //        'angularRoute': ['angular'],
-//        'angularUIRoute': ['angular'],
+        'angularUIRouter': ['angular'],
 //        'angularUIRouteHelper': ['angular', '  '],
 //        'angularMessage' : ['angular'],
         'angularGrid' : ['angular', 'jquery', 'lodashCompat'],
@@ -64,7 +65,7 @@ require.config({
 require(['angular'], function(angular){
     'use strict';
     angular.module('beacon',[]);
-    angular.module('beacon.productModule',[]);
-    angular.module('beacon.revisionsModule',[]);
-    angular.module('beacon.settingsModule',[]);
+    angular.module('beacon.product',[]);
+    angular.module('beacon.revisions',[]);
+    angular.module('beacon.settings',[]);
 });

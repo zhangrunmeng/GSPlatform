@@ -5,6 +5,7 @@ define([
     'angularMocks',
     'angularDnD',
     'angularGrid',
-    'restAngular'], function(angular){
+    'restAngular',
+    'app/app'], function(angular){
     'use strict';
 });
