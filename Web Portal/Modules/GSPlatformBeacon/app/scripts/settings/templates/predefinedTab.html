@@ -1,0 +1,12 @@
+<div style="margin-top: 30px">
+    <accordion close-others="false">
+        <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in predefinedGroupsList">
+            <div class='col-xs-12 col-sm-6 col-md-6 col-lg-4' ng-repeat="repository in group.repositories">
+                <div class="repo-item">
+                    <div class="repo">{{repository.shortname}}</div>
+                    <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
+</div>

@@ -6,7 +6,7 @@ define(['angular',
        'common/components/enhancedNgGrid',
        './scripts/services',
        'css!./styles/themes/css/' + $theme + '/app'
-    ], function(angular, highChartRenderer, enhancedNgGrid){
+    ], function(angular, highChartRenderer, enhancedNgGrid, beaconservices){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
             COLOR_OK: '#A4E2C6',
@@ -33,11 +33,10 @@ define(['angular',
         return angular.module('beacon',[
                 highChartRenderer.name,
                 enhancedNgGrid.name,
-                'beacon.services'
+                beaconservices.name
             ])
             .controller('beaconCtrl', ['$scope', '$element', '$http', 'beacon.utility', 'RestUtil', 'HighchartsUtil',
                 function($scope, $element, $http, BeaconUtil, RestUtil, HighchartsUtil){
-                    $scope.test = [];
                     HighchartsUtil.setOptions(HighChartConfig.createHighchartsColor());
                     $scope.repositories = {};
                     $scope.myGroups = {};

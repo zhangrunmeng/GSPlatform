@@ -17,7 +17,7 @@ define([
         // Initialize the controller and a mock scope
         beforeEach(inject(['$controller','$rootScope','$state','beacon.utility', function ($controller, $rootScope, $state, _beaconUtil_) {
             scope = $rootScope.$new();
-            productsCtrl = $controller('productsCtrl', {
+            productsCtrl = $controller('beacon.productsCtrl', {
                 $scope: scope,
                 $state: $state,
                 'beacon.utility' : _beaconUtil_,

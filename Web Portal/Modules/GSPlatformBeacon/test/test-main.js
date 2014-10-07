@@ -16,6 +16,16 @@ Object.keys(window.__karma__.files).forEach(function(file) {
     }
 });
 
+var deps = [
+    'angular',
+    'jquery',
+    'jqueryui',
+    'angularMocks',
+//    'angularDnD',
+//    'angularGrid',
+    'restAngular'
+];
+
 var root = 'lib/';
 
 require.config({
@@ -36,9 +46,7 @@ require.config({
 
     shim: {
         'angular' : {'exports' : 'angular'},
-//        'angularRoute': ['angular'],
         'angularUIRouter': ['angular'],
-//        'angularUIRouteHelper': ['angular', '  '],
 //        'angularMessage' : ['angular'],
         'angularGrid' : ['angular', 'jquery', 'lodashCompat'],
         'restAngular' : ['angular', 'lodashCompat'],
@@ -55,17 +63,16 @@ require.config({
     },
 
     // dynamically load all test files
-    deps: allTestFiles,
+    deps: deps,
 
     // we have to kickoff jasmine, as it is asynchronous
-    callback: window.__karma__.start
+    callback: function(){
+        angular.module('beacon.product',[]);
+        angular.module('beacon.revisions',[]);
+        angular.module('beacon.settings',[]);
+        require(allTestFiles, function(){
+            window.__karma__.start();
+        });
+    }
 
-});
-
-require(['angular'], function(angular){
-    'use strict';
-    angular.module('beacon',[]);
-    angular.module('beacon.product',[]);
-    angular.module('beacon.revisions',[]);
-    angular.module('beacon.settings',[]);
 });

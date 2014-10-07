@@ -2,7 +2,7 @@
  * Created by runmengz on 9/22/2014.
  */
 define(['angular'], function(angular){
-    angular.module("beacon.services", [])
+    return angular.module("beacon.services", [])
         .factory('beacon.utility', function(){
             var getCount = function(data, key) {
                 return data.reduce(function(previousValue, tool) {

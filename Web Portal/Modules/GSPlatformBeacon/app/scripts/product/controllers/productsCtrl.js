@@ -4,7 +4,7 @@
 define(['angular'], function(
         angular){
         return angular.module('beacon.product')
-            .controller('productsCtrl', [
+            .controller('beacon.productsCtrl', [
                 '$scope',
                 '$state',
                 'beacon.utility',
@@ -12,10 +12,7 @@ define(['angular'], function(
                 function ($scope, $state, BeaconUtil, RestUtil) {
                     $scope.test = [];
                     var groups, series, groupSeries, groupCards, drillDownSeries;
-//                    var notify = function(){
-//                        if(!$scope.$$phase)
-//                            $scope.$apply();
-//                    }
+
                     $scope.drillUp = function(){
                         $scope.compareChartConf.title.text = "All Groups Defects";
                         $scope.compareChartConf.series = groupSeries;
@@ -225,7 +222,6 @@ define(['angular'], function(
                         collectByGroups($scope.myGroups);
                         renderGroupChart();
                         $scope.displayCards = groupCards;
-                        //notify();
                     }
                     var me = this;
                     $scope.$on('bootstrap', function(){

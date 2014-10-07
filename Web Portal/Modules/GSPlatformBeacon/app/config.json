@@ -10,24 +10,33 @@
             "name" : "product",
             "url" : "/",
             "templateUrl": "views/product.html",
-            "script" : "scripts/product/product.js"
+            "script" : "product/product.js"
         },{
             "name" : "revisions",
             "url"  : "/revisions/:repo",
-            "controller" : "revisionsRouteCtrl",
+            "controller" : "beacon.revisionsRouteCtrl",
             "templateUrl": "views/revisions.html",
-            "script" : "scripts/revisions/revisions.js",
-            "children" : [
-                {
-                    "name" : "revision",
-                    "url" : "/revision/:rev",
-                    "controller" : "revisionRouteCtrl",
-                    "templateUrl": "scripts/revisions/revision/templates/revision.html",
-                    "script" : "scripts/revisions/revision/revision.js"
-                }]
+            "script" : "revisions/revisions.js",
+            "children" : [{
+                "name" : "revision",
+                "url" : "/revision/:rev",
+                "controller" : "beacon.revisionCtrl",
+                "templateUrl": "scripts/revisions/revision/templates/revision.html",
+                "script" : "revisions/revision/revision.js"
+            }]
         },{
             "name" : "settings",
-            "templateUrl": "views/settings.html",
-            "script" : "scripts/settings/settings.js"
+            "views" : {
+                "" : {
+                    "templateUrl": "views/settings.html"
+                },
+                "predefined@settings" : {
+                    "templateUrl": "scripts/settings/templates/predefinedTab.html"
+                },
+                "customized@settings" : {
+                    "templateUrl": "scripts/settings/templates/customizedTab.html"
+                }
+            },
+            "script" : "settings/settings.js"
         }]
 }

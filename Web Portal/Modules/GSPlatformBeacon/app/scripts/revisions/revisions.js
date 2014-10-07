@@ -4,7 +4,7 @@
 define(['angular',
     './revisionsCtrl'], function(angular){
     return angular.module('beacon.revisions')
-        .controller('revisionsRouteCtrl', [
+        .controller('beacon.revisionsRouteCtrl', [
             '$stateParams',
             '$scope',
             function($stateParams, $scope){

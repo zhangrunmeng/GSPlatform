@@ -14,9 +14,7 @@ var requireConfig = {
     paths: {
         angular: 'lib/angular/angular',
         angularDnD : 'lib/angular-dragdrop/src/angular-dragdrop',
-        angularRoute: 'lib/angular-route/angular-route',
         angularUIRoute : "lib/angular-ui-router/release/angular-ui-router",
-        angularUIRouteHelper : 'lib/angular-ui-router.stateHelper/statehelper',
         angularMocks: 'lib/angular-mocks/angular-mocks',
         angularResource: 'lib/angular-resource/angular-resource',
         angularMessage: 'lib/angular-messages/angular-messages',
@@ -25,7 +23,6 @@ var requireConfig = {
         highcharts : 'lib/highcharts/highcharts.src',
         'hc-drilldown' : 'lib/highcharts/modules/drilldown.src',
         'hc-data' : 'lib/highcharts/modules/data.src',
-        hc3d : 'lib/highcharts/highcharts-3d.src',
         hcmore : 'lib/highcharts/highcharts-more.src',
         jquery : 'lib/jquery/dist/jquery',
         jqueryui : "lib/jquery-ui/jquery-ui",
@@ -39,9 +36,7 @@ var requireConfig = {
     },
     shim: {
         'angular' : {'exports' : 'angular'},
-        'angularRoute': ['angular'],
         'angularUIRoute': ['angular'],
-        'angularUIRouteHelper': ['angular', 'angularUIRoute'],
         'angularMessage' : ['angular'],
         'angularGrid' : ['angular', 'jquery', 'lodashCompat'],
         'restAngular' : ['angular', 'lodashCompat'],

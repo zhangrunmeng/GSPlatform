@@ -1,4 +1,4 @@
-<div ng-controller="revisionsCtrl" class="container">
+<div ng-controller="beacon.revisionsCtrl" class="container">
    <div class="row">
        <div class="col-lg-6">
            <h3>{{selectedRepo.shortname}} <small>{{selectedRepo.product}}</small></h3>
@@ -6,8 +6,8 @@
        <div class="col-lg-6">
            <h3 class="pull-right">
                Latest &nbsp - &nbsp
-               <i class="fa fa-times bg-danger" tooltip-placement='bottom' tooltip='Error'>{{selectedRevision.errorCount}}</i>
-               <i class="fa fa-warning bg-warning" tooltip-placement='bottom' tooltip='Warning'>{{selectedRevision.warningCount}}</i>
+               <i class="fa fa-times bg-danger" tooltip-placement='bottom' tooltip='Error'>{{selectedRepo.lastRevision.errorCount}}</i>
+               <i class="fa fa-warning bg-warning" tooltip-placement='bottom' tooltip='Warning'>{{selectedRepo.lastRevision.warningCount}}</i>
            </h3>
        </div>
    </div>

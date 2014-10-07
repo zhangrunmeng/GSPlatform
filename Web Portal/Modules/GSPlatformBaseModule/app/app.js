@@ -49,12 +49,19 @@ define(['angular',
                                 angular.module(moduleName, []);
                                 return $ocLazyLoad.load({
                                     name: moduleName,
-                                    files: [modulePath + router.script],
+                                    files: [modulePath + 'scripts/' + router.script],
                                     cache: false
                                 });
                             }]
                         }
                         router.parent = parent;
+                        if(router.views){
+                            for(var key in router.views){
+                                if(router.views[key].hasOwnProperty("templateUrl")){
+                                    router.views[key]['templateUrl'] = modulePath + router.views[key]['templateUrl'];
+                                }
+                            }
+                        }
                         result.push(router);
                         compileRouters(modulePath, router.name, moduleName, router.children, result);
                     }
