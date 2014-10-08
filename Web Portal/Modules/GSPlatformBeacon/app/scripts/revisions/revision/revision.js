@@ -3,8 +3,7 @@
  */
 define(['angular'], function(angular){
     var module = 'beacon.revisions.revision';
-    return angular.module(module)
-        .controller('beacon.revisionCtrl', [
+    return angular.module(module).controller('beacon.revisionCtrl', [
             '$scope',
             '$http',
             '$stateParams',
@@ -12,6 +11,7 @@ define(['angular'], function(angular){
             'RestUtil',
             '$timeout',
             function ($scope, $http, $stateParams, BeaconUtil, RestUtil, $timeout) {
+
                 $scope.revisionId = $stateParams.rev;
 
                 this.setFilteredDetails = function(data){
@@ -40,7 +40,7 @@ define(['angular'], function(angular){
                             {field: 'file', displayName: 'File', width: "20%", resizable: true},
                             {field: 'line', displayName: 'Line', width: "auto"},
                             {field: 'context', displayName: 'Context', width: "*",
-                                cellTemplate: 'modules/beacon/views/templates/detailContextCell.html', resizable: true, sortable: true}
+                                cellTemplate: BeaconUtil.modulePath + 'views/templates/detailContextCell.html', resizable: true, sortable: true}
                         ],
                         showHeaderFilter: true,
                         enableColumnReordering: true,

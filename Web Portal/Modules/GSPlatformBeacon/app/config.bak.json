@@ -8,24 +8,35 @@
     "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1",
     "routers" : [{
             "name" : "product",
-            "url" : "/"
+            "url" : "/",
+            "templateUrl": "views/product.html",
+            "script" : "scripts/product/product.js"
         },{
             "name" : "revisions",
             "url"  : "/revisions/:repo",
             "controller" : "beacon.revisionsRouteCtrl",
+            "templateUrl": "views/revisions.html",
+            "script" : "scripts/revisions/revisions.js",
             "children" : [{
                 "name" : "revision",
-                "url" : "/:rev"
+                "url" : "/:rev",
+                "controller" : "beacon.revisionCtrl",
+                "templateUrl": "scripts/revisions/revision/templates/revision.html",
+                "script" : "scripts/revisions/revision/revision.js"
             }]
         },{
             "name" : "settings",
             "views" : {
+                "" : {
+                    "templateUrl": "views/settings.html"
+                },
                 "predefined@settings" : {
                     "templateUrl": "scripts/settings/templates/predefinedTab.html"
                 },
                 "customized@settings" : {
                     "templateUrl": "scripts/settings/templates/customizedTab.html"
                 }
-            }
+            },
+            "script" : "scripts/settings/settings.js"
         }]
 }

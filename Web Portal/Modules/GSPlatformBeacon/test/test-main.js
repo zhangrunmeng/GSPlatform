@@ -21,9 +21,8 @@ var deps = [
     'jquery',
     'jqueryui',
     'angularMocks',
-//    'angularDnD',
-//    'angularGrid',
-    'restAngular'
+    'restAngular',
+    'text'
 ];
 
 var root = 'lib/';
@@ -41,13 +40,13 @@ require.config({
       'angularGrid' : root + 'angular-grid/ng-grid-2.0.12.debug',
       'angularUIRouter' : root + 'angular-ui-router/release/angular-ui-router',
       'restAngular' : root + 'restangular/dist/restangular',
-      'lodashCompat' : root + 'lodash/dist/lodash.compat'
+      'lodashCompat' : root + 'lodash/dist/lodash.compat',
+      'text' : root + 'requirejs-text/text'
     },
 
     shim: {
         'angular' : {'exports' : 'angular'},
         'angularUIRouter': ['angular'],
-//        'angularMessage' : ['angular'],
         'angularGrid' : ['angular', 'jquery', 'lodashCompat'],
         'restAngular' : ['angular', 'lodashCompat'],
         'angularDnD' : ['angular', 'jquery', 'jqueryui'],

@@ -5,10 +5,9 @@ define(['angular'], function(
         angular){
         return angular.module('beacon.settings').controller('beacon.settingsCtrl', [
             '$scope',
-            '$element',
             'beacon.utility',
             'RestUtil',
-            function ($scope, $element, BeaconUtil, RestUtil) {
+            function ($scope, BeaconUtil, RestUtil) {
 
                 var notify = function(){
                     if(!$scope.$$phase)
@@ -107,7 +106,7 @@ define(['angular'], function(
                         $scope.myGroupsList.push({isOpen: idx==0, name: key, repositories: $scope.myGroups[key]});
                         idx++;
                     }
-                    notify();
+                    //notify();
                 }
 
                 $scope.$on('bootstrap', bootstrap);

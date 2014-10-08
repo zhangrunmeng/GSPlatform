@@ -28,9 +28,9 @@ module.exports = function(config) {
         {pattern: 'lib/restangular/dist/restangular.js',included: false},
         {pattern: 'lib/lodash/dist/lodash.compat.js', included: false},
         {pattern: 'lib/require-css/css.js', included: false},
+        {pattern: 'lib/requirejs-text/text.js', included: false},
         {pattern: 'common/**/*.js', included: false},
         {pattern: 'app/scripts/**/*.js', included: false},
-        {pattern: 'app/styles/**/*.css', included: false},
         {pattern: 'app/app.js', included: false},
         {pattern: 'test/unit/**/*.js', included: false},
         'test/test-main.js'
@@ -52,7 +52,7 @@ module.exports = function(config) {
     // - PhantomJS
     // - IE (only Windows)
     browsers: [
-      'PhantomJS'
+      'PhantomJS', 'Chrome'
     ],
 
     // Which plugins to enable
@@ -66,7 +66,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false,
+    singleRun: true,
 
     colors: true,
 

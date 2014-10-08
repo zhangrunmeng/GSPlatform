@@ -12,6 +12,7 @@ define(['angular',
     'common/utils/Rest',
     'common/utils/HighchartsUtil',
     'common/components/gridView',
+    'common/components/highChartRenderer',
     'restAngular',
     'angularUIRoute',
     'uiBootstrap',
@@ -27,43 +28,125 @@ define(['angular',
         angular,
         rest,
         highchartsUtil,
-        grid
+        grid,
+        highChartRenderer
     ){
-        var compileRouters = function(modulePath, parent, parentModule, routers, result){
+        var sourcePath = "scripts";
+
+        var validateName = function(router, field, prefix){
+            if(router[field] && router[field].replace(/\s/g, "").length > 0){
+                if(/\.|\\/g.test(router[field])){
+                    console.error(prefix + " must not contain '.' or '/': " + JSON.stringify(router));
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                console.error(prefix + " must be specified: " + JSON.stringify(router));
+                return false;
+            }
+        }
+
+        var getDefaultPath = function(router, modulePath, parentState, folder, ext){
+            var path = [];
+            path.push(modulePath + sourcePath);
+            var dot = parentState.indexOf(".");
+            if(dot > -1){
+                parentState = parentState.substring(dot + 1);
+                path.push(parentState.replace(/\./g, '/'));
+            }
+            path.push(router.name);
+            if(folder){
+                path.push(folder);
+            }
+            path.push(router.name + "." + ext);
+            return path.join('/');
+        }
+
+        var compileRouterTemplateURL = function(router, modulePath, parentState){
+            if(!router.templateUrl){
+                router.templateUrl = getDefaultPath(router, modulePath, parentState, 'templates', 'html');
+            } else {
+                router.templateUrl = modulePath + router.templateUrl;
+            }
+        }
+
+        var compileRouterScriptURL = function(router, modulePath, parentState){
+            if(!router.script){
+                router.script = getDefaultPath(router, modulePath, parentState, null, 'js');
+            } else {
+                router.script = modulePath + router.script;
+            }
+        }
+
+        var compileRouterURL = function(router){
+            var url;
+            if(router.url){
+                url = router.url;
+            } else {
+                url = "/" + router.name;
+            }
+            if(url.slice(0, 1) != "/")
+                url = "/" + url;
+            router.url = url;
+        }
+
+        /**
+         * @moduleId Current app id: 'beacon'
+         * @modulePath Current app path: 'modules/beacon/'
+         * @parent Parent state: 'beacon', 'product'
+         * @parentState Full parent states: 'beacon.revisions'
+         * @routers Routers list in app config.json
+         * @result Collect all routers recursively in it
+         */
+        var compileRouters = function(moduleId, modulePath, parent, parentState, routers, result){
             if(routers && routers instanceof Array){
                 angular.forEach(routers, function(router){
-                    if(router.name){
-                        var moduleName = parentModule + '.' + router.name;
-                        router.templateUrl = modulePath + router.templateUrl;
-                        var url;
-                        if(router.url){
-                            url = router.url;
-                        } else {
-                            url = "/" + router.name;
+                    if(validateName(router, 'name', 'Router name')){
+                        var moduleName = router.module;
+                        if(!moduleName){
+                            moduleName = parentState + '.' + router.name;
                         }
-                        if(url.slice(0, 1) != "/")
-                            url = "/" + url;
-                        router.url = url;
+                        if(moduleName.toLowerCase().indexOf(moduleId.toLowerCase()) == -1){
+                            console.warn("It's strongly recommended to use app id '" + moduleId + "' as part of the module name: " + moduleName);
+                        }
+                        compileRouterURL(router);
+                        compileRouterScriptURL(router, modulePath, parentState);
                         router.resolve = {
                             loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
                                 angular.module(moduleName, []);
                                 return $ocLazyLoad.load({
                                     name: moduleName,
-                                    files: [modulePath + 'scripts/' + router.script],
+                                    files: [router.script],
                                     cache: false
                                 });
                             }]
-                        }
+                        };
                         router.parent = parent;
                         if(router.views){
+                            var defaultView = false;
                             for(var key in router.views){
-                                if(router.views[key].hasOwnProperty("templateUrl")){
+                                if(key == ""){
+                                    defaultView = true;
+                                }
+                                if(router.views[key].hasOwnProperty("templateUrl") && router.views[key]['templateUrl']){
                                     router.views[key]['templateUrl'] = modulePath + router.views[key]['templateUrl'];
+                                } else if(key == ""){
+                                    router.views[key]['templateUrl'] = getDefaultPath(router, modulePath, parentState, 'templates', 'html');
+                                } else {
+                                    console.error("TemplateUrl must be specified in view: " + JSON.stringify(router));
                                 }
                             }
+                            if(!defaultView){
+                                router.views[""] = {
+                                    'templateUrl' : getDefaultPath(router, modulePath, parentState, 'templates', 'html')
+                                }
+                            }
+                        } else {
+                            compileRouterTemplateURL(router, modulePath, parentState);
                         }
                         result.push(router);
-                        compileRouters(modulePath, router.name, moduleName, router.children, result);
+                        compileRouters(moduleId, modulePath, router.name, parentState + '.' + router.name, router.children, result);
                     }
                 });
             }
@@ -78,7 +161,8 @@ define(['angular',
             'ngDragDrop',
             rest.name,
             highchartsUtil.name,
-            grid.name])
+            grid.name,
+            highChartRenderer.name])
             .config([
                 '$ocLazyLoadProvider',
                 '$urlRouterProvider',
@@ -122,7 +206,7 @@ define(['angular',
                             }
                         });
                         var routers = [];
-                        compileRouters('modules/' + module.id + '/', module.id, module.id, module.routers, routers);
+                        compileRouters(module.id, 'modules/' + module.id + '/', module.id, module.id, module.routers, routers);
 
                         angular.forEach(routers, function(router){
                             var conf = router;

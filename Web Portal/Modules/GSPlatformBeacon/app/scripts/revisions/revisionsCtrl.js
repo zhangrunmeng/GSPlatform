@@ -10,8 +10,7 @@ define(['angular'], function(
             '$state',
             'beacon.utility',
             'RestUtil',
-            '$timeout',
-            function ($scope, $element, $http, $state, BeaconUtil, RestUtil, $timeout) {
+            function ($scope, $element, $http, $state, BeaconUtil, RestUtil) {
                 var trendSeries;
                 var seriesData;
 

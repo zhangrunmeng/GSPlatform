@@ -17,16 +17,17 @@ module.exports = function (grunt) {
 
     var fs = require('fs');
     var request = require('request');
-
+    var rewriteRulesSnippet = require('grunt-connect-rewrite/lib/utils').rewriteRequest;
     // Configurable paths for the application
-    var bowerConf = require('./bower.json');
+    var appConf = require('./app/config.json');
 
     var appConfig = {
-        app  : bowerConf.appPath || 'app',
-        id   : bowerConf.id,
+        app  : 'app',
+        id   : appConf.id,
         dist : 'dist',
-        url  : bowerConf.server,
-        name : bowerConf.name
+        url  : '',
+        ver  : appConf.version,
+        name : appConf.name
     };
 
 
@@ -92,6 +93,9 @@ module.exports = function (grunt) {
                 base: '.tmp',
                 livereload: 35729
             },
+            rules: [
+                {from: '^modules/<%= yeoman.id %>/(.*)$', to: '<%= yeoman.app %>/$1'}
+            ],
             dev: {
                 options: {
                     open: true,
@@ -101,16 +105,39 @@ module.exports = function (grunt) {
             livereload: {
                 options: {
                     open: true,
+                    keepalive: true,
                     middleware: function (connect) {
                         return [
+                            rewriteRulesSnippet,
                             connect.static('.tmp'),
 //                            connect().use(
-//                                'modules/<%= yeoman.id %>',
-//                                connect.static('<%= yeoman.app %>')
-//                            ),
-//                            connect.static('<%= yeoman.app %>')
+//                                'modules/<%= yeoman.id %>/',
+//                                connect.static('<%= yeoman.app %>/')
+//                            )
+                            connect.static('<%= yeoman.app %>')
                         ];
                     }
+//                    middleware: function (connect, options) {
+//                        var middlewares = [];
+//
+//                        // RewriteRules support
+//                        middlewares.push(rewriteRulesSnippet);
+//
+//                        if (!Array.isArray(options.base)) {
+//                            options.base = [options.base];
+//                        }
+//
+//                        var directory = options.directory || options.base[options.base.length - 1];
+//                        options.base.forEach(function (base) {
+//                            // Serve static files.
+//                            middlewares.push(connect.static(base));
+//                        });
+//
+//                        // Make directory browse-able.
+//                        middlewares.push(connect.directory(directory));
+//
+//                        return middlewares;
+//                    }
                 }
             },
             test: {
@@ -159,7 +186,7 @@ module.exports = function (grunt) {
 
         // Empties folders to start fresh
         clean: {
-            zip: '<%= yeoman.name %>.zip',
+            zip: '<%= yeoman.name %>.<%= yeoman.ver %>.zip',
             dist: {
                 files: [{
                     dot: true,
@@ -171,14 +198,9 @@ module.exports = function (grunt) {
                 }]
             },
             server: '.tmp',
-            test: '.test',
+            test: '.tmp/.test',
             styles: {
-                files: [{
-                    src: ['<%= yeoman.app %>/styles/themes/css/']
-                },{
-                    cwd: '../GSPlatformBaseModule/app/styles/themes/',
-                    src: ['css/']
-                }]
+                src: ['<%= yeoman.app %>/styles/themes/css/', '../GSPlatformBaseModule/app/styles/themes/css/']
             }
         },
 
@@ -417,25 +439,25 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '../GSPlatformBaseModule/app/lib',
-                        dest: '.test/lib',
+                        dest: '.tmp/.test/lib',
                         src: '**/*.js'
                     },
                     {
                         expand: true,
                         cwd: '../GSPlatformBaseModule/app/common',
-                        dest: '.test/common',
+                        dest: '.tmp/.test/common',
                         src: '**/*.*'
                     },
                     {
                         expand: true,
                         cwd: '<%= yeoman.app %>/',
-                        dest: '.test/app',
+                        dest: '.tmp/.test/app',
                         src: '**/*.*'
                     },
                     {
                         expand: true,
                         cwd: 'test/',
-                        dest: '.test/test',
+                        dest: '.tmp/.test/test',
                         src: '**/*.*'
                     }
                 ]
@@ -449,8 +471,6 @@ module.exports = function (grunt) {
                 'less:development'
             ],
             test: [
-//                'less:framework',
-//                'less:development'
                 'copy:test'
             ],
             dist: [
@@ -463,15 +483,14 @@ module.exports = function (grunt) {
         // Test settings
         karma: {
             unit: {
-                configFile: '.test/test/karma.conf.js',
-                singleRun: true
+                configFile: '.tmp/.test/test/karma.conf.js'
             }
         },
 
         compress: {
             main: {
                 options: {
-                    archive: '<%= yeoman.name %>.zip'
+                    archive: '<%= yeoman.name %>.<%= yeoman.ver %>.zip'
                 },
                 files: [
                     {expand: true, cwd: '<%= yeoman.app %>/', src: ['*/**','*.json', '*.js', '*.html']}
@@ -531,9 +550,9 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('default', [
-        'newer:jshint',
-        'test',
-        'build'
+//        'newer:jshint',
+//        'test',
+//        'build'
     ]);
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
@@ -542,23 +561,22 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'clean:server',
-//            'wiredep',
+//            'clean:server',
             'concurrent:server',
-            'copy:all',
-            'clean:styles',
+//            'copy:all',
 //            'autoprefixer',
-//            'connect:dev',
+            'configureRewriteRules',
             'connect:livereload',
-            'watch'
+//            'watch'
         ]);
+        grunt.option('force', true);
+        grunt.task.run('clean:styles');
     });
 
     grunt.registerTask('test', [
         'clean:test',
         'concurrent:test',
 //        'autoprefixer',
-//        'connect:test',
         'karma'
     ]);
 
@@ -586,7 +604,7 @@ module.exports = function (grunt) {
     grunt.registerTask('zip', ['compress']);
 
     grunt.registerTask('install', 'install dev module', function(){
-            var str = fs.realpathSync('./' + appConfig.name + '.zip');
+            var str = fs.realpathSync('./' + appConfig.name + '.' + appConfig.ver + '.zip');
             console.log(str);
             var done = this.async();
             request.post({
@@ -606,7 +624,12 @@ module.exports = function (grunt) {
         }
     );
 
-//    grunt.registerTask('dev', ['less:development', 'compress', 'install']);
+    grunt.registerTask('dist', 'Generate app archive file', function(){
+        grunt.task.run(['less:development', 'compress']);
+        grunt.option('force', true);
+        grunt.task.run('clean:styles');
+    });
+
     grunt.registerTask('dev', 'dev on current module', function(arg1){
         if(arg1 == "f"){
             grunt.task.run(['copy:dev']);
@@ -617,10 +640,13 @@ module.exports = function (grunt) {
         } else {
             grunt.task.run(['less:development', 'copy:dev']);
         }
-        grunt.task.run(['clean:styles']);
+        grunt.option('force', true);
+        grunt.task.run('clean:styles');
     });
 
     grunt.registerTask('cls', 'Clean up workspace', function(){
-        grunt.task.run(['clean:zip','clean:server','clean:test','clean:styles']);
-    })
+        grunt.task.run(['clean:zip','clean:server','clean:test']);
+        grunt.option('force', true);
+        grunt.task.run('clean:styles');
+    });
 };

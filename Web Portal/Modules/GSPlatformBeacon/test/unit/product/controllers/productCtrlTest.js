@@ -12,7 +12,7 @@ define([
         beforeEach(module('beacon.services'));
         beforeEach(module('ui.router'));
 
-        var productsCtrl, scope, state;
+        var productsCtrl, scope;
 
         // Initialize the controller and a mock scope
         beforeEach(inject(['$controller','$rootScope','$state','beacon.utility', function ($controller, $rootScope, $state, _beaconUtil_) {
@@ -32,21 +32,21 @@ define([
             expect(scope.displayCards.length).toBe(4);
         });
 
-        it('This is product controller unit test with requirejs', function () {
+        it('This is product controller unit test with requirejs 2', function () {
             scope.repositories = {"repo1": [], "repo2": []};
             scope.myGroups = {"myGroup1": [], "myGroup2": []};
             productsCtrl.bootstrap();
             expect(scope.displayCards.length).toBe(4);
         });
 
-        it('This is product controller unit test with requirejs', function () {
+        it('This is product controller unit test with requirejs 3', function () {
             scope.repositories = {"repo1": [], "repo2": []};
             scope.myGroups = {"myGroup1": [], "myGroup2": []};
             productsCtrl.bootstrap();
             expect(scope.displayCards.length).toBe(4);
         });
 
-        it('This is product controller unit test with requirejs', function () {
+        it('This is product controller unit test with requirejs 4', function () {
             scope.repositories = {"repo1": [], "repo2": []};
             scope.myGroups = {"myGroup1": [], "myGroup2": []};
             productsCtrl.bootstrap();
