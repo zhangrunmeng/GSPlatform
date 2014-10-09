@@ -40,7 +40,9 @@ define(['angular'], function(
                                 text: "Trend of Defects"
                             },
                             xAxis: {
-                                type: 'category'
+                                labels: {
+                                    enabled : false
+                                }
                             },
                             yAxis: {
                                 allowDecimals: false,
@@ -55,9 +57,9 @@ define(['angular'], function(
                                     lineWidth: 1,
                                     events : {
                                         click : function(e){
-                                            if(e.point.revision && e.point.revision != $scope.selectedRevision.id){
+                                            if(e.point.revision && e.point.revision != $scope.revisionId){
                                                 $scope.revisionId = e.point.revision;
-                                                getRevisionDetails();
+                                                getRevisionDetails(false);
                                             }
                                         }
                                     },
@@ -66,11 +68,12 @@ define(['angular'], function(
                             },
                             series: trendSeries
                         }
-                        getRevisionDetails();
+                        getRevisionDetails(true);
                     }
                 }
 
                 this.bootstrap = function(){
+                    $scope.selectedRevision = {};
                     if(!$scope.repositoryId){
                         var defaultRepo;
                         for(var group in $scope.repositories){
@@ -78,24 +81,35 @@ define(['angular'], function(
                             defaultRepo = first.product + '_' + first.release + '_' + first.component;
                             break;
                         }
-                        if(defaultRepo)
+                        if(defaultRepo){
                             $state.go('revisions', {'repo': defaultRepo});
+                        }
                         return;
                     }
                     rendererTrendChart();
                 }
 
-                var getRevisionDetails = function(){
-                    if($scope.selectedRepo) {
-                        if(!$scope.revisionId){
-                            $scope.revisionId = 'latest';
+                var getRevisionDetails = function(init){
+                    if(init){
+                        if($state.current.name == 'revisions'){
+                            if(!$scope.revisionId) $scope.revisionId = 'latest';
+                            $state.go('revision', {'rev' : $scope.revisionId});
+                        } else {
+                            $scope.$broadcast('showRevisionDetails');
                         }
+                    } else {
                         $state.go('revision', {'rev' : $scope.revisionId});
                     }
                 }
 
                 $scope.$emit('setCurrentView', 'Revisions Details');
                 $scope.$on('bootstrap', this.bootstrap);
+                $scope.$on('$stateChangeSuccess',function(event, toState, toParams, fromState, fromParams){
+//                    if(fromState.name == 'revision' && toState.name == 'revisions'){
+//                        if(!$scope.revisionId) $scope.revisionId = 'latest';
+//                        $state.go('revision', {'rev' : $scope.revisionId});
+//                    }
+                });
                 this.bootstrap();
             }]);
         }

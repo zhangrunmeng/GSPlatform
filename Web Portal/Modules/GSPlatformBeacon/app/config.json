@@ -1,10 +1,9 @@
 {
     "id" : "beacon",
     "name" : "Beacon",
-    "module" : "beacon",
     "version" : "1.0",
     "nav" : "views/templates/navMenu.html",
-    "desc" : "A dashboard to monitor code analyze results",
+    "desc" : "Dashboard to monitor code analyze results",
     "serviceUrl" : "http://nkgbeacon.eng.citrite.net/api/1",
     "routers" : [{
             "name" : "product",

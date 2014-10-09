@@ -38,19 +38,19 @@ define(['angular',
                     HighchartsUtil.setOptions(HighChartConfig.getHighchartsColor());
                     $scope.repositories = {};
                     $scope.myGroups = {};
-                    $http.get(BeaconUtil.modulePath + "data/repository.json").then(function(result){
-                        $scope.repositories = BeaconUtil.buildRepositories(result.data);
-                        $scope.$broadcast('bootstrap');
-                    });
-//                    RestUtil.jsonp('repository', function(result){
-//                        $scope.repositories = BeaconUtil.buildRepositories(result);
+//                    $http.get(BeaconUtil.modulePath + "resources/repository.json").then(function(result){
+//                        $scope.repositories = BeaconUtil.buildRepositories(result.data);
 //                        $scope.$broadcast('bootstrap');
 //                    });
+                    RestUtil.jsonp('repository', function(result){
+                        $scope.repositories = BeaconUtil.buildRepositories(result);
+                        $scope.$apply($scope.$broadcast('bootstrap'));
+                    });
                     $scope.$on('setCurrentView', function(e, view){
                         $scope.currentView = view;
                     });
                     var updateSize = function(scale){
-                        $element.find('#content').height(scale.height - 69);
+                        $element.find('#content').height(scale.height);
                     }
                     updateSize($scope.$contentScale());
             }]);

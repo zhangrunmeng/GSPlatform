@@ -1,7 +1,0 @@
-{
-  "id"  : "beacon",
-  "name": "gsPlatformBeacon",
-  "server": "localhost:49824",
-  "version": "0.0.0",
-  "appPath": "app"
-}

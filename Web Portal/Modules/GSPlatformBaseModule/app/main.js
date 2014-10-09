@@ -7,7 +7,7 @@ function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]);
-    return null;
+    return undefined;
 }
 
 var requireConfig = {
@@ -63,11 +63,13 @@ var requireConfig = {
 };
 
 
-var inDevelopment = getQueryString("debug") == "true";
+var debug_app = getQueryString("debug");
 
-if(inDevelopment){
-    requireConfig.urlArgs = "_rv=" + new Date().getTime();
-}
+//var inDevelopment =  (debug_app !== undefined);
+//
+//if(inDevelopment){
+//    requireConfig.urlArgs = "_rv=" + new Date().getTime();
+//}
 
 require.config(requireConfig);
 
@@ -78,13 +80,13 @@ var less = {
     poll: 1000,
     functions: {},
     dumpLineNumbers: "comments",
-    relativeUrls: true,
+    relativeUrls: true
 };
 
 //http://code.angularjs.org/1.2.1/docs/guide/bootstrap#overview_deferred-bootstrap
 window.name = "NG_DEFER_BOOTSTRAP!";
 window.$theme = "default";
-window.DEBUG_MODE = true;
+window.DEBUG_MODE = (debug_app !== undefined);
 
 require([
     'jquery',
@@ -136,7 +138,7 @@ require([
         });
     } else {
         window.$installedModules = [];
-        require(['text!modules/beacon/config.json'], function(config){
+        require(['text!modules/' + debug_app + '/config.json'], function(config){
             try {
                 if(config)
                     $installedModules.push(JSON.parse(config));

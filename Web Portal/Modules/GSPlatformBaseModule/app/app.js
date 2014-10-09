@@ -198,7 +198,7 @@ define(['angular',
                                         RestUtilProvider.setBaseUrl("");
                                     }
                                     return $ocLazyLoad.load({
-                                        name : module.module,
+                                        name : module.module || module.id,
                                         files: ['modules/' + module.id + '/app.js'],
                                         cache: false
                                     });
@@ -256,7 +256,7 @@ define(['angular',
                     if(newvalue !== oldvalue){
                         if(newvalue == ""){
                             $scope.modulePath = $rootScope.modulePath = "";
-                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
+                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : "", name : 'GS Web Portal'};
                             rendererNavMenu();
                         }
                     }
@@ -269,7 +269,7 @@ define(['angular',
                 initialize($location.url());
                 var onModuleLoaded = function(e, module) {
                     for(var i=0; i < $installedModules.length; i++){
-                        if(module == $installedModules[i].module){
+                        if(($installedModules[i].module && $installedModules[i].module == module) || (module == $installedModules[i].id)){
                             $scope.modulePath = $rootScope.modulePath = 'modules/' + $installedModules[i].id + "/"
                             $scope.selectedModule = $rootScope.selectedModule = $installedModules[i];
                             rendererNavMenu('modules/' + $installedModules[i].id + '/' + $installedModules[i].nav);
@@ -283,7 +283,7 @@ define(['angular',
                     if(newvalue !== oldvalue){
                         if(newvalue == ""){
                             $scope.modulePath = $rootScope.modulePath = "";
-                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : ""};
+                            $scope.selectedModule = $rootScope.selectedModule = {id : "framework", url : "", name : 'GS Web Portal'};
                             rendererNavMenu();
                         }
                     }

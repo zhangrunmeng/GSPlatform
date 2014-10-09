@@ -17,8 +17,8 @@ module.exports = function (grunt) {
 
     var fs = require('fs');
     var request = require('request');
-    var rewriteRulesSnippet = require('grunt-connect-rewrite/lib/utils').rewriteRequest;
-    // Configurable paths for the application
+
+    // App configurations
     var appConf = require('./app/config.json');
 
     var appConfig = {
@@ -27,9 +27,9 @@ module.exports = function (grunt) {
         dist : 'dist',
         url  : '',
         ver  : appConf.version,
-        name : appConf.name
+        name : appConf.name,
+        base : '../GSPlatformBaseModule/app'
     };
-
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -39,48 +39,53 @@ module.exports = function (grunt) {
 
         // Watches files for changes and runs tasks based on the changed files
         watch: {
-//            bower: {
-//                files: ['bower.json'],
-//                tasks: ['wiredep']
-//            },
-            json : {
-                files: ['<%= yeoman.app %>/{,*/}*.json'],
-                tasks: ['copy:dev'], //'newer:jshint:all'
+            scripts: {
+                files: ['<%= yeoman.app %>/scripts/**/*.*'],
+                tasks: ['copy:scripts'], //'newer:jshint:all'
                 options: {
                     livereload: '<%= connect.options.livereload %>'
                 }
             },
-            js: {
-                files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks: ['copy:dev'], //'newer:jshint:all'
+            styles: {
+                files: ['<%= yeoman.app %>/styles/**/*.*'],
+                tasks: ['copy:images','less:development','copy:styles','cleanStyles'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
+            views : {
+                files: [
+                    '<%= yeoman.app %>/views/{,*/}*.html'
+                ],
+                tasks: ['copy:views'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
+            resources: {
+                files: [
+                    '<%= yeoman.app %>/resources/**/*.*'
+                ],
+                tasks: ['copy:resources'],
+                options: {
+                    livereload: '<%= connect.options.livereload %>'
+                }
+            },
+            others: {
+                files: [
+                    '<%= yeoman.app %>/*.*'
+                ],
+                tasks: ['copy:others'],
                 options: {
                     livereload: '<%= connect.options.livereload %>'
                 }
             },
             jsTest: {
-                files: ['test/spec/{,*/}*.js'],
-                tasks: ['newer:jshint:test', 'karma']
-            },
-            styles: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
-                tasks: ['less:development', 'copy:dev', 'clean:styles'],
-                options: {
-                    livereload: '<%= connect.options.livereload %>'
-                }
+                files: ['test/unit/{,*/}*.js'],
+                tasks: ['copy:testOnly', 'karma'] //'newer:jshint:test'
             },
             gruntfile: {
                 files: ['Gruntfile.js']
-            },
-            livereload: {
-                options: {
-                    livereload: '<%= connect.options.livereload %>'
-                },
-                files: [
-                    '<%= yeoman.app %>/{,*/}*.html',
-//                    '.tmp/modules/<%= yeoman.id %>/styles/{,*/}*.css',
-                    '<%= yeoman.app %>/styles/themes/**/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ],
-                tasks: ['copy:dev']
             }
         },
 
@@ -93,9 +98,6 @@ module.exports = function (grunt) {
                 base: '.tmp',
                 livereload: 35729
             },
-            rules: [
-                {from: '^modules/<%= yeoman.id %>/(.*)$', to: '<%= yeoman.app %>/$1'}
-            ],
             dev: {
                 options: {
                     open: true,
@@ -104,40 +106,15 @@ module.exports = function (grunt) {
             },
             livereload: {
                 options: {
-                    open: true,
-                    keepalive: true,
+                    open : {
+                        target: 'http://<%= connect.options.hostname %>:<%= connect.options.port %>?debug=<%= yeoman.id %>'
+                    },
+//                    keepalive: true,
                     middleware: function (connect) {
                         return [
-                            rewriteRulesSnippet,
-                            connect.static('.tmp'),
-//                            connect().use(
-//                                'modules/<%= yeoman.id %>/',
-//                                connect.static('<%= yeoman.app %>/')
-//                            )
-                            connect.static('<%= yeoman.app %>')
+                            connect.static('.tmp')
                         ];
                     }
-//                    middleware: function (connect, options) {
-//                        var middlewares = [];
-//
-//                        // RewriteRules support
-//                        middlewares.push(rewriteRulesSnippet);
-//
-//                        if (!Array.isArray(options.base)) {
-//                            options.base = [options.base];
-//                        }
-//
-//                        var directory = options.directory || options.base[options.base.length - 1];
-//                        options.base.forEach(function (base) {
-//                            // Serve static files.
-//                            middlewares.push(connect.static(base));
-//                        });
-//
-//                        // Make directory browse-able.
-//                        middlewares.push(connect.directory(directory));
-//
-//                        return middlewares;
-//                    }
                 }
             },
             test: {
@@ -145,8 +122,7 @@ module.exports = function (grunt) {
                     port: 9001,
                     middleware: function (connect) {
                         return [
-//                            connect.static('.tmp'),
-                            connect.static('test'),
+                            connect.static('test')
 //                            connect().use(
 //                                '/bower_components',
 //                                connect.static('./bower_components')
@@ -200,7 +176,7 @@ module.exports = function (grunt) {
             server: '.tmp',
             test: '.tmp/.test',
             styles: {
-                src: ['<%= yeoman.app %>/styles/themes/css/', '../GSPlatformBaseModule/app/styles/themes/css/']
+                src: ['<%= yeoman.app %>/styles/themes/css/', '<%= yeoman.base %>/styles/themes/css/']
             }
         },
 
@@ -393,16 +369,56 @@ module.exports = function (grunt) {
                     }
                 ]
             },
+            images: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/styles/themes',
+                        dest: '<%= yeoman.app %>/styles/themes/css',
+                        src: '**/*.*'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.base %>/styles/themes',
+                        dest: '<%= yeoman.base %>/styles/themes/css',
+                        src: '**/*.*'
+                    }
+                ]
+            },
             styles: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/styles',
-                dest: '.tmp/styles/',
-                src: '{,*/}*.css'
+                dest: '.tmp/modules/<%= yeoman.id %>/styles/',
+                src: '**/*.*'
+            },
+            scripts: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/scripts',
+                dest: '.tmp/modules/<%= yeoman.id %>/scripts/',
+                src: '**/*.*'
+            },
+            views: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/views',
+                dest: '.tmp/modules/<%= yeoman.id %>/views/',
+                src: '**/*.*'
+            },
+            resources: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/resources',
+                dest: '.tmp/modules/<%= yeoman.id %>/resources/',
+                src: '**/*.*'
+            },
+            others: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/',
+                dest: '.tmp/modules/<%= yeoman.id %>/',
+                src: '*.*'
             },
             all: {
                 files: [{
                         expand: true,
-                        cwd: '../GSPlatformBaseModule/app/',
+                        cwd: '<%= yeoman.base %>/',
                         dest: '.tmp',
                         src: '**/*.*'
                     },
@@ -428,7 +444,7 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: '../GSPlatformBaseModule/app/',
+                        cwd: '<%= yeoman.base %>/',
                         dest: '.tmp',
                         src: '**/*.*'
                     }
@@ -438,13 +454,13 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: '../GSPlatformBaseModule/app/lib',
+                        cwd: '<%= yeoman.base %>/lib',
                         dest: '.tmp/.test/lib',
                         src: '**/*.js'
                     },
                     {
                         expand: true,
-                        cwd: '../GSPlatformBaseModule/app/common',
+                        cwd: '<%= yeoman.base %>/common',
                         dest: '.tmp/.test/common',
                         src: '**/*.*'
                     },
@@ -454,6 +470,16 @@ module.exports = function (grunt) {
                         dest: '.tmp/.test/app',
                         src: '**/*.*'
                     },
+                    {
+                        expand: true,
+                        cwd: 'test/',
+                        dest: '.tmp/.test/test',
+                        src: '**/*.*'
+                    }
+                ]
+            },
+            testOnly: {
+                files: [
                     {
                         expand: true,
                         cwd: 'test/',
@@ -493,7 +519,7 @@ module.exports = function (grunt) {
                     archive: '<%= yeoman.name %>.<%= yeoman.ver %>.zip'
                 },
                 files: [
-                    {expand: true, cwd: '<%= yeoman.app %>/', src: ['*/**','*.json', '*.js', '*.html']}
+                    {expand: true, cwd: '<%= yeoman.app %>/', src: ['*/**', '*.json', '*.js', '*.html']}
                 ]
             }
         },
@@ -508,7 +534,7 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: "<%= yeoman.app %>/styles/themes",
+                    cwd: "<%= yeoman.app %>/styles/themes/css/",
                     src: ["**/*.less"],
                     dest: "<%= yeoman.app %>/styles/themes/css/",
                     ext: ".css"
@@ -518,28 +544,28 @@ module.exports = function (grunt) {
                 options: {
                     paths : ['<%= yeoman.app %>/styles/themes'],
                     sourceMap: false,
-                    sourceMapBasepath : "../GSPlatformBaseModule/app/styles/themes/default",
-                    sourceMapFilename : "../GSPlatformBaseModule/app/styles/themes/default/default.css.map"
+                    sourceMapBasepath : "<%= yeoman.base %>/styles/themes/default",
+                    sourceMapFilename : "<%= yeoman.base %>/styles/themes/default/default.css.map"
                 },
                 files: [{
                     expand: true,
-                    cwd: "../GSPlatformBaseModule/app/styles/themes",
+                    cwd: "<%= yeoman.base %>/styles/themes/css/",
                     src: ["**/*.less"],
-                    dest: "../GSPlatformBaseModule/app/styles/themes/css/",
+                    dest: "<%= yeoman.base %>/styles/themes/css/",
                     ext: ".css"
                 }]
             }
         },
 
-        compass: {                  // Task
-            dist: {                   // Target
+        compass: {                      // Task
+            dist: {                     // Target
                 options: {              // Target options
                     sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
                     cssDir: "<%= yeoman.app %>/styles/themes/default/css",
                     environment: 'production'
                 }
             },
-            dev: {                    // Another target
+            dev: {                      // Another target
                 options: {
                     sassDir: "<%= yeoman.app %>/styles/themes/default/sass",
                     cssDir: "<%= yeoman.app %>/styles/themes/default/css"
@@ -561,22 +587,19 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-//            'clean:server',
+            'clean:server',
+            'copy:images',
             'concurrent:server',
-//            'copy:all',
-//            'autoprefixer',
-            'configureRewriteRules',
+            'copy:all',
             'connect:livereload',
-//            'watch'
+            'cleanStyles',
+            'watch'
         ]);
-        grunt.option('force', true);
-        grunt.task.run('clean:styles');
     });
 
     grunt.registerTask('test', [
         'clean:test',
         'concurrent:test',
-//        'autoprefixer',
         'karma'
     ]);
 
@@ -597,9 +620,13 @@ module.exports = function (grunt) {
         'htmlmin'
     ]);
 
+    grunt.registerTask('cleanStyles', 'Force cleanup styles', function(){
+        grunt.option('force', true);
+        grunt.task.run('clean:styles');
+    });
 
-    grunt.registerTask('css-compass', ['compass:dev']);
-    grunt.registerTask('css', ['less:development']);
+    grunt.registerTask('sass', ['compass:dev']);
+    grunt.registerTask('css', ['copy:images','less:development']);
 
     grunt.registerTask('zip', ['compress']);
 
@@ -625,28 +652,23 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask('dist', 'Generate app archive file', function(){
-        grunt.task.run(['less:development', 'compress']);
-        grunt.option('force', true);
-        grunt.task.run('clean:styles');
+        grunt.task.run(['copy:images','less:development','compress', 'cleanStyles']);
     });
 
     grunt.registerTask('dev', 'dev on current module', function(arg1){
         if(arg1 == "f"){
             grunt.task.run(['copy:dev']);
         } else if(arg1 == "b"){
-            grunt.task.run(['less:framework','copy:base']);
+            grunt.task.run(['copy:images','less:framework','copy:base']);
         } else if(arg1 == "bf"){
             grunt.task.run(['copy:base']);
         } else {
-            grunt.task.run(['less:development', 'copy:dev']);
+            grunt.task.run(['copy:images','less:development','copy:dev']);
         }
-        grunt.option('force', true);
-        grunt.task.run('clean:styles');
+        grunt.task.run('cleanStyles');
     });
 
     grunt.registerTask('cls', 'Clean up workspace', function(){
-        grunt.task.run(['clean:zip','clean:server','clean:test']);
-        grunt.option('force', true);
-        grunt.task.run('clean:styles');
+        grunt.task.run(['clean:zip','clean:server','clean:test', 'cleanStyles']);
     });
 };

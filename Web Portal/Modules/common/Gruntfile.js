@@ -12,13 +12,10 @@ module.exports = function (grunt) {
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
-  grunt.loadNpmTasks('grunt-string-replace');
-
-    // Configurable paths for the application
+  // Configurable paths for the application
   var appConfig = {
-    name : "App",
-    id   : "app",
-    module : "module"
+    name : "Sample",
+    id   : "sample"
   };
 
   // Define the configuration for all the tasks
@@ -54,7 +51,7 @@ module.exports = function (grunt) {
     'string-replace' : {
       inline: {
           files: [
-              {expand: true, cwd: '<%= config.id %>/', dest: '<%= config.id %>/', src: ['*.json','app/app.js', 'app/config.json']}
+              {expand: true, cwd: '../<%= config.name %>/', dest: '../<%= config.name %>/', src: ['*.json','app/app.js', 'app/config.json']}
           ],
           options: {
               replacements: [
@@ -77,31 +74,33 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('new', "Initial a new app", function(id, name, module){
+  grunt.registerTask('new', "Initial a new app", function(id, name){
       if(id !== undefined){
           appConfig.id = id;
       }
       if(name !== undefined){
           appConfig.name = name;
       }
-      if(module !== undefined){
-          appConfig.module = module;
-      }
-      var DecompressZip = require('decompress-zip');
-      var unzipper = new DecompressZip("sample.zip");
-      unzipper.on('error', function (err) {
-          console.log('Caught an error ' + err);
-          done();
-      });
-      unzipper.on('extract', function (log) {
-          grunt.task.run(['string-replace:inline']);
-          console.log('Finished creating');
-          done();
-      });
-      var done = this.async();
-      unzipper.extract({
-          path: "./" + appConfig.id
-      });
+      appConfig.module = appConfig.id;
+	  if(grunt.file.exists("../" + appConfig.name)){
+		  grunt.fail.fatal("The app " + appConfig.name + " already exists!");
+	  } else {
+		  var DecompressZip = require('decompress-zip');
+		  var unzipper = new DecompressZip("sample.zip");
+		  unzipper.on('error', function (err) {
+			  console.log('Caught an error ' + err);
+			  done();
+		  });
+		  unzipper.on('extract', function (log) {
+			  grunt.task.run(['string-replace:inline']);
+			  console.log('Finished creating');
+			  done();
+		  });
+		  var done = this.async();
+		  unzipper.extract({
+			  path: "../" + appConfig.name
+		  });
+	  }
   });
 
 };

@@ -9,6 +9,7 @@ define(['angular',
             '$scope',
             function($stateParams, $scope){
                 $scope.repositoryId = $stateParams.repo;
+                //$scope.revisionId = $stateParams.rev;
             }
         ]);
 });

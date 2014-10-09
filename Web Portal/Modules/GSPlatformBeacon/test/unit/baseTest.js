@@ -1,3 +1,3 @@
-define(['app/app'], function(angular){
+define(['app/app'], function(){
     'use strict';
 });

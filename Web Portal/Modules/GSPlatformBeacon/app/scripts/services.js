@@ -98,9 +98,11 @@ define(['angular'], function(angular){
             }
 
             var getRevisionById = function(repo, revId){
-                for(var i=0; i<repo.revisions.length; i++){
-                    if(repo.revisions[i].id == revId){
-                        return repo.revisions[i];
+                if(repo){
+                    for(var i=0; i<repo.revisions.length; i++){
+                        if(repo.revisions[i].id == revId){
+                            return repo.revisions[i];
+                        }
                     }
                 }
                 return null;

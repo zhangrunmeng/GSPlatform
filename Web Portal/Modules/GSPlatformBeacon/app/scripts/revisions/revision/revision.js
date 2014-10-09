@@ -12,11 +12,11 @@ define(['angular'], function(angular){
             '$timeout',
             function ($scope, $http, $stateParams, BeaconUtil, RestUtil, $timeout) {
 
+                var me = this;
                 $scope.revisionId = $stateParams.rev;
 
                 this.setFilteredDetails = function(data){
                     $scope.filteredData = data;
-                    $scope.loading = false;
                 }
 
                 this.bootstrap = function() {
@@ -54,32 +54,36 @@ define(['angular'], function(angular){
                         multiSelect: false,
                         filterOptions: $scope.filterOptions
                     };
+                    this.renderDetails();
+                }
 
-                    if($scope.revisionId){
-//                    if($scope.selectedRepo){
-//                        var revision = BeaconUtil.getRevisionById($scope.selectedRepo, $scope.revisionId);
-//                        if(!revision || !revision.details || revision.details.length == 0){
-//                            RestUtil.jsonp('repository/'+$scope.repositoryId+'/revision/'+$scope.revisionId, function(data){
-//                                $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, data);
-//                                $scope.$apply(setFilteredDetails($scope.selectedRevision.details));
-//                            });
-//                        } else {
-//                            $scope.selectedRevision = revision;
-//                            $timeout(function(){setFilteredDetails($scope.selectedRevision.details)}, 10);
-//                        }
-//                    }
-                        var me = this;
-                        $http.get(BeaconUtil.modulePath + "data/revision.json").then(function (result) {
-                            $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
-                            $timeout(function(){
-                                me.setFilteredDetails($scope.selectedRevision.details);
-                            }, 10);
-                        });
+                this.renderDetails = function(){
+                    if($scope.revisionId && $scope.selectedRepo){
+                            if($scope.selectedRevision.revision == null || $scope.selectedRevision.revision.id != $scope.revisionId){
+                                var revision = BeaconUtil.getRevisionById($scope.selectedRepo, $scope.revisionId);
+                                if(!revision || !revision.details || revision.details.length == 0){
+                                    RestUtil.jsonp('repository/'+$scope.selectedRepo.id+'/revision/'+$scope.revisionId, function(data){
+                                        $scope.selectedRevision.revision = BeaconUtil.updateRevision($scope.selectedRepo, data);
+                                        $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                                    });
+                                } else {
+                                    $scope.selectedRevision.revision = revision;
+                                    $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                                }
+        //                        $http.get(BeaconUtil.modulePath + "resources/revision.json").then(function (result) {
+        //                            $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
+        //                            $timeout(function(){
+        //                                me.setFilteredDetails($scope.selectedRevision.details);
+        //                            }, 10);
+        //                        });
+                            } else {
+                                $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                            }
                     }
                 }
 
+                $scope.$on("showRevisionDetails", this.renderDetails);
                 this.bootstrap();
-
             }
         ]);
 });
