@@ -44,7 +44,9 @@ define(['angular',
 //                    });
                     RestUtil.jsonp('repository', function(result){
                         $scope.repositories = BeaconUtil.buildRepositories(result);
-                        $scope.$apply($scope.$broadcast('bootstrap'));
+                        $scope.$apply(function(){
+                            $scope.$broadcast('bootstrap');
+                        });
                     });
                     $scope.$on('setCurrentView', function(e, view){
                         $scope.currentView = view;

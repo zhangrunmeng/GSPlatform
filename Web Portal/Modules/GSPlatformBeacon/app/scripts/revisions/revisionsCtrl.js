@@ -8,9 +8,10 @@ define(['angular'], function(
             '$element',
             '$http',
             '$state',
+            '$timeout',
             'beacon.utility',
             'RestUtil',
-            function ($scope, $element, $http, $state, BeaconUtil, RestUtil) {
+            function ($scope, $element, $http, $state, $timeout, BeaconUtil, RestUtil) {
                 var trendSeries;
                 var seriesData;
 
@@ -18,7 +19,7 @@ define(['angular'], function(
                     $scope.selectedRepo = BeaconUtil.getRepoById($scope.repositories, $scope.repositoryId);
                     if($scope.selectedRepo){
                         trendSeries = [];
-                        seriesData = {"ok":{name:'Ok', data:[]}, "error":{name:"Error",data:[]}, "warning":{name:"Warning",data:[]}};
+                        seriesData = {"ok":{name:'Ok', data:[]}, "warning":{name:"Warning",data:[]}, "error":{name:"Error",data:[]}};
                         var revisions = $scope.selectedRepo.revisions;
                         for(var i=0; i < revisions.length; i++){
                             for(var type in seriesData){
@@ -109,6 +110,7 @@ define(['angular'], function(
 //                        if(!$scope.revisionId) $scope.revisionId = 'latest';
 //                        $state.go('revision', {'rev' : $scope.revisionId});
 //                    }
+                    $scope.revisionId = undefined;
                 });
                 this.bootstrap();
             }]);

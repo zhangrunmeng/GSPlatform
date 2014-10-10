@@ -64,11 +64,11 @@ define(['angular'], function(angular){
                                 if(!revision || !revision.details || revision.details.length == 0){
                                     RestUtil.jsonp('repository/'+$scope.selectedRepo.id+'/revision/'+$scope.revisionId, function(data){
                                         $scope.selectedRevision.revision = BeaconUtil.updateRevision($scope.selectedRepo, data);
-                                        $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                                        $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 10);
                                     });
                                 } else {
                                     $scope.selectedRevision.revision = revision;
-                                    $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                                    $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 10);
                                 }
         //                        $http.get(BeaconUtil.modulePath + "resources/revision.json").then(function (result) {
         //                            $scope.selectedRevision = BeaconUtil.updateRevision($scope.selectedRepo, result.data);
@@ -77,7 +77,7 @@ define(['angular'], function(angular){
         //                            }, 10);
         //                        });
                             } else {
-                                $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 0);
+                                $timeout(function(){me.setFilteredDetails($scope.selectedRevision.revision.details)}, 10);
                             }
                     }
                 }

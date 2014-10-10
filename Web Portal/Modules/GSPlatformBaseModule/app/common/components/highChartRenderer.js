@@ -50,7 +50,7 @@ define(['angular'], function(angular){
         return new Highcharts.Chart(chartconf);
     };
     return angular.module("common.components.columnChartRenderer", [])
-        .directive('highChartRenderer', function(){
+        .directive('highChartRenderer', ['$timeout', function($timeout){
             return {
                 restrict: 'A',
                 scope: {chartConfig: "=chartOptions"},
@@ -63,8 +63,10 @@ define(['angular'], function(angular){
                             scope.chart = renderChart(element, scope.chartConfig);
                         }
                     }, true);
-                    scope.chart = renderChart(element, scope.chartConfig);
+                    if(scope.chartConfig){
+                        scope.chart = renderChart(element, scope.chartConfig);
+                    }
                 }
             };
-        });
+        }]);
 });

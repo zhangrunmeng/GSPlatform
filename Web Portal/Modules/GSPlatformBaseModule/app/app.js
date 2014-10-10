@@ -238,7 +238,7 @@ define(['angular',
                          $window,
                          $state){
                 var rendererNavMenu = function(){
-                    if($scope.modulePath != ""){
+                    if($scope.modulePath != "" && $scope.selectedModule.nav){
                         //render custom module nav menu
                         require(["text!" + $scope.modulePath + $scope.selectedModule.nav],
                             function(navTemplate){
@@ -272,7 +272,7 @@ define(['angular',
                         if(($installedModules[i].module && $installedModules[i].module == module) || (module == $installedModules[i].id)){
                             $scope.modulePath = $rootScope.modulePath = 'modules/' + $installedModules[i].id + "/"
                             $scope.selectedModule = $rootScope.selectedModule = $installedModules[i];
-                            rendererNavMenu('modules/' + $installedModules[i].id + '/' + $installedModules[i].nav);
+                            rendererNavMenu();
                             break;
                         }
                     }

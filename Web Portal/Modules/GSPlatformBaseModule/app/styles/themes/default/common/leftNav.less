@@ -1,3 +1,5 @@
+@import "../library";
+
 nav ul li a, nav ul li.open>a, nav ul li.open>a b {
   color: #444 !important;
 }
@@ -25,7 +27,7 @@ nav {
           top: 12px;
         }
         & > i {
-          color: #058dc7;
+          color: @common-color;
           font-size: 20px;
         }
       }
@@ -36,7 +38,7 @@ nav {
       }
     }
     & > li.open {
-      border-left: 4px solid #058dc7;
+      border-left: 4px solid @common-color;
       & > a {
         padding-left:7px;
       }

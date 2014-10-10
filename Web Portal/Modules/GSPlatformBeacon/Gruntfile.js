@@ -446,7 +446,17 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: '<%= yeoman.base %>/',
                         dest: '.tmp',
-                        src: '**/*.*'
+                        src: ['*.*', 'common/**/*.*', 'modules/**/*.*', 'scripts/**/*.*', 'styles/**/*.*', 'views/**/*.*']
+                    }
+                ]
+            },
+            lib: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.base %>/',
+                        dest: '.tmp',
+                        src: 'lib/**/*.*'
                     }
                 ]
             },
@@ -659,7 +669,7 @@ module.exports = function (grunt) {
         if(arg1 == "f"){
             grunt.task.run(['copy:dev']);
         } else if(arg1 == "b"){
-            grunt.task.run(['copy:images','less:framework','copy:base']);
+            grunt.task.run(['copy:images','less:framework','copy:base', 'copy:lib']);
         } else if(arg1 == "bf"){
             grunt.task.run(['copy:base']);
         } else {

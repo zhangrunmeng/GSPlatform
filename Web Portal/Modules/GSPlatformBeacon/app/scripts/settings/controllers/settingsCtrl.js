@@ -9,11 +9,6 @@ define(['angular'], function(
             'RestUtil',
             function ($scope, BeaconUtil, RestUtil) {
 
-                var notify = function(){
-                    if(!$scope.$$phase)
-                        $scope.$apply();
-                }
-
                 $scope.addRepositories = function(e){
                     var sourceElement = angular.element(e.toElement);
                     var source = sourceElement.text().replace(/\s/g,'');

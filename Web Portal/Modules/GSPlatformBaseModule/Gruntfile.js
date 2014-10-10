@@ -506,5 +506,8 @@ module.exports = function (grunt) {
   
   grunt.registerTask('dev', ['less:development', 'compress', 'install']);
   grunt.registerTask('fast', ['compress', 'install']);
+  grunt.registerTask('dist', 'Generate app archive file', function(){
+    grunt.task.run(['less:development','compress']);
+  });
 
 };

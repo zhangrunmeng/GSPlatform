@@ -26,13 +26,19 @@ var requireConfig = {
         hcmore : 'lib/highcharts/highcharts-more.src',
         jquery : 'lib/jquery/dist/jquery',
         jqueryui : "lib/jquery-ui/jquery-ui",
+        jqueryeventdrag : "lib/jquery.event.drag-drop/event.drag/jquery.event.drag",
         lodashCompat: 'lib/lodash/dist/lodash.compat',
         restAngular : "lib/restangular/dist/restangular",
         requireLess : "lib/require-less/less",
         uiBootstrap: 'lib/angular-bootstrap/ui-bootstrap-tpls',
         text: 'lib/requirejs-text/text',
         less: 'lib/less/dist/less-1.7.5.min',
-        ocLazyload : 'lib/oclazyload/dist/ocLazyLoad'
+        ocLazyload : 'lib/oclazyload/dist/ocLazyLoad',
+        slickcore : 'lib/slickgrid/slick.core',
+        slickdataview : 'lib/slickgrid/slick.dataview',
+        slickgrid : 'lib/slickgrid/slick.grid',
+        slickeditors : 'lib/slickgrid/slick.editors',
+        slickplugintooltip : 'lib/slickgrid/plugins/slick.autotooltips'
     },
     shim: {
         'angular' : {'exports' : 'angular'},
@@ -46,10 +52,16 @@ var requireConfig = {
         },
         'ocLazyload' : ['angular'],
         'highcharts' : ['jquery'],
+        'jqueryeventdrag' : ['jquery'],
         'hc3d' : ['highcharts'],
         'hcmore' : ['highcharts'],
         'hc-drilldown' : ['highcharts'],
-        'hc-data' : ['highcharts']
+        'hc-data' : ['highcharts'],
+        'slickcore' : ['jquery', 'jqueryui', 'jqueryeventdrag'],
+        'slickgrid' : ['slickcore'],
+        'slickdataview' : ['slickcore'],
+        'slickeditors' : ['slickcore'],
+        'slickplugintooltip' : ['slickcore']
     },
     map: {
         '*': {
@@ -92,12 +104,18 @@ require([
     'jquery',
     'jqueryui',
     'angular',
+    'jqueryeventdrag',
     'text',
     'less',
     'highcharts',
     'hcmore',
     'hc-drilldown',
-    'hc-data'
+    'hc-data',
+    'slickcore',
+    'slickgrid',
+    'slickdataview',
+    'slickeditors',
+    'slickplugintooltip'
 ], function($, jqueryui, angular) {
 
     if(!DEBUG_MODE){

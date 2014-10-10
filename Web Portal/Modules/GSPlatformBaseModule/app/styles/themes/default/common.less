@@ -6,6 +6,22 @@
 .app.default {
   @import "common/leftNav";
 
+  .header {
+//    background: -webkit-gradient(linear,right top,right bottom,from(#666),to(#454545));
+    .gradient(#666, #666, #454545);
+    box-shadow: 2px 4px 2px rgba(0,0,0,0.2);
+    color: white;
+    & > h1 {
+      & > small {
+        color: bisque;
+      }
+    }
+  }
+
+  #main {
+    background: aliceblue;
+  }
+
   .grid-view-item {
     background: lightskyblue;
     color: dimgray;
