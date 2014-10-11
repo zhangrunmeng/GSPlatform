@@ -380,6 +380,12 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '<%= yeoman.base %>/styles/themes',
+                        dest: '<%= yeoman.app %>/styles/themes/css',
+                        src: ['**/library.less','**/elements.less']
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.base %>/styles/themes',
                         dest: '<%= yeoman.base %>/styles/themes/css',
                         src: '**/*.*'
                     }
@@ -662,10 +668,11 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask('dist', 'Generate app archive file', function(){
-        grunt.task.run(['copy:images','less:development','compress', 'cleanStyles']);
+        grunt.task.run(['copy:images', 'less:development','compress', 'cleanStyles']);
     });
 
     grunt.registerTask('dev', 'dev on current module', function(arg1){
+        //grunt.task.run('cleanStyles');
         if(arg1 == "f"){
             grunt.task.run(['copy:dev']);
         } else if(arg1 == "b"){

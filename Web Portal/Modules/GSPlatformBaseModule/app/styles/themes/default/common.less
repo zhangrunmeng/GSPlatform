@@ -1,19 +1,26 @@
 /*
  * styles defined and specified by different theme, like color, background, borders etc.
  */
+@import "library";
 @import "../imports/common";
 
 .app.default {
   @import "common/leftNav";
 
+  a {
+    color: @common-color;
+    &:hover {
+      color: @common-color;
+    }
+  }
+
   .header {
-//    background: -webkit-gradient(linear,right top,right bottom,from(#666),to(#454545));
-    .gradient(#666, #666, #454545);
+    .gradient(@common-background, @common-background, #454545);
     box-shadow: 2px 4px 2px rgba(0,0,0,0.2);
     color: white;
     & > h1 {
       & > small {
-        color: bisque;
+        color: @common-background-color;
       }
     }
   }

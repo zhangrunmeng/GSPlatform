@@ -1,10 +1,17 @@
 /*
  * styles override and specified by different theme, like color, background, borders etc.
  */
-@import "../imports/library";
+@import "library";
 @import "../imports/custom";
 
 .app.default {
+
+  .btn-primary {
+     background: @common-background;
+     color: @common-background-color !important;
+     border-color: @common-border-color;
+  }
+
   //Customize ngGrid styles
   div[ng-grid] {
     &.ngGridDiv {
@@ -12,8 +19,8 @@
     }
 
     .ngTopPanel {
-      background: #dad8e4;
-      color: black;
+      background: @common-background;
+      color: @common-background-color;
     }
 
     .ngRow.selected {
@@ -26,6 +33,23 @@
 
     .ngRow.even {
       background-color: #fefefe;
+    }
+  }
+
+  .nav-tabs {
+    & > li.active {
+      & > a {
+        color : bisque;
+        background: @common-background;
+        &:hover{
+          color : bisque;
+          background: @common-background;
+        }
+        &:focus{
+          color : bisque;
+          background: @common-background;
+        }
+      }
     }
   }
 }

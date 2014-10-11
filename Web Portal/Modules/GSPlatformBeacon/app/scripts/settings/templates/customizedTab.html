@@ -1,25 +1,28 @@
-<div style="margin-top: 30px">
+<div>
     <div class="row">
         <div class="col-lg-12">
             <div class="pull-right">
-                <span class="widget-icon" ng-hide="configEdit" ng-click="configEdit=!configEdit">
+                <span ng-hide="configEdit" ng-click="configEdit=!configEdit">
                 <i class="btn btn-primary fa fa-edit" title="edit"></i></span>
-                <span class="widget-icon" ng-show="configEdit" ng-click="configEdit=!configEdit">
+                <span ng-show="configEdit" ng-click="configEdit=!configEdit">
                 <i class="btn btn-primary fa fa-save" title="save"></i></span>
             </div>
         </div>
     </div>
     <div ng-hide="configEdit" class="row" style="margin-top: 20px">
-        <accordion close-others="false">
-            <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in myGroupsList" >
-                <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4' ng-repeat="repository in group.repositories">
-                    <div class="repo-item">
-                        <div class="repo">{{repository.shortname}}</div>
-                        <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+        <div class="col-lg-12">
+            <h3 ng-if="myGroupsList.length == 0" class="text-center">No customized group defined.</h3>
+            <accordion close-others="false">
+                <accordion-group heading="{{group.name}}" is-open="group.isOpen" ng-repeat="group in myGroupsList" >
+                    <div class='col-xs-12 col-sm-12 col-md-6 col-lg-4' ng-repeat="repository in group.repositories">
+                        <div class="repo-item">
+                            <div class="repo">{{repository.shortname}}</div>
+                            <div class="revision">{{"Last revision:" + repository.lastRevision.revision}}</div>
+                        </div>
                     </div>
-                </div>
-            </accordion-group>
-        </accordion>
+                </accordion-group>
+            </accordion>
+        </div>
     </div>
     <div ng-show="configEdit" class="row" style="margin-top: 20px">
         <div class="col-lg-4">
@@ -40,7 +43,7 @@
             </accordion>
         </div>
         <div class="col-lg-8">
-            <div class="thumbnail panel-body"  style="height:570px;width:100%" >
+            <div class="thumbnail panel-body"  style="height:550px;width:100%" >
                 <div class="input-group">
                     <input ng-model="groupToAdd.name" type="text" class="form-control" placeholder="Group Name"  required>
                                         <span ng-click="addNewGroup()" class="input-group-addon">

@@ -83,7 +83,7 @@ define(['angular'], function(
                             break;
                         }
                         if(defaultRepo){
-                            $state.go('revisions', {'repo': defaultRepo});
+                            $state.go('beaconRevisions', {'repo': defaultRepo});
                         }
                         return;
                     }
@@ -92,14 +92,14 @@ define(['angular'], function(
 
                 var getRevisionDetails = function(init){
                     if(init){
-                        if($state.current.name == 'revisions'){
+                        if($state.current.name == 'beaconRevisions'){
                             if(!$scope.revisionId) $scope.revisionId = 'latest';
-                            $state.go('revision', {'rev' : $scope.revisionId});
+                            $state.go('beaconRevision', {'rev' : $scope.revisionId});
                         } else {
                             $scope.$broadcast('showRevisionDetails');
                         }
                     } else {
-                        $state.go('revision', {'rev' : $scope.revisionId});
+                        $state.go('beaconRevision', {'rev' : $scope.revisionId});
                     }
                 }
 

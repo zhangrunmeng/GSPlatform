@@ -26,7 +26,7 @@ define(['angular'], function(
                             if(currentGPRepos){
                                 for(var i=0; i < currentGPRepos.length; i++){
                                     if(currentGPRepos[i].shortname === reponame){
-                                        $state.go('revisions', {'repo' : currentGPRepos[i].id});
+                                        $state.go('beaconRevisions', {'repo' : currentGPRepos[i].id});
                                         return;
                                     }
                                 }

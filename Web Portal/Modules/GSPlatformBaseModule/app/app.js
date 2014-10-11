@@ -123,6 +123,7 @@ define(['angular',
                             }]
                         };
                         router.parent = parent;
+                        var stateName = moduleId + router.name.slice(0,1).toUpperCase() + router.name.slice(1,router.name.length);
                         if(router.views){
                             var defaultView = false;
                             for(var key in router.views){
@@ -135,6 +136,12 @@ define(['angular',
                                     router.views[key]['templateUrl'] = getDefaultPath(router, modulePath, parentState, 'templates', 'html');
                                 } else {
                                     console.error("TemplateUrl must be specified in view: " + JSON.stringify(router));
+                                    continue;
+                                }
+                                var f = key.indexOf('@' + router.name);
+                                if(f != -1 && (f + ('@' + router.name).length) == key.length){
+                                    router.views[key.substring(0, f) + '@' + stateName] =  router.views[key];
+                                    delete router.views[key];
                                 }
                             }
                             if(!defaultView){
@@ -145,8 +152,9 @@ define(['angular',
                         } else {
                             compileRouterTemplateURL(router, modulePath, parentState);
                         }
+                        compileRouters(moduleId, modulePath, stateName, parentState + '.' + router.name, router.children, result);
+                        router.name = stateName;
                         result.push(router);
-                        compileRouters(moduleId, modulePath, router.name, parentState + '.' + router.name, router.children, result);
                     }
                 });
             }
@@ -186,7 +194,13 @@ define(['angular',
                         templateUrl : 'views/main.html',
                         controller : 'appContainerCtrl'
                     });
+                    var allStates = {};
                     angular.forEach($installedModules, function(module){
+                        if(allStates[module.id]){
+                            console.error("The state name is conflicted for app " + module.id);
+                            return;
+                        }
+                        allStates[module.id] = true;
                         $stateProvider.state(module.id, {
                             url : '/' + module.id,
                             templateUrl: 'modules/' + module.id + '/main.html',
@@ -209,6 +223,12 @@ define(['angular',
                         compileRouters(module.id, 'modules/' + module.id + '/', module.id, module.id, module.routers, routers);
 
                         angular.forEach(routers, function(router){
+//                            var stateName = module.id + router.name.slice(0,1).toUpperCase() + router.name.slice(1,router.name.length);
+                            if(allStates[router.name]){
+                                console.error("The state name is conflicted for router " + router.name + " in app " + module.id);
+                                return;
+                            }
+                            allStates[router.name] = true;
                             var conf = router;
                             if(!module.default && conf.default == true){
                                 module.default = "/" + module.id + conf.url;

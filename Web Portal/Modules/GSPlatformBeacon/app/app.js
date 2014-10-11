@@ -2,10 +2,9 @@
  * Created by hammer on 2014/8/31.
  */
 define(['angular',
-       'common/components/enhancedNgGrid',
        './scripts/services',
        'css!./styles/themes/css/' + $theme + '/app'
-    ], function(angular, enhancedNgGrid, beaconservices){
+    ], function(angular, beaconservices, helloworld){
         var HighChartConfig = {
             COLOR_ERROR: '#F9906F',
             COLOR_OK: '#A4E2C6',
@@ -30,7 +29,6 @@ define(['angular',
         }
 
         return angular.module('beacon',[
-                enhancedNgGrid.name,
                 beaconservices.name
             ])
             .controller('beaconCtrl', ['$scope', '$element', '$http', 'beacon.utility', 'RestUtil', 'HighchartsUtil',
